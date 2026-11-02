@@ -1,0 +1,461 @@
+% goldbach_G3.tex  ---  G3: 反同步集 Delta_N、里程计坐标下的反射，与论文1 CML 表述的对照
+% 编译：pdflatex goldbach_G3.tex  （需要 CJKutf8 与 gbsn 字体；本机无 pdflatex，未编译，只做了静态配对检查）
+% 记号与宏沿用 goldbach_props.tex（G1）与 goldbach_G2.tex（G2）。本文件的 label 一律带前缀 g3:。
+\documentclass[11pt,a4paper]{article}
+\usepackage{CJKutf8}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage[margin=2.5cm]{geometry}
+
+\newcommand{\Zhat}{\widehat{\mathbb Z}}
+\newcommand{\Haar}{\mu}
+\newcommand{\Sing}{\mathfrak S}
+\newcommand{\Lsym}{\ensuremath{\mathsf{L}}}
+\newcommand{\Rsym}{\ensuremath{\mathsf{R}}}
+\newcommand{\status}[1]{\par\noindent\fbox{\textbf{状态：#1}}\par\smallskip}
+\newcommand{\Cnt}{\mathcal N}          % 窗口计数（同 G2）
+% G3 新增记号
+\newcommand{\Om}{\Omega}               % 里程计 prod_p Z/pZ
+\newcommand{\cyl}[2]{[#1]_{#2}}        % 第 k 层柱集
+\newcommand{\pr}{\mathrm{pr}}
+\newcommand{\ust}{u_{*}}
+\newcommand{\uinf}{u_{\infty}}
+
+\theoremstyle{plain}
+% 命题使用独立计数器，编号固定为 G3.1--G3.5，与任务条目一一对应
+\newtheorem{prop}{命题}
+\renewcommand{\theprop}{G3.\arabic{prop}}
+% 其余环境共用按节编号的计数器
+\newtheorem{lem}{引理}[section]
+\newtheorem{cor}[lem]{推论}
+\newtheorem{conj}{猜想}
+\renewcommand{\theconj}{G3.C\arabic{conj}}
+\newtheorem{quest}{问题}
+\renewcommand{\thequest}{G3.Q\arabic{quest}}
+\theoremstyle{definition}
+\newtheorem{defn}[lem]{定义}
+\newtheorem{hyp}[lem]{假设}
+\newtheorem{rem}[lem]{注}
+\renewcommand{\proofname}{证明}
+
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+
+\title{G3：反同步集 $\Delta_N$ 与里程计上的反射\\[2pt]
+\large ——{}把“两条混沌轨道之和与整数格相交”写成精确陈述}
+\author{（G3 工作稿）}
+\date{2026-11-02}
+\maketitle
+
+\begin{abstract}
+沿用 G1 \cite{G1} 的记号：$U_k$、$G_k^N=U_k\cap(N-U_k)$、Haar 测度 $\Haar$、柱集比 $R_k(N)=\Haar(G_k^N)/\Haar(U_k)^2$、
+里程计 $T(x)=x+1$。任务转述的背景是：在 $2\cdot3\cdot5\cdots$ 重整化塔的参数处，logistic 映射 $f(x)=1-ux^2$ 在临界轨道闭包
+$\omega(0)$ 上共轭于里程计 $\Om=\prod_p\mathbb Z/p\mathbb Z$ 上的 $+1$。在此背景下我们：
+(1) 定义乘积系统 $(\omega(0)^2,f\times f)$ 中的反同步集 $\Delta_N$，并证明在里程计坐标下它是\emph{反射} $\rho_N:\xi\mapsto N-\xi$ 的图像，
+而不是 $+N$ 平移的图像（后者是 Polignac 侧的 $\Gamma_N=\{(\xi,\xi+N)\}$）；$f\times f$ 把 $\Delta_N$ 映到 $\Delta_{N+2}$，保持 $\Delta_N$ 的是
+$f\times f^{-1}$（时间反向）；
+(2) 证明 $\rho_N$ 是 $T$ 的反向对称（$\rho_NT\rho_N=T^{-1}$），不是 $f$ 的任何迭代或其极限，并计算其不动点（$N$ 偶时恰两个）；
+(3) 证明 $\Delta_N\cap(U_k\times U_k)$ 是 $\rho_N$ 限制在 $G_k^N$ 上的图像，在 $\Delta_N$ 的自然测度 $\nu_N$ 下其测度为 $\Haar(G_k^N)=\Haar(U_k)^2R_k(N)$，
+相对独立模型 $\Haar\otimes\Haar$ 的比值恰为 $R_k(N)$；
+(4) 证明反射在区间上\emph{没有}自然实现：logistic 的唯一自然对称 $x\mapsto-x$ 不保持 $\omega(0)$，且 $N$ 偶时 $\rho_N$ 在 $\omega(0)\subset\mathbb R$ 上不单调，
+故不是任何区间同胚或区间对合的限制——\textbf{只在里程计层面陈述，主线不变}；
+(5) 把“两条轨道 $(x_n,x_{N-n})$ 落入双存活柱集”写成 $\iff n\in G_k^N$，并指出这对“轨道”是同一条临界轨道正反两向的读数。
+
+\textbf{定位声明。} 本稿全部严格结论都是紧群 $\Om$ 上的初等事实加上一个（引用的）共轭假设，\emph{不}对哥德巴赫或 Polignac 猜想提供任何新证据。
+论文1 \cite{Wang26} 全文此前未能取得（G1 已注明），其 \S6.3 内容只按本任务与 G1 \S未决的转述使用，凡涉及论文1 原意之处均标“\textbf{待与论文1全文核对}”；
+本稿不把任何未在转述中出现的定理归于论文1。
+\end{abstract}
+
+\section*{状态总表}
+\begin{center}
+\begin{tabular}{p{2.6cm}p{7.6cm}p{4.2cm}}
+\hline
+条目 & 内容 & 状态\\
+\hline
+假设 \ref{g3:hyp:finite} & 有限层 $(H_k)$：$0$ 的最小周期为 $P_k$；$\ust$ 处 $k=4$ & 背景（任务转述；$k=4$ 数值核对，说明性）\\
+假设 \ref{g3:hyp:infinite} & 无穷层 $(H_\infty)$：$f|\omega(0)\cong(\Om,T)$，柱集 $=$ 重整化区间环 & 背景（任务转述；标准理论凭记忆引用，未核对）\\
+命题 \ref{g3:prop:construct} & 构造：$\Delta_N=$ 图$(\rho_N)$，$\Gamma_N=$ 图$(T^N)$；$f\times f:\Delta_N\to\Delta_{N+2}$；$f\times f^{-1}$ 保持 $\Delta_N$ & 已证（里程计坐标无条件；区间坐标依赖 $(H_\infty)$）\\
+命题 \ref{g3:prop:reflect} & $+N=T^N$；$\rho_N=\tau_N\circ\iota$ 为反向对称、非平移、非迭代；不动点 & 已证\\
+命题 \ref{g3:prop:measure} & $\Delta_N\cap(U_k\times U_k)=$ 图$(\rho_N|_{G_k^N})$；$\nu_N(\cdot)=\Haar(G_k^N)=\Haar(U_k)^2R_k(N)$；条件测度解释 & 已证\\
+引理 \ref{g3:lem:sym} & $\omega(0)\cap(-\omega(0))=\{0\}$ & 已证（依赖 $(H_k)$ 或 $(H_\infty)$）\\
+命题 \ref{g3:prop:nomono} & 反射在区间上不可单调实现 & (a)(b) 已证（依赖假设）；(c) $N$ 奇：部分（数值 $+$ 凭记忆的标准事实）\\
+问题 \ref{g3:quest:interval} & 反射在区间映射本身上有无自然实现 & 部分（否定答案在命题 \ref{g3:prop:nomono} 的意义下已证；“任何自然实现”不可形式化穷尽）。结论：只在里程计层面陈述，主线不变\\
+猜想 \ref{g3:conj:odd} & 对一般重整化塔与奇数 $N$，$\rho_N$ 在 $\omega(0)$ 上仍不单调 & 猜想\\
+命题 \ref{g3:prop:cml} & $(x_n,x_{N-n})\in V_k\times V_k\iff n\in G_k^N$；这对轨道是 $f\times f^{-1}$ 的轨道 & 已证（等价式）；与论文1 原表述的对应：待与论文1全文核对\\
+注 \ref{g3:rem:entropy} & $f|\omega(0)$ 熵为零、等度连续，“混沌”不能指 $\omega(0)$ 上的动力学 & 已证（依赖 $(H_\infty)$）\\
+\S\ref{g3:sec:open} & CML 耦合能否以 $\Delta_N$ 或 $\Gamma_N$ 为不变集等 & 未决\\
+\hline
+\end{tabular}
+\end{center}
+
+%=====================================================================
+\section{记号、里程计 $\Om$ 与背景假设}\label{g3:sec:notation}
+
+\paragraph{沿用 G1/G2 的记号。}
+$p_1=2<p_2=3<\cdots$，$P_k=\prod_{i\le k}p_i$；$\Zhat$ 及其 Haar 概率测度 $\Haar$；$x_p:=x\bmod p$；
+$U_k=\{x:x_p\ne0,\ p\le p_k\}$，$G_k^N=U_k\cap(N-U_k)$，$R_k(N)=\Haar(G_k^N)/\Haar(U_k)^2$（G1 命题 prop:ratio \cite{G1}）；
+$\Sing(N)$ 为 Hardy--Littlewood 奇异级数；$\Cnt_k(N)=\#\{0<n<N:n\in G_k^N\}$（G2 \cite{G2}）。
+对 $A\subset$ 交换群，$A+N$、$N-A$、$-A$ 同 G1。
+
+\paragraph{里程计 $\Om$。}
+重整化塔的底数序列是 $2,3,5,7,\dots$，相应的里程计（adding machine）是
+\[
+\Om:=\varprojlim\mathbb Z/P_k\mathbb Z\ \cong\ \prod_p\mathbb Z/p\mathbb Z\qquad(\text{中国剩余定理 }\mathbb Z/P_k\cong\textstyle\prod_{p\le p_k}\mathbb Z/p),
+\]
+带乘积拓扑，是紧交换群；$T:\Om\to\Om$，$T(\xi)=\xi+1$。记 $\xi_p\in\mathbb Z/p$ 为 $\xi$ 的第 $p$ 个坐标，
+$\xi\bmod P_k:=(\xi_p)_{p\le p_k}\in\mathbb Z/P_k$。注意 $\Om$ \emph{不是} $\Zhat=\prod_p\mathbb Z_p$，而是它的商：
+$\pi:\Zhat\to\Om$，$x\mapsto(x_p)_p$ 是连续满同态，$\pi\circ T_{\Zhat}=T\circ\pi$。
+\begin{itemize}[leftmargin=*]
+\item $\mathbb Z\to\Om$，$n\mapsto(n\bmod p)_p$ 是单射（被所有素数整除的整数只有 $0$），像稠密（CRT）。下面把整数直接看成 $\Om$ 的元素。
+\item $\Haar_\Om:=\pi_*\Haar$ 是 $\Om$ 上的 Haar 概率测度（平移不变的概率测度在满同态下的像仍平移不变）。
+\item $U_k$、$G_k^N$（$N\in\mathbb Z$）只依赖 $x\bmod P_k$，故是 $\pi$-饱和的：$U_k=\pi^{-1}(U_k^\Om)$，$U_k^\Om:=\{\xi\in\Om:\xi_p\ne0,\ p\le p_k\}$，
+$G_k^N=\pi^{-1}\bigl(U_k^\Om\cap(N-U_k^\Om)\bigr)$。于是 $\Haar_\Om(U_k^\Om)=\Haar(U_k)$，$\Haar_\Om(G_k^{N,\Om})=\Haar(G_k^N)$。
+G1 已指出有限层命题在 $\Zhat$ 与 $\prod_p\mathbb Z/p$ 上写法等价（G1 \S1 \cite{G1}）。
+\textbf{下文在 $\Om$ 上不加上标地写 $U_k,G_k^N,\Haar$。} $N\in\Om$ 一般时 $G_k^N:=U_k\cap(N-U_k)$ 同样定义，G1 命题 prop:ratio(a) 的证明逐字适用。
+\item 第 $k$ 层柱集：对 $a\in\mathbb Z/P_k$，$\cyl ak:=\{\xi\in\Om:\xi\bmod P_k=a\}$，$\Haar(\cyl ak)=1/P_k$。$U_k$ 是 $\varphi(P_k)$ 个第 $k$ 层柱集之并。
+\item $\iota(\xi):=-\xi$，$\tau_a(\xi):=\xi+a$（$a\in\Om$），$\rho_N:=\tau_N\circ\iota$，即 $\rho_N(\xi)=N-\xi$。
+$e_2\in\Om$ 记 $(e_2)_2=1$、$(e_2)_p=0$（$p\ge3$）的元素。
+\end{itemize}
+
+\begin{lem}[$\Om$ 上的里程计]\label{g3:lem:odo}
+$T$ 在 $\Om$ 上极小且唯一遍历，唯一不变概率测度为 $\Haar$；与 $T$ 交换的同胚恰为平移 $\tau_a$（$a\in\Om$）；
+$\{T^n\}_{n\in\mathbb Z}$ 在一致拓扑下的闭包恰为 $\{\tau_a:a\in\Om\}$。对任意第 $k$ 层 clopen 集 $A$ 及任意 $\xi$，
+$\frac1L\#\{0\le n<L:T^n\xi\in A\}\to\Haar(A)$。
+\end{lem}
+\status{已证}
+\begin{proof}
+极小：$\xi$ 的轨道 $\xi+\mathbb Z$ 稠密，因 $\mathbb Z$ 稠密。唯一遍历：若 $m$ 是 $T$-不变概率测度，则它对所有 $\tau_n$（$n\in\mathbb Z$）不变；
+对 $a\in\Om$ 取整数 $n_j\to a$，对每个第 $k$ 层柱集 $C$，$j$ 充分大时 $C+n_j=C+a$，故 $m(C+a)=m(C)$；柱集生成 Borel $\sigma$-代数，
+所以 $m$ 平移不变，即 $m=\Haar$。若同胚 $\phi$ 与 $T$ 交换，则 $\phi(n)=\phi(0)+n$（$n\in\mathbb Z$），由连续性与稠密性 $\phi=\tau_{\phi(0)}$。
+$\tau_{n_j}\to\tau_a$ 一致（$\Om$ 上取平移不变度量 $d(\xi,\eta)=2^{-j(\xi,\eta)}$，$j(\xi,\eta)=\max\{j\ge0:\xi\equiv\eta\bmod P_j\}$，$P_0:=1$）；
+反之一致极限 $\phi$ 仍与 $T$ 交换，故为平移。频率：$A$ 只依赖 $\bmod P_k$，$T^n\xi\bmod P_k$ 以周期 $P_k$ 遍历 $\mathbb Z/P_k$。
+（这与 G1 命题 prop:odometer \cite{G1} 是同一论证，换到商群 $\Om$ 上。）
+\end{proof}
+
+\paragraph{区间侧。}
+$f=f_u(x)=1-ux^2$，临界点为 $0$；$x_n:=f^n(0)$（$n\ge0$）。
+
+\begin{hyp}[有限层 $(H_k)$]\label{g3:hyp:finite}
+参数 $u$ 使 $0$ 是 $f$ 的周期点，最小周期为 $P_k$。则 $\omega(0)=\{x_0,\dots,x_{P_k-1}\}$，
+$h_k:\omega(0)\to\mathbb Z/P_k$，$x_m\mapsto m\bmod P_k$ 是良定义的双射，且 $h_k\circ f=(+1)\circ h_k$。
+对 $j\le k$ 定义存活集 $V_j:=\{x_m:\ m\bmod P_j\in U_j\}$（因 $P_j\mid P_k$ 良定义）。
+\end{hyp}
+（在 $(H_k)$ 下上述共轭是\emph{平凡}的：周期轨道上 $f$ 就是循环移位。）
+
+\begin{rem}[关于 $\ust\approx1.4855245$；数值，说明性]\label{g3:rem:ustar}
+任务转述：$\ust\approx1.4855245$ 是 $W_2*W_3*W_5*W_7$ 的超稳定点（$*$ 为揉序的 $*$-积 \cite{MSS73}，$W_p$ 为某个周期 $p$ 的超稳定揉序；
+该参数值的来源为任务转述，论文1 中的原始定义\textbf{待与论文1全文核对}）。
+需要修正的是：在\emph{有限}层超稳定点处，$\omega(0)$ 是 $210=P_4$ 个点的周期轨道，$f|\omega(0)$ 共轭于 $\mathbb Z/210$ 上的 $+1$（即 $(H_4)$），
+\emph{不是}整个 $\Om=\prod_p\mathbb Z/p$；后者需要塔的极限参数（假设 \ref{g3:hyp:infinite}）。
+数值核对（g3\_scratch/check\_g3.py、refine\_u.py，80 位十进制运算）：
+(i) 在七位数 $u=1.4855245$ 本身，$f^{210}(0)\approx-4.4\times10^{-4}$，210-环的乘子约 $195$（排斥），即七位精度落不进周期 210 的窗口；
+(ii) 在 $[1.4855245-2\times10^{-6},\,1.4855245+2\times10^{-6}]$ 中 $f_u^{210}(0)=0$ 有 1607 个根，其中周期 30 的超稳定点（$W_2*W_3*W_5$）
+$u\approx1.485523847459$，而最小周期恰为 210 且 $\bmod2,6,30$ 各剩余类凸包互不相交（与 $W_2*W_3*W_5*(\cdot)$ 型重整化相容）的根恰有 9 个，
+个数与实二次族周期 7 的超稳定参数个数 9 一致（后者凭记忆）；其中四舍五入为 $1.4855245$ 的是 $u\approx1.485524500756$。
+本稿把它当作 $\ust$，但“$W_7$ 是 9 个中的哪一个”这一点\textbf{待与论文1全文核对}。下文的严格结论不依赖这些数字。
+\end{rem}
+
+\begin{hyp}[无穷层 $(H_\infty)$]\label{g3:hyp:infinite}
+存在参数 $\uinf$（塔 $W_2*W_3*W_5*\cdots*W_{p_k}$ 的超稳定参数 $u_k$ 的极限；$p\ge11$ 处的 $W_p$ 须另行指定），使得 $f=f_{\uinf}$ 无穷次可重整化，并且：
+\begin{enumerate}[label=(\roman*)]
+\item $K:=\omega(0)$ 是 Cantor 集，存在同胚 $h:K\to\Om$，$h\circ f=T\circ h$，$h(0)=0$；
+\item 对每个 $k$，存在两两不交的闭区间 $J_k^{(a)}$（$a\in\mathbb Z/P_k$，第 $k$ 层重整化区间环），使 $K\cap J_k^{(a)}=h^{-1}(\cyl ak)$。
+\end{enumerate}
+\end{hyp}
+\emph{来源与状态：} 任务转述；对无穷次可重整化单峰映射，“$\omega(c)$ 为 Cantor 集且 $f|\omega(c)$ 共轭于相应 adding machine”是标准理论
+（参见 \cite{dMvS93}，凭记忆引用，具体定理号与条件未核对）。本稿不证明 $(H_\infty)$。
+在 $(H_\infty)$ 下 $f|K$ 是同胚，于是对一切 $n\in\mathbb Z$ 定义 $x_n:=(f|K)^n(0)$，有 $h(x_n)=n$；记存活柱集
+\[
+V_k:=h^{-1}(U_k)=K\cap\bigcup_{a\in U_k\bmod P_k}J_k^{(a)},
+\]
+即“下标与 $P_k$ 互素的第 $k$ 层重整化区间”中的 $K$ 部分。
+
+%=====================================================================
+\section{命题 G3.1：乘积系统与反同步集}\label{g3:sec:construct}
+
+\begin{defn}\label{g3:defn:delta}
+对 $N\in\Om$（特别是 $N\in\mathbb Z$），在 $\Om\times\Om$ 中令
+\[
+D_N:=\{(\xi,\eta):\ \xi+\eta=N\},\qquad \Gamma_N:=\{(\xi,\eta):\ \eta=\xi+N\}.
+\]
+在 $(H_\infty)$ 下，乘积系统 $(K\times K,\,f\times f)$ 中的\emph{反同步集}与\emph{滞后同步集}定义为
+\[
+\Delta_N:=(h\times h)^{-1}(D_N)=\{(x,y)\in K^2:\ h(x)+h(y)=N\},\qquad
+\Delta_N^{\mathrm{Pol}}:=(h\times h)^{-1}(\Gamma_N).
+\]
+\end{defn}
+
+\begin{rem}[为什么必须在里程计坐标中读“$x+y=N$”]\label{g3:rem:literal}
+若把 $x+y=N$ 按区间上的实数加法读，则 $x+y\in[-2,2]$，与整数 $N$ 无关；对 $N=0$，由引理 \ref{g3:lem:sym}，
+$\{(x,y)\in K^2:x+y=0\}=\{(0,0)\}$。而且 logistic 映射是偶函数，$(f\times f)\{(x,-x)\}\subset\{(y,y)\}$：
+实坐标中的反对角线一步就被压到同步流形（对角线）上。因此“两条轨道之和”只能指 $h(x)+h(y)$，即里程计坐标中的加法；
+定义 \ref{g3:defn:delta} 就是这样做的。论文1 是否也如此理解，\textbf{待与论文1全文核对}。
+\end{rem}
+
+\begin{prop}[构造]\label{g3:prop:construct}
+设 $N\in\Om$。
+\begin{enumerate}[label=(\alph*)]
+\item $D_N=\{(\xi,\rho_N\xi):\xi\in\Om\}$ 是反射 $\rho_N$ 的图像；$\Gamma_N=\{(\xi,\tau_N\xi)\}$ 是平移 $\tau_N$ 的图像，$N\in\mathbb Z$ 时即 $T^N$ 的图像。
+二者都是闭集，$\pr_1$ 把它们同胚地映到 $\Om$。由命题 \ref{g3:prop:reflect}(c)，$D_N$ \emph{不是}任何平移（特别是任何 $T^m$）的图像。
+\item $\{D_N\}_{N\in\Om}$ 是 $\Om^2$ 的分划（$s(\xi,\eta)=\xi+\eta$ 的纤维），$\{\Gamma_N\}_{N\in\Om}$ 也是（$d(\xi,\eta)=\eta-\xi$ 的纤维）。
+\item 动力学：
+\[
+(T\times T)(D_N)=D_{N+2},\qquad (T\times T^{-1})(D_N)=D_N,\qquad (T\times T)(\Gamma_N)=\Gamma_N .
+\]
+$\pr_1$ 把 $(D_N,T\times T^{-1})$ 与 $(\Gamma_N,T\times T)$ 都共轭到 $(\Om,T)$。
+\item $\iota\times\mathrm{id}$ 把 $\Gamma_N$ 映为 $D_N$，保持 $U_k\times U_k$，并把 $T\times T$ 共轭为 $T^{-1}\times T$。
+\item（区间侧，依赖 $(H_\infty)$）$\Delta_N$ 是 $\tilde\rho_N:=h^{-1}\rho_Nh:K\to K$ 的图像；$(f\times f)(\Delta_N)=\Delta_{N+2}$；
+$f\times(f|K)^{-1}$ 保持 $\Delta_N$，且 $(x_0,x_N)$ 在它下的轨道为 $\{(x_n,x_{N-n})\}_{n\in\mathbb Z}$（$N\in\mathbb Z$）；
+相应地 $(x_0,x_N)$ 在 $f\times f$ 下的轨道为 $\{(x_n,x_{n+N})\}_{n\ge0}\subset\Delta_N^{\mathrm{Pol}}$。
+\end{enumerate}
+\end{prop}
+\status{已证（(a)--(d) 无条件；(e) 依赖假设 \ref{g3:hyp:infinite}）}
+\begin{proof}
+(a) $\xi+\eta=N\iff\eta=N-\xi=\rho_N\xi$；$\eta=\xi+N\iff\eta=\tau_N\xi$。连续映射的图像是闭集，$\xi\mapsto(\xi,g\xi)$ 是 $\pr_1|_{\text{图}}$ 的连续逆。
+(b) 每个 $(\xi,\eta)$ 恰属于 $D_{\xi+\eta}$ 与 $\Gamma_{\eta-\xi}$。
+(c) $(\xi+1)+(\eta+1)=N+2$，$(\xi+1)+(\eta-1)=N$，$(\eta+1)-(\xi+1)=N$；$\pr_1\circ(T\times T^{\mp1})=T\circ\pr_1$。
+(d) $(\iota\times\mathrm{id})(\xi,\xi+N)=(-\xi,\xi+N)$，两坐标之和为 $N$；$\iota\times\mathrm{id}$ 是对合，逆映射同理把 $D_N$ 映回 $\Gamma_N$。
+$-U_k=U_k$（G1 命题 prop:dict 证明中的关键事实 \cite{G1}）。$(\iota\times\mathrm{id})(T\times T)(\iota\times\mathrm{id})(\xi,\eta)=(\iota\times\mathrm{id})(-\xi+1,\eta+1)=(\xi-1,\eta+1)$。
+(e) 用 $h\times h$ 把 (a)(c) 搬到 $K\times K$：$h\circ f=T\circ h$，$h\circ(f|K)^{-1}=T^{-1}\circ h$；$h(x_n)+h(x_{N-n})=n+(N-n)=N$，$h(x_{n+N})-h(x_n)=N$。
+\end{proof}
+
+\begin{rem}[“图 of $+N$” 与 “图 of 反射” 的区分]\label{g3:rem:graphs}
+任务问“$\Delta_N$ 是否是 $+N$ 平移的图像”。答案是否定的：$+N$ 平移的图像 $\Gamma_N=\{(x,x+N)\}$ 是 \emph{Polignac 侧}
+（$x$ 与 $x+N$ 同时过筛），在 $f\times f$ 下不变（滞后同步）；$\Delta_N$ 是\emph{反射} $\rho_N$ 的图像，在 $f\times f$ 下不变的不是它，
+而是整族 $\{\Delta_N\}$ 被 $N\mapsto N+2$ 置换。二者由 $\iota\times\mathrm{id}$ 互换（命题 \ref{g3:prop:construct}(d)），
+这正是 G1 命题 prop:dict(b) 中 $\Pi_k^N=-G_k^N$ 在乘积空间中的形式。
+由于 $\overline{2\mathbb Z}=\{\xi\in\Om:\xi_2=0\}$（CRT：$2$ 在 $\mathbb Z/(P_k/2)$ 中可逆），叶空间 $\Om$ 上的动力学 $N\mapsto N+2$ 恰有两个极小分支：偶 $N$ 与奇 $N$。
+\end{rem}
+
+%=====================================================================
+\section{命题 G3.2：平移与反射在里程计坐标下}\label{g3:sec:reflect}
+
+\begin{prop}[$+N$ 与 $\rho_N$]\label{g3:prop:reflect}
+设 $N\in\Om$，$k\ge1$。
+\begin{enumerate}[label=(\alph*)]
+\item（平移）$\tau_N$ 是 $T$ 的“迭代或迭代的极限”：$N\in\mathbb Z$ 时 $\tau_N=T^N$；一般 $N$ 时 $\tau_N=\lim T^{n_j}$（一致，$n_j\in\mathbb Z$，$n_j\to N$）。
+在 $(H_\infty)$ 下 $h^{-1}\tau_Nh=(f|K)^N$，$N\ge0$ 时即 $f^N|K$。在柱集上 $\tau_N:\cyl ak\mapsto\cyl{a+N}k$。
+\item（反射的基本性质）$\rho_N$ 是保 Haar 测度的同胚对合，逐坐标为 $\xi_p\mapsto N_p-\xi_p$，在柱集上 $\cyl ak\mapsto\cyl{N-a}k$；
+$\rho_N(U_k)=N-U_k=U_k+N$，$\rho_N(G_k^N)=G_k^N$（交换 $G_k^N$ 的两个“因子” $U_k$ 与 $N-U_k$）。
+\item（反射不是 $f$ 的迭代）$\rho_N\circ T=T^{-1}\circ\rho_N$，更一般地 $\rho_N\circ\tau_a=\tau_{-a}\circ\rho_N$，$\rho_N\circ\rho_M=\tau_{N-M}$。
+$\rho_N$ 不与 $T$ 交换，因而不是平移，特别地不是任何 $T^m$（$m\in\mathbb Z$），也不是 $\{T^m\}$ 的一致极限。
+在 $(H_\infty)$ 下：$\tilde\rho_N=h^{-1}\rho_Nh$ 满足 $\tilde\rho_N\circ f=(f|K)^{-1}\circ\tilde\rho_N$ 于 $K$，$\tilde\rho_N(x_n)=x_{N-n}$，
+且 $\tilde\rho_N$ 不等于任何 $(f|K)^m$，也不在 $\{(f|K)^m\}$ 的一致闭包中。
+\item（不动点）若 $N_2=1$（$N$ 奇），$\rho_N$ 无不动点。若 $N_2=0$（$N$ 偶），$\rho_N$ 恰有两个不动点 $\xi^*$ 与 $\xi^*+e_2$，
+其中 $\xi^*_2=0$，$\xi^*_p=N_p\cdot2^{-1}\bmod p$（$p\ge3$）；$N=2M\in2\mathbb Z$ 时不动点集为 $\{M,\,M+e_2\}$。
+\item（有限层）在 $\mathbb Z/P_k$ 上 $\rho_N(a)=N-a$；$k\ge2$ 时它不是恒等，$N$ 奇时无不动点，$N=2M$ 偶时恰有两个不动点 $a\equiv M\pmod{P_k/2}$。
+\end{enumerate}
+\end{prop}
+\status{已证}
+\begin{proof}
+(a) 由引理 \ref{g3:lem:odo}；$h^{-1}T^Nh=(f|K)^N$ 由共轭关系。$(\xi+N)\bmod P_k=a+N$。
+(b) $\rho_N\circ\rho_N(\xi)=N-(N-\xi)=\xi$；$\iota$ 是群自同构，$\iota_*\Haar$ 平移不变，故 $=\Haar$，再复合平移 $\tau_N$。
+逐坐标式与柱集式直接计算。$\rho_N(U_k)=N+(-U_k)=N+U_k$；$\rho_N(U_k\cap(N-U_k))=(N-U_k)\cap U_k$。
+(c) $\rho_N(\xi+a)=N-\xi-a=\tau_{-a}\rho_N(\xi)$；$\rho_N\rho_M(\xi)=N-(M-\xi)=\xi+N-M$。若 $\rho_N$ 与 $T$ 交换，则 $T=T^{-1}$，即 $2=0$ 于 $\Om$，
+但第 $3$ 个坐标 $2\ne0\in\mathbb Z/3$，矛盾。由引理 \ref{g3:lem:odo}，平移与 $\{T^m\}$ 的一致闭包都与 $T$ 交换，故 $\rho_N$ 不在其中。
+区间侧由 $h$ 共轭搬运；$\tilde\rho_N(x_n)=h^{-1}(N-n)=x_{N-n}$。
+(d) $\rho_N\xi=\xi\iff2\xi=N\iff2\xi_p=N_p\ \forall p$。$p\ge3$ 时 $2$ 模 $p$ 可逆，唯一解；$p=2$ 时 $2\xi_2=0$，故须 $N_2=0$，此时 $\xi_2\in\{0,1\}$ 任意。
+$N=2M$ 时 $M_p=N_p\cdot2^{-1}$（$p\ge3$），所以两个不动点是 $M$ 与 $M$ 的第 $2$ 坐标翻转，即 $\{M,M+e_2\}$。
+(e) $2a\equiv N\pmod{P_k}$：$N$ 奇无解；$N=2M$ 时等价于 $a\equiv M\pmod{P_k/2}$，模 $P_k$ 恰两类。$\rho_N=\mathrm{id}\iff P_k\mid2$，即 $k=1$。
+\end{proof}
+
+\begin{rem}[与 G1 的中心化坐标；$\Om$ 与 $\Zhat$ 的差别]\label{g3:rem:center}
+$N=2M$ 时 $\rho_N=\tau_M\circ\iota\circ\tau_{-M}$，这就是 G1 命题 prop:dict(c) 所说“以 $N/2$ 为中心时 $G_k^N-M$ 关于取负对称”。
+在 $\Zhat$ 上（$2$-进分量为 $\mathbb Z_2$），$2\xi=N$ 对偶数 $N$ 只有唯一解 $N/2$；在 $\Om$ 上（$2$ 处只有 $\mathbb Z/2$）则有两个。
+命题 \ref{g3:prop:nomono} 用到的是“两个不动点”，因此依赖于重整化塔给出的是 $\Om$ 而不是 $\Zhat$——这与任务转述“共轭于 $\prod_p\mathbb Z/p\mathbb Z$”一致。
+\end{rem}
+
+%=====================================================================
+\section{命题 G3.3：$\Delta_N\cap(U_k\times U_k)$ 与 $G_k^N$}\label{g3:sec:measure}
+
+由于 $\pr_1:D_N\to\Om$ 是同胚，$D_N$ 上有一个自然的概率测度：
+\[
+\nu_N:=(\mathrm{id},\rho_N)_*\Haar,\qquad\text{即}\qquad \nu_N(E)=\Haar\{\xi\in\Om:\ (\xi,N-\xi)\in E\}\quad(E\subset\Om^2\ \text{Borel}).
+\]
+
+\begin{prop}[集合恒等式与测度]\label{g3:prop:measure}
+设 $N\in\Om$，$k\ge1$。
+\begin{enumerate}[label=(\alph*)]
+\item（集合恒等式）
+\[
+D_N\cap(U_k\times U_k)=\{(\xi,N-\xi):\ \xi\in G_k^N\}=\text{图}\bigl(\rho_N|_{G_k^N}\bigr)=D_N\cap(G_k^N\times G_k^N),
+\]
+且 $\pr_1$、$\pr_2$ 都把它同胚地映到 $G_k^N$。
+\item（区间侧，依赖 $(H_\infty)$）$\Delta_N\cap(V_k\times V_k)=\{(x,\tilde\rho_Nx):\ x\in h^{-1}(G_k^N)\}$，$\pr_1$ 是到 $h^{-1}(G_k^N)$ 上的同胚。
+\item（测度）$(\Haar\otimes\Haar)(D_N)=0$；$\nu_N$ 是 $D_N$ 上唯一的 $T\times T^{-1}$-不变 Borel 概率测度，也是唯一在子群 $D_0$ 的平移下不变的概率测度。并且
+\[
+\nu_N\bigl(D_N\cap(U_k\times U_k)\bigr)=\Haar(G_k^N)=\Haar(U_k)^2R_k(N),\qquad
+\frac{\nu_N(U_k\times U_k)}{(\Haar\otimes\Haar)(U_k\times U_k)}=R_k(N).
+\]
+\item（$\nu_N$ 是条件测度）对每个 Borel $F\subset\Om^2$，$N\mapsto\nu_N(F)$ Borel 可测，且 $\int_\Om\nu_N(F)\,d\Haar(N)=(\Haar\otimes\Haar)(F)$，
+即 $\{\nu_N\}$ 是 $\Haar\otimes\Haar$ 沿 $s(\xi,\eta)=\xi+\eta$ 的解体。更精确地，若 $F$ 是第 $j$ 层柱集之积的并（$F$ 只依赖 $(\xi,\eta)\bmod P_j$），则对\emph{每个} $N$
+\[
+\nu_N(F)=\frac{(\Haar\otimes\Haar)\bigl(F\cap s^{-1}\cyl Nj\bigr)}{\Haar(\cyl Nj)},
+\]
+即“在 $\xi+\eta\equiv N\pmod{P_j}$ 条件下”的精确条件概率；它只依赖 $N\bmod P_j$。取 $F=U_k\times U_k$（$j=k$）并对 $N$ 积分即得 G1 命题 prop:haaravg。
+\item（整数格点）$N\in\mathbb Z$ 时 $D_N\cap\mathbb Z^2=\{(n,N-n):n\in\mathbb Z\}$ 在 $D_N$ 中稠密，且
+$(n,N-n)\in U_k\times U_k\iff n\in G_k^N$。沿 $T\times T^{-1}$ 轨道 $(n,N-n)_{n\ge0}$ 的访问频率
+$\lim_L\frac1L\#\{0\le n<L:(n,N-n)\in U_k\times U_k\}=\nu_N(U_k\times U_k)=\Haar(G_k^N)$；
+而哥德巴赫窗口 $0<n<N$ 中的计数是 $\Cnt_k(N)$，它与 $N\Haar(G_k^N)$ 之差即 G2 的窗口误差 $E_k(N)$ \cite{G2}。
+\end{enumerate}
+\end{prop}
+\status{已证（(b) 依赖假设 \ref{g3:hyp:infinite}；其余无条件）}
+\begin{proof}
+(a) $(\xi,\eta)\in D_N\cap(U_k\times U_k)\iff\eta=N-\xi,\ \xi\in U_k,\ N-\xi\in U_k\iff\eta=N-\xi,\ \xi\in U_k\cap(N-U_k)=G_k^N$。
+由命题 \ref{g3:prop:reflect}(b)，$\eta=\rho_N\xi\in G_k^N$，故也等于 $D_N\cap(G_k^N\times G_k^N)$（反向包含显然，因 $G_k^N\subset U_k$）。
+$\pr_1$ 限制到图像上是同胚（命题 \ref{g3:prop:construct}(a)），像为 $G_k^N$；$\pr_2=\rho_N\circ\pr_1$ 于 $D_N$，像为 $\rho_N(G_k^N)=G_k^N$。
+(b) 对 (a) 施加 $(h\times h)^{-1}$，$V_k=h^{-1}(U_k)$。
+
+(c) Tonelli：$(\Haar\otimes\Haar)(D_N)=\int\Haar(\{N-\xi\})\,d\Haar(\xi)=0$，因 $\Haar(\{\eta\})\le\Haar(\cyl{\eta}k)=1/P_k\to0$。
+$\nu_N(D_N\cap(U_k\times U_k))=\Haar\{\xi:\xi\in U_k,\ N-\xi\in U_k\}=\Haar(G_k^N)$；再用 G1 命题 prop:ratio(a) \cite{G1}（其证明对 $N\in\Om$ 逐字成立），
+以及 $(\Haar\otimes\Haar)(U_k\times U_k)=\Haar(U_k)^2$。
+唯一性：$\pr_1$ 把 $(D_N,T\times T^{-1})$ 共轭到 $(\Om,T)$（命题 \ref{g3:prop:construct}(c)），后者唯一遍历（引理 \ref{g3:lem:odo}），
+故 $D_N$ 上唯一的不变概率测度是 $(\pr_1|_{D_N})^{-1}_*\Haar=\nu_N$。$D_0=\{(\zeta,-\zeta)\}$ 的平移 $(\xi,N-\xi)\mapsto(\xi+\zeta,N-\xi-\zeta)$
+在 $\pr_1$ 下对应 $\tau_\zeta$，对全体 $\zeta$ 不变 $\iff$ 平移不变 $\iff$ Haar。
+
+(d) $\Psi(\xi,N):=(\xi,N-\xi)$ 是 $\Om^2$ 的拓扑群自同构（加法的、连续，逆为 $(\xi,\eta)\mapsto(\xi,\xi+\eta)$），故 $\Psi_*(\Haar\otimes\Haar)$ 是平移不变概率测度，等于 $\Haar\otimes\Haar$。
+$\Om^2$ 第二可数，$\mathcal B(\Om^2)=\mathcal B(\Om)\otimes\mathcal B(\Om)$，$\mathbf 1_F\circ\Psi$ 乘积可测；由 Tonelli，$N\mapsto\nu_N(F)=\int\mathbf 1_F(\xi,N-\xi)\,d\Haar(\xi)$ 可测，且
+$\int\nu_N(F)\,d\Haar(N)=\int\mathbf 1_F\circ\Psi\,d(\Haar\otimes\Haar)=(\Haar\otimes\Haar)(F)$。
+若 $F$ 只依赖 $\bmod P_j$，记 $F_j\subset(\mathbb Z/P_j)^2$ 为其像，则
+$(\Haar\otimes\Haar)(F\cap s^{-1}\cyl Nj)=\#\{(a,b)\in F_j:a+b\equiv N\}/P_j^2=\#\{a:(a,N-a)\in F_j\}/P_j^2$，除以 $\Haar(\cyl Nj)=1/P_j$
+得 $\#\{a:(a,N-a)\in F_j\}/P_j=\Haar\{\xi:(\xi,N-\xi)\in F\}=\nu_N(F)$。$F=U_k\times U_k$ 时 $\int\Haar(G_k^N)\,d\Haar(N)=\Haar(U_k)^2$，即 G1 命题 prop:haaravg。
+
+(e) $\pr_1(D_N\cap\mathbb Z^2)=\mathbb Z$ 在 $\Om$ 中稠密，$\pr_1|_{D_N}$ 是同胚。$(n,N-n)\in U_k\times U_k\iff n\in U_k\cap(N-U_k)$。
+频率：$\pr_1$ 把该轨道映为 $T$-轨道 $(n)_{n\ge0}$，用引理 \ref{g3:lem:odo} 于 clopen 集 $G_k^N$。窗口部分是 G2 中 $\Cnt_k,E_k$ 的定义。
+\end{proof}
+
+\begin{rem}[“Haar$(\Delta_N\cap(U\times U))$ 即 $R_k(N)$”的精确含义]\label{g3:rem:ratio}
+任务表述“其 Haar 测度应等于 $\Haar(G_k^N)$，即圆柱比 $R_k(N)$”需要分开读：
+(i) $\Delta_N$ 在乘积 Haar 测度下是零测集，所以“Haar 测度”只能指 $\Delta_N$ 自身的自然测度 $\nu_N$（命题 \ref{g3:prop:measure}(c)(d) 说明它是唯一的不变测度，也是乘积测度沿 $\xi+\eta$ 的精确条件测度）；
+(ii) 在 $\nu_N$ 下测度\emph{等于} $\Haar(G_k^N)$，\emph{不等于} $R_k(N)$；$R_k(N)$ 是它与独立模型 $(\Haar\otimes\Haar)(U_k\times U_k)=\Haar(U_k)^2$ 之比。
+用概率语言：在“$\xi+\eta=N$”条件下两坐标同时存活的概率，相对于两坐标独立时的概率，放大因子恰为截断奇异级数 $R_k(N)$，$k\to\infty$ 时趋于 $\Sing(N)$（G1 命题 prop:ratio(d)）。
+\end{rem}
+
+%=====================================================================
+\section{命题 G3.4：反射在区间映射上有无自然实现}\label{g3:sec:interval}
+
+\begin{quest}\label{g3:quest:interval}
+反射 $\rho_N$ 是否在区间映射 $f$ 本身（而不只是里程计 $\Om$）上有自然实现？例如：是否存在与 $f$ 相容的区间映射 $F$，使 $F|_K=\tilde\rho_N$？
+\end{quest}
+
+\begin{lem}[logistic 的对称不保持 $\omega(0)$]\label{g3:lem:sym}
+在 $(H_k)$ 或 $(H_\infty)$ 下，记 $K=\omega(0)$，$\sigma(x)=-x$。则 $f\circ\sigma=f$（$\sigma$ 是“折叠”对称而不是反向对称），且 $K\cap\sigma(K)=\{0\}$。
+\end{lem}
+\status{已证}
+\begin{proof}
+$f(-x)=1-ux^2=f(x)$。在两种假设下 $f|K$ 都是单射（共轭于双射 $+1$）且 $0\in K$。若 $x,-x\in K$，则 $f(x)=f(-x)$ 给出 $x=-x$，即 $x=0$。
+\end{proof}
+
+\begin{prop}[反射不可单调实现]\label{g3:prop:nomono}
+\begin{enumerate}[label=(\alph*)]
+\item（$N$ 偶，无穷层）设 $(H_\infty)$，$N\in\Om$ 且 $N_2=0$（例如 $N\in2\mathbb Z$）。则 $\tilde\rho_N:K\to K$ 关于 $K\subset\mathbb R$ 的序\emph{不单调}。
+因此不存在单调映射 $F:\mathbb R\to\mathbb R$ 使 $F|_K=\tilde\rho_N$；特别地，$\tilde\rho_N$ 不是任何区间同胚的限制，也不是任何区间连续对合的限制。
+\item（$N$ 偶，有限层）设 $(H_k)$，$k\ge2$，$N$ 偶。则 $\rho_N$ 在 $210$（一般地 $P_k$）点周期轨道 $\omega(0)$ 上（经 $h_k$ 拉回）不单调；同样的推论成立。
+特别地在 $\ust$ 处（$k=4$）无条件成立（只要 $0$ 的最小周期为 $210$；数值见注 \ref{g3:rem:ustar}）。
+\item（$N$ 奇）不动点论证不适用。数值上，在注 \ref{g3:rem:ustar} 的全部 9 个周期 210 超稳定参数处，对\emph{所有} $N\bmod210$（奇偶皆然），
+置换 $x_a\mapsto x_{N-a}$ 关于实数序都不单调。若进一步承认“$\uinf$ 处第 4 层重整化区间 $J_4^{(a)}$ 的空间次序与 $\ust$ 处周期轨道点 $x_a$ 的次序相同”（标准揉序事实，凭记忆，未核对），
+则 $(H_\infty)$ 下对所有 $N$（含奇数），$\tilde\rho_N$ 在 $K$ 上不单调。
+\end{enumerate}
+\end{prop}
+\status{(a)(b) 已证（依赖相应假设）；(c) 部分（有限层是数值事实；推到 $\uinf$ 依赖未核对的标准事实）}
+\begin{proof}
+设 $g$ 是全序集 $K$ 上的对合，$g\ne\mathrm{id}$。若 $g$ 严格递增：取 $x$ 使 $g(x)\ne x$，不妨 $g(x)>x$，则 $x=g(g(x))>g(x)$，矛盾。
+若 $g$ 严格递减：$g$ 至多一个不动点（$a<b$ 都不动则 $a=g(a)>g(b)=b$）。$\tilde\rho_N$ 是单射，所以“单调”即严格单调。
+(a) 由命题 \ref{g3:prop:reflect}(c)(d)，$\tilde\rho_N\ne\mathrm{id}$（否则 $\rho_N=\mathrm{id}=\tau_0$ 是平移），且有两个不动点 $h^{-1}(\xi^*)$、$h^{-1}(\xi^*+e_2)$；故既不递增也不递减。
+单调的 $F:\mathbb R\to\mathbb R$ 限制到 $K$ 仍单调；区间同胚严格单调；区间上的连续对合是双射，从而严格单调。
+(b) 同理，用命题 \ref{g3:prop:reflect}(e)：$k\ge2$ 时 $\rho_N\ne\mathrm{id}$ 且恰有两个不动点。
+(c) 设 $g$ 在 $K$ 上单调，且把块 $B_a:=K\cap J_4^{(a)}$ 映为 $B_{N-a}$（命题 \ref{g3:prop:reflect}(b) 与 $(H_\infty)$(ii)）。由于 $J_4^{(a)}$ 两两不交，块按实数序全序排列，
+在各块中取点即知诱导的块置换单调。逆否：块置换不单调 $\Rightarrow$ $g$ 不单调。数值部分见 g3\_scratch/refine\_u.py 的输出。
+\end{proof}
+
+\begin{rem}[对问题 \ref{g3:quest:interval} 的回答]\label{g3:rem:answer}
+\begin{enumerate}[leftmargin=*,label=(\arabic*)]
+\item \emph{平凡的实现存在但不自然。} $K$ 是 $\mathbb R$ 的闭子集，任何连续 $K\to K$ 都可在间隙上线性插值延拓为 $\mathrm{conv}(K)$ 上的连续映射（Tietze）。
+这种延拓与 $f$ 无关、不唯一，且由命题 \ref{g3:prop:nomono} 它在偶 $N$ 时必然不单调，不是对合。
+\item \emph{logistic 族自带的对称不起作用。} 唯一显然的对称 $\sigma(x)=-x$ 满足 $f\sigma=f$，与 $\rho_N$ 的 $\rho_NT\rho_N=T^{-1}$ 类型不同，而且 $\sigma(K)\cap K=\{0\}$（引理 \ref{g3:lem:sym}）。
+\item \emph{按点变化的迭代。} 在有限轨道段上，$0\le n\le N/2$ 时 $\tilde\rho_N(x_n)=x_{N-n}=f^{N-2n}(x_n)$：反射可以写成迭代，但迭代次数 $N-2n$ 依赖于点；$n>N/2$ 时还需要 $f$ 沿 $K$ 的逆分支。
+它是“时间反向”，不是一个固定的映射。
+\item \emph{结论。} 在命题 \ref{g3:prop:nomono} 的精确意义下（单调、同胚、对合、与 $f$ 的对称相容）答案是否定的；“任何意义下的自然实现”无法形式化穷尽，故问题本身记为“部分”。
+\textbf{反射只在里程计层面陈述，主线（G1/G2 的集合恒等式、柱集比与窗口误差）不变。}
+\end{enumerate}
+\end{rem}
+
+\begin{conj}\label{g3:conj:odd}
+对任意满足 $(H_\infty)$ 的无穷重整化参数（不限于以 $W_2*W_3*W_5*W_7$ 开头的塔）及任意 $N\in\Om$（含奇数），$\tilde\rho_N$ 在 $K$ 上不单调。
+\end{conj}
+\status{猜想（偶数 $N$ 已由命题 \ref{g3:prop:nomono}(a) 证明；奇数 $N$ 只有 $\ust$ 附近 9 个参数第 4 层的数值支持）}
+
+%=====================================================================
+\section{命题 G3.5：与论文1 CML 表述的对照}\label{g3:sec:cml}
+
+论文1 \S6.3（按任务与 G1 \S未决的转述）：哥德巴赫问题可用 CML 同步流形建模，“两条混沌轨道之和与整数格相交”。
+我们把它读作下面的精确陈述；与论文1 原文的逐字对应\textbf{待与论文1全文核对}。
+
+\begin{prop}[两条轨道落入双存活柱集 $\iff n\in G_k^N$]\label{g3:prop:cml}
+\begin{enumerate}[label=(\alph*)]
+\item 设 $(H_\infty)$。对一切 $N,n\in\mathbb Z$、$k\ge1$：$(x_n,x_{N-n})\in\Delta_N$，且
+\[
+(x_n,x_{N-n})\in V_k\times V_k\iff n\in G_k^N\iff(n,N-n)\in D_N\cap(U_k\times U_k).
+\]
+用重整化区间表述：$x_n$ 与 $x_{N-n}$ 同时落在“下标与 $P_k$ 互素”的第 $k$ 层区间中，当且仅当 $n$ 与 $N-n$ 都与 $P_k$ 互素。
+\item 设 $(H_k)$（例如 $\ust$ 处 $k=4$）。对 $0\le n\le N$ 与 $j\le k$（只用正向迭代 $x_m=f^m(0)$）：$(x_n,x_{N-n})\in V_j\times V_j\iff n\in G_j^N$。
+\item 计数：$\#\{0<n<N:(x_n,x_{N-n})\in V_k\times V_k\}=\Cnt_k(N)$。在 $(H_\infty)$ 下取 $k=\pi(\sqrt N)$，由 G1 命题 prop:window 与 G2 命题 prop:toperr(a)，
+它与有序哥德巴赫表示数 $r(N)$ 只差边界项：$-2\pi(\sqrt N)\le\Cnt_k(N)-r(N)\le2$。在 $(H_4)$（$\ust$）下只能取 $k\le4$，即 $p_k\le7$，
+故该比较只对 $N<121$ 有意义（$\pi(\sqrt N)\le4\iff N<121$）。
+\item 动力学性质：$\{(x_n,x_{N-n})\}_n$ 是 $(x_0,x_N)$ 在 $f\times(f|K)^{-1}$ 下的轨道，\emph{不是} $f\times f$ 的轨道；
+$f\times f$ 的轨道 $(x_n,x_{n+N})$ 落在 $\Delta_N^{\mathrm{Pol}}$ 中，其双存活条件为 $n\in\Pi_k^N=U_k\cap(U_k-N)$（Polignac）。
+两种读法由 $\iota\times\mathrm{id}$ 互换（命题 \ref{g3:prop:construct}(d)）。
+\end{enumerate}
+\end{prop}
+\status{已证（(a)(c) 依赖 $(H_\infty)$，(b) 依赖 $(H_k)$）；与论文1 原表述的对应：待与论文1全文核对}
+\begin{proof}
+(a) $h(x_m)=m$，$h(V_k)=U_k$：$(x_n,x_{N-n})\in V_k\times V_k\iff n\in U_k,\ N-n\in U_k\iff n\in G_k^N$；第二个等价是命题 \ref{g3:prop:measure}(a)(e)。
+区间表述由 $(H_\infty)$(ii)：$x_m\in J_k^{(a)}\iff m\equiv a\pmod{P_k}$。
+(b) 同 (a)，用 $h_k$；$V_j$ 的定义只涉及 $m\bmod P_j$，$P_j\mid P_k$。
+(c) 第一式是 (a) 与 $\Cnt_k$ 的定义；边界项是 G1 命题 prop:window 与 G2 命题 prop:toperr(a) \cite{G1,G2} 的重述（$0,N\notin G_k^N$）。
+(d) 命题 \ref{g3:prop:construct}(e)；$(x_n,x_{n+N})\in V_k\times V_k\iff n,n+N\in U_k$。
+\end{proof}
+
+\begin{rem}[“两条混沌轨道”的三处校正]\label{g3:rem:entropy}
+\begin{enumerate}[leftmargin=*,label=(\arabic*)]
+\item \emph{只有一条轨道。} $(x_n)$ 与 $(x_{N-n})$ 是同一条临界轨道，分别正向与反向读取（命题 \ref{g3:prop:cml}(d)）。
+CML 中两格点各自\emph{正向}演化的自然产物是 $\Gamma_N$（滞后同步，Polignac 侧），而不是 $\Delta_N$。
+\item \emph{$\omega(0)$ 上没有混沌。} 在 $(H_\infty)$ 下 $f|K$ 共轭于里程计，后者在平移不变度量 $d$（引理 \ref{g3:lem:odo} 证明中）下是等距，
+故 $f|K$ 等度连续、拓扑熵为零、对初值不敏感。“混沌”若有，只能指 $f$ 在 $K$ 之外的行为（$f$ 在整个区间上的熵本稿未讨论），与 $\Delta_N\cap(V_k\times V_k)$ 无关。
+在 $(H_4)$ 下 $\omega(0)$ 是超稳定（超吸引）周期轨道，更谈不上混沌。
+\item \emph{“同步流形”。} 实坐标中的同步流形（对角线）在里程计坐标中是 $\Gamma_0$；$\Delta_N$ 在 $f\times f$ 下不是不变集（$\Delta_N\to\Delta_{N+2}$），
+所以它不是通常意义下的（反）同步流形，只是叶族 $\{\Delta_N\}$ 中的一叶。论文1 所说“同步流形”具体指什么，\textbf{待与论文1全文核对}。
+\end{enumerate}
+\end{rem}
+
+%=====================================================================
+\section{未决与范围外}\label{g3:sec:open}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{CML 耦合（未决）。} 是否存在两格点 CML（如 Kaneko 型 \cite{Kan84} 耦合）的某种耦合方式，使 $\Gamma_N$ 或 $\Delta_N$（在 $(h\times h)$ 拉回的意义下）成为不变集或吸引集？
+由命题 \ref{g3:prop:construct}(c)，任何以 $f\times f$ 为未耦合部分的系统都会把 $\Delta_N$ 推到 $\Delta_{N+2}$，所以 $\Delta_N$ 不变需要一个格点做时间反向，这在区间上没有单值实现（$f$ 二对一）。本稿不做进一步建模。
+\item \textbf{假设 $(H_\infty)$ 的核对（未决）。} 塔在 $p\ge11$ 处的 $W_p$ 未指定；极限参数的存在、$(H_\infty)$(i)(ii) 的成立依赖无穷重整化理论 \cite{dMvS93}，本稿未核对具体定理。
+\item \textbf{哥德巴赫本身（范围外）。} 命题 \ref{g3:prop:cml}(c) 只是把 $\Cnt_k(N)$ 换了一种动力学说法；从 $\nu_N$-测度（时间 $\to\infty$ 平均）到长度 $N$ 的窗口仍是 G2 讨论的全部难点，本稿不触及。
+\item \textbf{与论文1 的核对（待办）。} (i) 论文1 的 $\Delta_N$ 用实坐标还是里程计坐标（注 \ref{g3:rem:literal}）；(ii) 论文1 是否在有限参数 $\ust$ 处就声称共轭于全 $\Om$（注 \ref{g3:rem:ustar}）；
+(iii) $W_5,W_7$ 的具体选取及 $\ust$ 的数值；(iv) “同步流形”“混沌轨道”的确切含义（注 \ref{g3:rem:entropy}）。以上均\textbf{待与论文1全文核对}。
+\end{enumerate}
+
+%=====================================================================
+\section*{文献说明}
+\cite{G1,G2} 为本项目工作稿。\cite{Wang26} 仅元数据已在 G1 中核对，全文未取得，内容按任务转述。
+\cite{dMvS93} 凭记忆引用，未联网核对具体定理。
+
+\begin{thebibliography}{99}
+\bibitem{G1} （G1 工作稿）\emph{G1：哥德巴赫筛 $=$ 有限窗口的 Polignac 筛——字典、奇异级数与平均}，goldbach\_props.tex，2026-11-02。
+\bibitem{G2} （G2 工作稿）\emph{G2：有限时间窗口——Legendre 误差的显式界、可控层 $k_{\max}(N)$ 与 Mertens 因子的来源}，goldbach\_G2.tex，2026-11-02。
+\bibitem{Wang26} Liang Wang, \emph{The emergence of prime distribution from low-dimensional deterministic chaos},
+Research in Mathematics \textbf{13}(1) (2026), Article 2684334. DOI: \url{10.1080/27684830.2026.2684334}.（全文未取得，\S6.3 内容按任务转述。）
+\bibitem{MSS73} N. Metropolis, M. L. Stein, P. R. Stein, \emph{On finite limit sets for transformations on the unit interval},
+J. Combin. Theory Ser. A \textbf{15} (1973), 25--44. DOI: \url{10.1016/0097-3165(73)90033-2}.（揉序与 $*$-积的背景。）
+\bibitem{Kan84} K. Kaneko, \emph{Period-doubling of kink-antikink patterns, quasiperiodicity in antiferro-like structures and spatial intermittency in coupled logistic lattice},
+Prog. Theor. Phys. \textbf{72}(3) (1984), 480--486. DOI: \url{10.1143/PTP.72.480}.
+\bibitem{dMvS93} W. de Melo, S. van Strien, \emph{One-Dimensional Dynamics}, Ergebnisse der Mathematik und ihrer Grenzgebiete (3) \textbf{25}, Springer, 1993.（凭记忆，未联网核对。）
+\end{thebibliography}
+
+\end{CJK}
+\end{document}

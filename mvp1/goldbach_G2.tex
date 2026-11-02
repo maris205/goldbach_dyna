@@ -1,0 +1,764 @@
+% goldbach_G2.tex  ---  G2: 有限时间窗口（哥德巴赫 = [0,N) 时间平均，Polignac = 时间 -> 无穷 平均）
+% 编译：pdflatex goldbach_G2.tex  （需要 CJKutf8 与 gbsn 字体；本机无 pdflatex，未编译，只做了静态配对检查）
+% 记号与宏沿用 goldbach_props.tex（G1）。
+\documentclass[11pt,a4paper]{article}
+\usepackage{CJKutf8}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage[margin=2.5cm]{geometry}
+
+\newcommand{\Zhat}{\widehat{\mathbb Z}}
+\newcommand{\Haar}{\mu}
+\newcommand{\Sing}{\mathfrak S}
+\newcommand{\Lsym}{\ensuremath{\mathsf{L}}}
+\newcommand{\Rsym}{\ensuremath{\mathsf{R}}}
+\newcommand{\status}[1]{\par\noindent\fbox{\textbf{状态：#1}}\par\smallskip}
+% G2 新增记号
+\newcommand{\Cnt}{\mathcal N}          % 窗口计数
+\newcommand{\Tleg}{T}                   % 纯 Legendre 项数
+\newcommand{\Tmix}{T^{*}}               % 混合界
+\newcommand{\kmax}{k_{\max}}
+
+\theoremstyle{plain}
+\newtheorem{prop}{命题}[section]
+\newtheorem{lem}[prop]{引理}
+\newtheorem{cor}[prop]{推论}
+\newtheorem{conj}[prop]{猜想}
+\theoremstyle{definition}
+\newtheorem{defn}[prop]{定义}
+\newtheorem{rem}[prop]{注}
+\renewcommand{\proofname}{证明}
+
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+
+\title{G2：有限时间窗口\\[2pt]
+\large ——{}Legendre 误差的显式界、可控层 $\kmax(N)$ 与 Mertens 因子的来源}
+\author{（G2 工作稿）}
+\date{2026-11-02}
+\maketitle
+
+\begin{abstract}
+沿用 G1（goldbach\_props.tex）的记号：$G_k^N=U_k\cap(N-U_k)\subset\Zhat$，里程计 $T(x)=x+1$。
+哥德巴赫计数是 $0$ 的轨道在时间窗口 $[0,N)$ 内访问 $G_k^N$ 的次数，Polignac（固定层）读的是时间 $\to\infty$ 的平均
+$\Haar(G_k^N)$；二者观测同一个 clopen 集。本稿给出窗口误差
+$E_k(N)=\#\{0<n<N:n\in G_k^N\}-N\Haar(G_k^N)$ 的\emph{显式}界：
+纯 Legendre 展开有 $\prod_{p\le p_k}(1+\nu_p)=3^{k-\omega_k(N)}2^{\omega_k(N)}$ 项（不是 $2^k$ 项），
+与周期性结合后 $|E_k(N)|\le\prod_{p\le p_k}\min(p-\nu_p,1+\nu_p)\le2\cdot3^{k-2}$。
+由此得到：Legendre 可控的最大层数为 $\kmax(N)=\bigl(\log(\varepsilon N)-2\log\log\log N+O(1)\bigr)/\log3$，
+对应 $\log P_k/\log N=(1+o(1))\log\log N/\log3$——即使 $P_k\gg N$（窗口短于周期）也可控，
+真正的约束是剩余类的\emph{个数} $3^k$ 而不是周期 $P_k$。
+在 $k=\pi(\sqrt N)$ 处 $P_k=e^{(1+o(1))\sqrt N}$，Legendre 界超过主项 $e^{c\sqrt N/\log N}$ 倍；
+但\emph{真实}误差只是主项的一个常数比例，在 Hardy--Littlewood 猜想下趋于 $1-e^{2\gamma}/4\approx20.7\%$——
+这正是 Mertens 因子 $4e^{-2\gamma}=(e^\gamma\omega(2))^{-2}$（$\omega$ 为 Buchstab 函数）。
+（补写）除严格的 Legendre 版本外，本稿给出筛法版本：以 $u=\log N/\log p_k$ 为控制参数，二维（$\kappa=2$）上界筛对一切 $u$ 给出
+$\Cnt_k\le(F_2(u)+o(1))N\Haar$，$u>\beta_2$（二维筛限，DHR 筛 $\beta_2\approx4.27$，凭记忆）时下界筛给出正下界，
+基本引理给出 $u\ge u_{\mathrm{FL}}(\varepsilon)$ 的可控层；D2 的临界层 $u_c\approx2.2$--$2.3$ 远在筛法可证范围之外，
+其位置由（猜想性的）二维 Buchstab 极限及其 $1/\log N$ 修正解释。
+最后与 Codex 的 D2/D3 数值对照。
+
+\textbf{定位声明。} 本稿全部严格结论都是初等筛法（Legendre、Mertens、素数定理）的直接推论或对经典结果
+（Buchstab、筛法基本引理、Selberg 上界筛）的引用；\emph{不}对哥德巴赫或 Polignac 猜想提供任何新证据。
+数值只作说明，不用于证明任何渐近陈述。
+\end{abstract}
+
+\section*{状态总表}
+\begin{center}
+\begin{tabular}{p{2.6cm}p{7.6cm}p{4.2cm}}
+\hline
+条目 & 内容 & 状态\\
+\hline
+引理 \ref{lem:local} & $G_k^N$ 的局部结构：$p\nmid N$ 删 2 类，$p\mid N$ 删 1 类；Legendre 项数 & 已证\\
+命题 \ref{prop:legendre} & 窗口误差的显式界 $|E|\le\Tmix_k(N)\le2\cdot3^{k-2}$ & 已证\\
+推论 \ref{cor:relative} & 相对误差的显式界 $\beta_k(N)$，常数 $c_*=e^{2\gamma}/(18C_2)$ & 已证（显式常数依赖引用的 Rosser--Schoenfeld 不等式）\\
+命题 \ref{prop:kmax} & $\kmax(N,\varepsilon)$ 的定义、阶、$\theta$ 的允许范围与其锐性 & 已证\\
+命题 \ref{prop:top} & $k=\pi(\sqrt N)$：$P_k=e^{(1+o(1))\sqrt N}$，Legendre 界/主项 $=e^{\Theta(\sqrt N/\log N)}$ & 已证\\
+命题 \ref{prop:toperr} & 顶层真实误差：(a) 与 $r(N)$ 的精确关系；(b) $O(1)$ 倍主项；(c) 极限 $e^{2\gamma}/4-1$ & (a) 已证；(b) 部分（引用）；(c) 猜想（$\Leftrightarrow$ HL）\\
+命题 \ref{prop:buchstab} & 一维 Buchstab：$\Phi(x,x^{1/u})/(x\prod(1-\frac1p))\to e^\gamma\omega(u)$ & 已证（经典，引用）\\
+命题 \ref{prop:FL} & 筛法基本引理给出的可控层 $p_k\le N^{c/\log(1/\varepsilon)}$ & 部分（引用，常数不显式）\\
+猜想 \ref{conj:2dim} & 二维 Buchstab：$\Cnt_k(N)/(N\Haar)\to(e^\gamma\omega(s))^2$ & 猜想\\
+注 \ref{rem:mertenssource} & Mertens 因子的来源及与 G1 注 rem:mertensrate 的衔接 & 解释（所用恒等式已证）\\
+定义 \ref{defn:sieve} & 二维筛的标准化：$X,g,V,r_d$，$u=\log N/\log p_k$，$F_2,f_2$，筛限 $\beta_2$ & 定义；数值 $\beta_2,\alpha_2$ 凭记忆，未联网核对\\
+命题 \ref{prop:sieveu} & 筛法版本（$u$ 表述）：(a) 上界 $F_2$；(b) $u>\beta_2$ 时正下界；(c) 基本引理可控层 $u\ge u_{\mathrm{FL}}(\varepsilon)$ & 部分（引用经典筛法定理，常数不显式；$u_{\mathrm{FL}}(0.1)$ 未数值确定；标准同命题 \ref{prop:toperr}(b)、\ref{prop:FL}）\\
+引理 \ref{lem:topexact} & 顶层精确恒等式 $\Cnt_k(N)-r(N)=2\cdot\mathbf 1[N-1\text{ 素}]-2\#\{p\le\sqrt N:N-p\text{ 素}\}$ & 已证\\
+注 \ref{rem:twoversions} & Legendre 版本与筛法版本的对照 & 解释（各条结论的状态见注内）\\
+注 \ref{rem:ucrit} & 为什么 D2 临界层落在 $p\approx c\sqrt N$：$u_c$ 与 $c=N^{1/u_c-1/2}$ & 启发式/猜想（依赖猜想 \ref{conj:2dim}）\\
+\S\ref{sec:D2} & 与 D2/D3 的对照（含主控组转述数字的逐项核对、D3 方差比与 $\Sing$ 分析） & 数值说明，非证明\\
+\hline
+\end{tabular}
+\end{center}
+
+%=====================================================================
+\section{记号与 $G_k^N$ 的局部结构}\label{sec:notation}
+
+记号同 G1：$p_1=2<p_2=3<\cdots$，$P_k=\prod_{i\le k}p_i$，$U_k=\{x\in\Zhat:x_p\ne0,\ p\le p_k\}$，
+$G_k^N=U_k\cap(N-U_k)$，$\Haar$ 为 $\Zhat$ 上的 Haar 概率测度，$\gamma$ 为 Euler 常数，
+$C_2=\prod_{p\ge3}(1-(p-1)^{-2})=0.6601618158\ldots$，$\Sing(N)$ 为 Hardy--Littlewood 奇异级数，
+$R_k(N)=\Haar(G_k^N)/\Haar(U_k)^2$（G1 命题 prop:ratio）。此外：
+\begin{itemize}[leftmargin=*]
+\item $\nu_p(N):=1$（$p\mid N$），$\nu_p(N):=2$（$p\nmid N$）；$\omega_k(N):=\#\{p\le p_k:p\mid N\}$；
+对无平方因子 $d\mid P_k$，$\nu(d):=\prod_{p\mid d}\nu_p(N)$。
+\item 窗口计数与误差（与 D2 的定义逐字一致）：
+\[
+\Cnt_k(N):=\#\{0<n<N:\ n\in G_k^N\},\qquad
+E_k(N):=\Cnt_k(N)-N\Haar(G_k^N),\qquad
+\rho_k(N):=\frac{|E_k(N)|}{N\Haar(G_k^N)} .
+\]
+更一般地，对整数 $x_0$ 与 $L\ge0$，$E_k(N;x_0,L):=\#\{x_0\le n<x_0+L:n\in G_k^N\}-L\Haar(G_k^N)$。
+\item 由于 $0\notin U_k$，有 $0\notin G_k^N$，$N\notin G_k^N$（因 $N-N=0$）。故
+$\Cnt_k(N)=\#\{0\le n<N:n\in G_k^N\}$，即 $E_k(N)=E_k(N;0,N)$：\emph{窗口恰为 $N$ 个连续整数}，
+这正是里程计 $T$ 从 $0$ 出发、时间 $0,1,\dots,N-1$ 的轨道段（G1 命题 prop:odometer）。
+\end{itemize}
+
+\begin{lem}[局部结构与 Legendre 项数]\label{lem:local}
+设 $N\in\mathbb Z$，$k\ge1$。
+\begin{enumerate}[label=(\alph*)]
+\item $n\in G_k^N\iff$ 对每个 $p\le p_k$，$n\bmod p\notin A_p:=\{0,\ N\bmod p\}$；$\#A_p=\nu_p(N)$，
+即 $p\nmid N$ 时删去 2 个剩余类，$p\mid N$ 时删去 1 个。
+\item $\Haar(G_k^N)=\prod_{p\le p_k}\bigl(1-\nu_p(N)/p\bigr)$，$\#(G_k^N\bmod P_k)=\prod_{p\le p_k}(p-\nu_p(N))$。
+$N$ 奇时（$p=2$ 处 $\nu_2=2$）$G_k^N=\varnothing$；$N$ 偶时 $\nu_2=1$。
+\item（Legendre 展开）
+\[
+\mathbf 1_{G_k^N}(n)=\sum_{d\mid P_k}\mu(d)\,\mathbf 1\bigl[n\bmod p\in A_p\ \forall p\mid d\bigr],
+\]
+其中第 $d$ 项的条件由 CRT 是模 $d$ 的 $\nu(d)$ 个剩余类之并。按“（$d$，剩余类）”计，展开共有
+\[
+\Tleg_k(N):=\sum_{d\mid P_k}\nu(d)=\prod_{p\le p_k}\bigl(1+\nu_p(N)\bigr)=3^{\,k-\omega_k(N)}\,2^{\,\omega_k(N)}
+\]
+项（含 $d=1$）。特别地，对偶数 $N$，$2^{k}\cdot(3/2)^{\,k-\omega_k(N)}=\Tleg_k(N)\le2\cdot3^{k-1}$。
+\end{enumerate}
+\end{lem}
+\status{已证}
+\begin{proof}
+(a) $n\in U_k\iff n_p\neq0$；$n\in N-U_k\iff (N-n)_p\ne0\iff n_p\ne N_p$。$N_p=0$ 时两条件重合。
+(b) CRT 下各 $x_p$ 独立均匀。(c) $\mathbf 1_{G}=\prod_{p\le p_k}(1-\mathbf 1_{A_p}(n\bmod p))$ 展开；
+$\prod_{p\mid d}\mathbf 1_{A_p}$ 是 $\prod_{p\mid d}\#A_p=\nu(d)$ 个模 $d$ 类之并；
+$\sum_{d\mid P_k}\nu(d)=\prod_p(1+\nu_p)$ 因 $\nu$ 积性。偶数 $N$ 有 $p=2\mid N$，故 $\omega_k(N)\ge1$。
+\end{proof}
+
+\begin{rem}[关于任务中“$O(2^{\omega(P_k)})$ 级误差”]\label{rem:twoomega}
+$2^{\omega(P_k)}=2^k$ 是无平方因子因子 $d\mid P_k$ 的\emph{个数}；但每个 $d$ 携带 $\nu(d)$ 个剩余类，
+每个剩余类在窗口中产生一个 $(-1,1)$ 内的舍入误差，所以 Legendre 论证给出的是 $3^{k-\omega_k(N)}2^{\omega_k(N)}$ 量级，
+而不是 $2^k$。一个模 $d$ 的 $\nu(d)$ 类之并在长度 $L$ 的区间中的计数误差一般只能界为 $\min(\nu(d),d-\nu(d))$，
+不能界为 $1$，故 $|E|\le C\cdot2^k$ 型界\emph{不能}由 Legendre 论证得到。我们既未证明也未否证 $|E_k(N;x_0,L)|\ll2^k$；
+作为说明（g2\_scratch/ 中暴力枚举，$k\le6$、全部偶 $N\bmod P_k$、全部窗口 $[a,b)$，$0\le a<b\le P_k$）：最大偏差依次为
+$0.50,\,1.00,\,1.80,\,3.86,\,7.52,\,16.52$，均 $<2^k$，但这对 $k\to\infty$ 不说明任何问题。
+下面的显式界一律用 $3^{\cdot}2^{\cdot}$ 型。
+\end{rem}
+
+%=====================================================================
+\section{命题 2.1：显式 Legendre 误差与可控层}\label{sec:legendre}
+
+\begin{prop}[窗口误差的显式界]\label{prop:legendre}
+设 $N\in\mathbb Z$，$k\ge1$，$x_0\in\mathbb Z$，$L\ge0$。则
+\begin{enumerate}[label=(\roman*)]
+\item（纯 Legendre）$|E_k(N;x_0,L)|\le\Tleg_k(N)-1$；
+\item（周期性）$|E_k(N;x_0,L)|\le\#(G_k^N\bmod P_k)=P_k\Haar(G_k^N)$；
+\item（混合）$|E_k(N;x_0,L)|\le\Tmix_k(N):=\prod_{p\le p_k}\min\bigl(p-\nu_p(N),\,1+\nu_p(N)\bigr)$。
+\end{enumerate}
+对偶数 $N$ 与 $k\ge2$：$\Tmix_k(N)=m_3(N)\prod_{5\le p\le p_k}(1+\nu_p(N))$，其中 $m_3(N)=1$（$3\nmid N$）或 $2$（$3\mid N$）；
+因此
+\[
+|E_k(N)|\le\Tmix_k(N)=m_3(N)\,3^{\,k-2-\omega'_k(N)}\,2^{\,\omega'_k(N)}\le2\cdot3^{k-2},\qquad
+\omega'_k(N):=\#\{5\le p\le p_k:\ p\mid N\}.
+\]
+$N$ 奇时 $E_k\equiv0$（$\Tmix_k=0$）。
+\end{prop}
+\status{已证}
+\begin{proof}
+基本事实：模 $q$ 的一个剩余类在任意 $L$ 个连续整数中出现 $L/q+\delta$ 次，$\delta\in(-1,1)$。
+
+(iii) 令 $S:=\{p\le p_k:\ p-\nu_p\le1+\nu_p\}$，$Q:=\prod_{p\in S}p$，$B\subset\mathbb Z/Q$ 为在 $S$ 中各素数处都允许的类，
+$\#B=\prod_{p\in S}(p-\nu_p)$。记 $P'=P_k/Q$。则
+\[
+\mathbf 1_{G_k^N}(n)=\mathbf 1_B(n\bmod Q)\prod_{p\mid P'}\bigl(1-\mathbf 1_{A_p}(n\bmod p)\bigr)
+=\sum_{d\mid P'}\mu(d)\,\mathbf 1_B(n\bmod Q)\,\mathbf 1[n\bmod p\in A_p\ \forall p\mid d].
+\]
+由 CRT（$\gcd(Q,d)=1$），第 $d$ 项是模 $Qd$ 的 $\#B\cdot\nu(d)$ 个类之并，在窗口中的计数为
+$L\,\#B\,\nu(d)/(Qd)+\delta_d$，$|\delta_d|\le\#B\,\nu(d)$。主项之和为
+$L\frac{\#B}{Q}\prod_{p\mid P'}(1-\frac{\nu_p}{p})=L\Haar(G_k^N)$（引理 \ref{lem:local}(b)）。故
+$|E|\le\#B\sum_{d\mid P'}\nu(d)=\prod_{p\in S}(p-\nu_p)\prod_{p\notin S}(1+\nu_p)=\prod_p\min(p-\nu_p,1+\nu_p)$。
+
+(i) 取 $S=\varnothing$：同上，但 $d=1$ 项的计数恰为 $L$（无误差），故 $|E|\le\Tleg_k-1$。
+
+(ii) 写 $L=qP_k+r$，$0\le r<P_k$。完整周期贡献 $q\#G$ 与主项 $qP_k\Haar(G)=q\#G$ 精确相消；
+余下长度 $r$ 的段中计数 $\in[0,\#G]$，$r\Haar(G)\in[0,\#G)$，差的绝对值 $\le\#G$。
+
+偶数 $N$：$p=2$ 时 $\min(1,2)=1$；$p=3$ 时 $\min(1,3)=1$（$3\nmid N$）或 $\min(2,2)=2$（$3\mid N$）；
+$p\ge5$ 时 $p-\nu_p\ge3\ge1+\nu_p$，取 $1+\nu_p\in\{2,3\}$。$N$ 奇时 $p=2$ 处 $p-\nu_2=0$。
+\end{proof}
+
+\begin{rem}[数值自洽（说明性）]
+g2\_scratch/check\_g2.py 对 $N<200$ 及若干特殊 $N$、$k\le5$、多种 $(x_0,L)$ 暴力核对了 (i)(iii)，
+所见最大 $|E|/\Tmix_k=0.83$；并对 results/D2.json 的全部 9871 个 $(N,k)$ 层（字段 \texttt{layers[].E}）核对
+$|E_k(N)|\le\Tmix_k(N)$，无一违反。这只是自洽检查，命题 \ref{prop:legendre} 的证明不依赖它。
+\end{rem}
+
+\begin{cor}[相对误差的显式界]\label{cor:relative}
+对偶数 $N$、$k\ge2$：
+\[
+\rho_k(N)\le\beta_k(N):=\frac{\Tmix_k(N)}{N\Haar(G_k^N)}=\frac6N\prod_{5\le p\le p_k}f_p(N),\qquad
+f_p(N)=\begin{cases}\dfrac{2p}{p-1},&p\mid N,\\[6pt]\dfrac{3p}{p-2},&p\nmid N,\end{cases}
+\]
+从而 $\beta_k(N)\le\beta^\sharp_k(N):=\dfrac6N\,3^{k-2}\prod_{5\le p\le p_k}\Bigl(1-\dfrac2p\Bigr)^{-1}$（与 $N$ 的算术无关），并且
+\[
+\beta^\sharp_k(N)\le c_*\,\frac{3^k\,(\log p_k)^2\bigl(1+(\log p_k)^{-2}\bigr)^2}{N},\qquad
+c_*:=\frac{e^{2\gamma}}{18\,C_2}=0.26695\ldots
+\]
+\end{cor}
+\status{已证（最后一个不等式依赖 Rosser--Schoenfeld 显式 Mertens 界 \cite{RS62}，见证明）}
+\begin{proof}
+$\beta_k=\frac1N\prod_{p\le p_k}\frac{p\min(p-\nu_p,1+\nu_p)}{p-\nu_p}$；$p=2$ 因子为 $2$，$p=3$ 因子在两种情形都为 $3$，
+$p\ge5$ 因子为 $p(1+\nu_p)/(p-\nu_p)=f_p$。$3p/(p-2)>2p/(p-1)$ 给出 $\beta_k\le\beta_k^\sharp$。
+对最后一式：$(1-\frac2p)^{-1}=(1-\frac1p)^{-2}(1-\frac1{(p-1)^2})^{-1}$；
+$\prod_{p\ge5}(1-\frac1{(p-1)^2})^{-1}=\frac{3/4}{C_2}$；$\prod_{5\le p\le y}(1-\frac1p)^{-2}=\frac19\bigl(\prod_{p\le y}\frac p{p-1}\bigr)^2$；
+再用 \cite[Thm.~8, (3.30)]{RS62}：$\prod_{p\le y}\frac p{p-1}<e^\gamma\log y\,(1+(\log y)^{-2})$（$y>1$；条件以原文为准，
+本稿仅对 $y\le2\times10^5$ 的素数点数值抽查过，最大比值 $0.9997$）。合并：$\frac6N3^{k-2}\cdot\frac{3/4}{C_2}\cdot\frac19\cdot e^{2\gamma}(\log p_k)^2(1+\cdots)^2
+=\frac{e^{2\gamma}}{18C_2}\frac{3^k(\log p_k)^2(1+\cdots)^2}{N}$。
+\end{proof}
+
+\begin{prop}[Legendre 可控的最大层 $\kmax(N)$ 与 $\theta$ 的允许范围]\label{prop:kmax}
+对 $\varepsilon\in(0,1)$ 与偶数 $N$，定义
+\[
+\kmax(N,\varepsilon):=\max\{k\ge2:\ \beta^\sharp_k(N)\le\varepsilon\}
+\quad(\text{集合为空时记 }1),
+\]
+以及依赖 $N$ 的版本 $\kmax^{(N)}(N,\varepsilon):=\max\{k\ge2:\beta_k(N)\le\varepsilon\}\ge\kmax(N,\varepsilon)$。
+\begin{enumerate}[label=(\alph*)]
+\item（可控性）$\beta_k^\sharp$、$\beta_k(N)$ 关于 $k$ 严格递增；对一切 $2\le k\le\kmax(N,\varepsilon)$，$\rho_k(N)\le\varepsilon$。
+充分条件：$c_*3^k(\log p_k)^2(1+(\log p_k)^{-2})^2\le\varepsilon N$。
+\item（阶）对固定 $\varepsilon$（更一般地，对 $N^{-1/2}\le\varepsilon<1$ 一致），
+\[
+\kmax(N,\varepsilon)=\Bigl\lfloor\frac{\log(\varepsilon N)-2\log\log\log N+\log(1/c_*)}{\log3}+o(1)\Bigr\rfloor
+=\frac{\log(\varepsilon N)-2\log\log\log N}{\log 3}+O(1),
+\]
+$\log(1/c_*)=1.3207\ldots$。相应地 $p_{\kmax}\sim\frac{\log N\,\log\log N}{\log3}$，
+\[
+x_{\max}(N):=\frac{\log P_{\kmax}}{\log N}=(1+o(1))\frac{\log\log N}{\log 3}\longrightarrow\infty .
+\]
+\item（$\theta$ 的允许范围）若 $\theta=\theta(N)\le(1-\delta)\frac{\log\log N}{\log3}$（$\delta>0$ 固定），则凡 $P_k\le N^\theta$ 者
+$\rho_k(N)\le\beta_k^\sharp(N)\le N^{-\delta+o(1)}$；特别地，对\emph{任意固定} $\theta>0$，$P_k\le N^{\theta}$ 蕴含
+$\rho_k(N)\le N^{-1+O_\theta(1/\log\log N)}$。
+\item（锐性）反之，对\emph{每个}偶数 $N$，若 $k\ge(1+\delta)\frac{\log N}{\log3}$（等价地 $\log P_k/\log N\ge(1+\delta+o(1))\frac{\log\log N}{\log3}$），
+则 $\beta_k(N)\ge N^{\delta-o(1)}\to\infty$：混合界本身失效。
+\end{enumerate}
+\end{prop}
+\status{已证（(b)--(d) 用 Mertens 第三定理与素数定理 $\vartheta(y)\sim y$，仅用于渐近，不需显式常数）}
+\begin{proof}
+(a) 由推论 \ref{cor:relative} 及 $f_p>1$。
+(b) 由 Mertens 第三定理，$\prod_{3\le p\le y}(1-\frac2p)=4C_2(y)\prod_{p\le y}(1-\frac1p)^2\sim4C_2e^{-2\gamma}/\log^2y$，
+其中 $C_2(y)=\prod_{3\le p\le y}(1-(p-1)^{-2})$；又 $1-\frac23=\frac13$，故
+$\prod_{5\le p\le y}(1-\frac2p)^{-1}\sim\frac{e^{2\gamma}}{12C_2}\log^2y$。于是
+\[
+\log\beta_k^\sharp=-\log N+k\log3+2\log\log p_k+\log c_*+o(1).
+\]
+相邻两层之差为 $\log\frac{3p_{k+1}}{p_{k+1}-2}=\log3+o(1)$，故 $\kmax$ 为方程 $\log\beta^\sharp=\log\varepsilon$ 实根的整数部分（误差 $o(1)$）。
+在 $k\asymp\log N$ 处 $p_k\sim k\log k$，$\log\log p_k=\log\log\log N+o(1)$，得第一式。
+$P_k=e^{\vartheta(p_k)}$，$\vartheta(p_k)\sim p_k\sim\kmax\log\kmax\sim\frac{\log N}{\log3}\log\log N$。
+(c) 由单调性，只需考虑最大的 $k$ 使 $P_k\le N^\theta$，且可设 $\theta\ge1$。$\vartheta(p_k)\le\theta\log N$ 给出
+$p_k\le(1+o(1))\theta\log N$，$k=\pi(p_k)\le(1+o(1))\frac{\theta\log N}{\log(\theta\log N)}\le(1+o(1))(1-\delta)\frac{\log N}{\log3}$。
+于是 $3^k\le N^{(1-\delta)(1+o(1))}$，而 $(\log p_k)^2=N^{o(1)}$，代入推论 \ref{cor:relative}。固定 $\theta$ 时
+$k\le(1+o(1))\theta\log N/\log\log N$，$3^k=N^{O(\theta/\log\log N)}$。
+(d) $f_p\ge3$（$p\nmid N$），$f_p\ge2$（$p\mid N$），故 $\beta_k(N)\ge\frac6N3^{k-2}(2/3)^{\omega(N)}$；
+而 $\omega(N)\le(1+o(1))\log N/\log\log N$，$(2/3)^{\omega(N)}=N^{-o(1)}$。
+\end{proof}
+
+\begin{rem}[数值：由定义直接计算的 $\kmax(10^m,0.1)$]\label{rem:kmaxtable}
+下表是对上述\emph{定义}的确定性计算（不是实验数据）：
+\begin{center}
+\begin{tabular}{c|ccccccccc}
+\hline
+$N$ & $10^4$ & $10^5$ & $10^6$ & $10^7$ & $10^8$ & $10^9$ & $10^{10}$ & $10^{11}$ & $10^{12}$\\
+\hline
+$\kmax(N,0.1)$ & 5 & 7 & 9 & 11 & 13 & 15 & 17 & 19 & 21\\
+$p_{\kmax}$ & 11 & 17 & 23 & 31 & 41 & 47 & 59 & 67 & 73\\
+$x_{\max}=\log P_{\kmax}/\log N$ & 0.84 & 1.14 & 1.39 & 1.61 & 1.81 & 1.98 & 2.13 & 2.26 & 2.38\\
+$\log\log N/\log 3$ & 2.02 & 2.22 & 2.39 & 2.53 & 2.65 & 2.76 & 2.86 & 2.94 & 3.02\\
+\hline
+\end{tabular}
+\end{center}
+渐近式 $x_{\max}\sim\log\log N/\log3$ 收敛很慢（$\log\log p_k$ 与 $\log\log\log N$ 之差在此范围内仍约 $0.2$--$0.3$）；
+表中数字只说明量级，不用来“验证”渐近式。要点：$N\ge10^5$ 起 $x_{\max}>1$，即 Legendre 在 $P_k>N$（窗口短于周期）时仍可控。
+\end{rem}
+
+\begin{rem}[“窗口短于周期”不是 Legendre 的瓶颈]
+任务的提法“$P_k\le N^\theta$”暗示需要 $\theta<1$（窗口至少一个周期）。命题 \ref{prop:kmax}(c)(d) 表明真正的阈值是
+剩余类展开的项数 $\Tmix_k\approx3^k$ 对比 $N$，即 $k\approx\log N/\log3$；用周期表示，阈值为
+$\theta^*(N)=(1+o(1))\log\log N/\log3$，它随 $N$ 缓慢趋于无穷。$\theta<1$ 只是一个（过于保守的）充分条件。
+\end{rem}
+
+%=====================================================================
+\section{顶层 $k=\pi(\sqrt N)$：窗口太短}\label{sec:top}
+
+\begin{prop}[顶层的周期与 Legendre 界]\label{prop:top}
+设 $N$ 偶，$k=\pi(\sqrt N)$。则
+\begin{enumerate}[label=(\alph*)]
+\item $\log P_k=\vartheta(\sqrt N)=(1+o(1))\sqrt N$，即 $P_k=e^{(1+o(1))\sqrt N}\gg N$；窗口只覆盖一个周期的
+$N/P_k=e^{-(1+o(1))\sqrt N}$ 部分。
+\item $(2\log2+o(1))\dfrac{\sqrt N}{\log N}\le\log\beta_k(N)\le(2\log3+o(1))\dfrac{\sqrt N}{\log N}$：
+混合 Legendre 界超过主项 $e^{\Theta(\sqrt N/\log N)}$ 倍；纯 Legendre 界 $\Tleg_k-1$ 与周期界 $P_k\Haar$ 更差。
+\end{enumerate}
+\end{prop}
+\status{已证（素数定理）}
+\begin{proof}
+(a) 素数定理 $\vartheta(y)\sim y$。(b) 上界：$\beta_k\le\beta_k^\sharp$，且 $\log\prod_{5\le p\le\sqrt N}(1-\frac2p)^{-1}=O(\log\log N)$，
+$k\log3=(2\log3+o(1))\sqrt N/\log N$。下界：$f_p>2$，故 $\beta_k\ge\frac6N2^{k-2}$，$k\log2=(2\log2+o(1))\sqrt N/\log N\gg\log N$。
+\end{proof}
+
+\begin{rem}[动力学解读：时间 $N$ 只“看见”模 $\le N$ 的结构]\label{rem:level}
+里程计轨道 $0,1,\dots,N-1$ 对每个模 $d$ 的每个剩余类恰好命中 $N/d+\delta$（$|\delta|<1$）次，这是\emph{精确}的；
+但当 $d>N$ 时每类只命中 $0$ 或 $1$ 次，而 Haar 主项 $N/d<1$ 是“虚构”的。$G_k^N$ 是模 $P_k$ 的
+$\prod(p-\nu_p)\approx e^{\sqrt N}/\log^2N$ 个类之并，Legendre 展开中绝大多数 $d\mid P_k$ 满足 $d>N$，其舍入误差不再相消。
+用筛法语言：时间窗口 $[0,N)$ 提供的分布水平（level）为 $D\approx N$，筛到 $z=p_k$；
+参数 $s:=\log D/\log z=\log N/\log p_k$。哥德巴赫的顶层是 $s=2$。
+Polignac（G1 命题 prop:window 之后的注）在\emph{固定} $k$ 下读时间 $\to\infty$ 平均，得到精确的 $\Haar(G_k^N)$
+（命题 \ref{prop:legendre}(ii)：$|E_k(N;0,L)|/L\le P_k\Haar/L\to0$）；而真正的孪生/间隔 $N$ 素数计数也要求 $k$ 随窗口 $X$ 增长到
+$p_k\approx\sqrt X$，同样处于 $s=2$。二者共享同一个困难。
+\end{rem}
+
+\begin{prop}[顶层的真实误差]\label{prop:toperr}
+设 $N\ge4$ 偶，$k=\pi(\sqrt N)$，$r(N)$ 为有序哥德巴赫表示数。
+\begin{enumerate}[label=(\alph*)]
+\item $-2\pi(\sqrt N)\le\Cnt_k(N)-r(N)\le2$。因此
+\[
+\frac{E_k(N)}{N\Haar(G_k^N)}=\frac{r(N)}{N\Haar(G_k^N)}-1+O\!\Bigl(\frac{\log N}{\sqrt N}\Bigr).
+\]
+\item $-1\le E_k(N)/(N\Haar(G_k^N))\le2e^{2\gamma}-1+o(1)\approx5.34$。
+\item 下面两件事等价：(i) Hardy--Littlewood 猜想 $r(N)\sim\Sing(N)N/(\log N)^2$（偶数 $N\to\infty$）；
+(ii) $E_k(N)/(N\Haar(G_k^N))\to e^{2\gamma}/4-1=-0.20694\ldots$。
+\end{enumerate}
+\end{prop}
+\status{(a) 已证；(b) 部分（上界引用 Selberg 上界筛 \cite{HR74}）；(c) 中的等价已证，而 (i)/(ii) 本身是猜想}
+\begin{proof}
+(a) 若 $1<n\le\sqrt N$ 且 $n\in G_k^N$，则 $n$ 的最小素因子 $\le n\le\sqrt N$，即 $\le p_k$，矛盾；故 $[0,\sqrt N]$ 中至多 $n=1$。
+同理（对 $N-n$）$[N-\sqrt N,N)$ 中至多 $n=N-1$。中段 $\sqrt N<n<N-\sqrt N$ 的计数由 G1 命题 prop:window 介于
+$r(N)-2\pi(\sqrt N)$ 与 $r(N)$ 之间。误差项：$N\Haar(G_k^N)=N\Haar(U_k)^2R_k(N)\ge N\Haar(U_k)^2\cdot2C_2\gg N/\log^2N$
+（Mertens；$R_k(N)\ge2C_2(k)\ge2C_2$，G1 命题 prop:ratio(b)），而 $\pi(\sqrt N)\ll\sqrt N/\log N$。
+
+(b) 下界因 $\Cnt\ge0$。上界：$\Cnt_k(N)$ 是满足 $n,N-n$ 都没有 $\le\sqrt N$ 的素因子的 $n$ 的个数，
+二维 Selberg 上界筛给出 $\Cnt_k(N)\le(8+o(1))\Sing(N)N/(\log N)^2$（参见 \cite{HR74}；常数 $8$ 以原文为准）；
+又 $N\Haar(G_k^N)\sim4e^{-2\gamma}\Sing(N)N/(\log N)^2$（G1 注 rem:mertens），比值 $\le 8/(4e^{-2\gamma})=2e^{2\gamma}$。
+\emph{（补写交叉引用：}这就是命题 \ref{prop:sieveu}(a) 在 $u=2$ 处的特例，$F_2(2)=1/\sigma_2(2)=2e^{2\gamma}$；两种写法给出同一常数，互为核对。\emph{）}
+
+(c) $N\Haar(G_k^N)=\Haar(U_k)^2(\log N)^2\cdot\frac{R_k(N)}{\Sing(N)}\cdot\Sing(N)\frac{N}{(\log N)^2}$；
+第一个因子 $\to4e^{-2\gamma}$（Mertens 第三定理，$\prod_{p\le\sqrt N}(1-\frac1p)\sim2e^{-\gamma}/\log N$），
+第二个因子 $=1+O(1/(\sqrt N\log N))$（G1 注 rem:mertensrate 的 $D$）。结合 (a) 即得等价。
+\end{proof}
+
+\begin{rem}[对任务表述“误差压倒主项”的修正]\label{rem:overwhelm}
+在 $k=\pi(\sqrt N)$ 处被“压倒”的是 Legendre 型\emph{误差界}（命题 \ref{prop:top}(b)，超过主项 $e^{\Theta(\sqrt N/\log N)}$ 倍），
+\emph{不是}真实误差：真实误差无条件地 $\le(2e^{2\gamma}-1+o(1))$ 倍主项（命题 \ref{prop:toperr}(b)），
+且在 HL 猜想下恰为主项的 $1-e^{2\gamma}/4\approx20.7\%$（命题 \ref{prop:toperr}(c)）。
+窗口太短的后果不是“误差无界”，而是“主项换了”：正确的主项不再是时间 $\to\infty$ 平均 $N\Haar(G_k^N)$，
+而是它乘以一个依赖 $s$ 的因子（\S\ref{sec:mertens}）。另外，无条件地证明 $E_k/(N\Haar)>-1$（即 $\Cnt_k(N)>0$）
+对充分大的 $N$ 就是二元哥德巴赫猜想本身，受奇偶性障碍阻挡，本稿不触及。
+\end{rem}
+
+%=====================================================================
+\section{Mertens 因子 $4e^{-2\gamma}$ 的来源}\label{sec:mertens}
+
+Buchstab 函数 $\omega:[1,\infty)\to\mathbb R$ 定义为 $\omega(u)=1/u$（$1\le u\le2$），$(u\,\omega(u))'=\omega(u-1)$（$u>2$）。
+已知 $\omega(u)\to e^{-\gamma}$（$u\to\infty$），且 $\omega(u)-e^{-\gamma}$ 超指数衰减并无穷次变号（\cite[III.6]{Ten15}）。
+例如 $\omega(2)=\frac12$，$\omega(3)=\frac{1+\log2}3=0.56438$，$e^{-\gamma}=0.56146$；第一次 $\omega(u)=e^{-\gamma}$ 约在 $u\approx2.48$。
+
+\begin{prop}[一维 Buchstab 定理]\label{prop:buchstab}
+令 $\Phi(x,y):=\#\{1\le n\le x:\ p\mid n\Rightarrow p>y\}$。对固定 $u>1$，$y=x^{1/u}$：
+\[
+\Phi(x,y)\sim\omega(u)\frac{x}{\log y},\qquad\text{从而}\qquad
+\frac{\Phi(x,y)}{x\prod_{p\le y}(1-1/p)}\longrightarrow e^{\gamma}\omega(u).
+\]
+$u=2$ 时 $\Phi(x,\sqrt x)=\pi(x)-\pi(\sqrt x)+1$，比值 $\to e^\gamma/2=(2e^{-\gamma})^{-1}$：
+Legendre/Haar 主项 $x\prod_{p\le\sqrt x}(1-\frac1p)$ 把 $\pi(x)$ 渐近地高估 $2e^{-\gamma}\approx1.1229$ 倍。
+\end{prop}
+\status{已证（经典：Buchstab \cite{Buc37}，de Bruijn \cite{dB50}；见 \cite[III.6]{Ten15}。第二式由 Mertens 第三定理）}
+
+\begin{prop}[筛法基本引理给出的可控层]\label{prop:FL}
+存在绝对常数 $s_0,C>0$，使得对偶数 $N$、$k\ge1$，记 $s:=\log(N/\log^4N)/\log p_k$，当 $s\ge s_0$ 时
+\[
+\rho_k(N)\le C\Bigl(e^{-s}+\frac1{\log N}\Bigr).
+\]
+因此对 $\varepsilon\gg1/\log N$，凡 $\log p_k\le c\,\log N/\log(1/\varepsilon)$ 的层都满足 $\rho_k(N)\le\varepsilon$；
+这对应 $\log P_k\approx N^{c/\log(1/\varepsilon)}$，远超 Legendre 的 $\log P_k\approx\log N\log\log N/\log3$，但仍未到 $s=2$。
+\end{prop}
+\status{部分（引用筛法基本引理 \cite{HR74,FI10}，维数 $\kappa=2$；常数不显式）}
+\begin{proof}[证明梗概]
+取 $\mathcal A=\{0\le n<N\}$，$X=N$，$g(d)=\nu(d)/d$，$|\mathcal A_d|=Xg(d)+r_d$，$|r_d|\le\nu(d)\le\tau(d)$
+（同命题 \ref{prop:legendre} 的论证）；$g(p)\le2/p$ 满足维数 $2$ 的条件。基本引理（例如 \cite[Ch.~2]{HR74}、\cite[\S6]{FI10}，
+形式以原文为准）给出 $\Cnt_k(N)=N\Haar(G_k^N)(1+O(e^{-s}))+O\bigl(\sum_{d<D,\,d\mid P_k}|r_d|\bigr)$，$D=p_k^s$。
+取 $D=N/\log^4N$，$\sum_{d<D}\tau(d)\le D(1+\log D)\le N/\log^3N$，除以 $N\Haar(G_k^N)\gg N/\log^2p_k$ 得 $O(1/\log N)$。
+\end{proof}
+
+\begin{conj}[二维 Buchstab]\label{conj:2dim}
+设偶数 $N\to\infty$，$k=k(N)$ 满足 $\log N/\log p_k\to s\in[2,\infty)$。则
+\[
+\frac{\Cnt_k(N)}{N\Haar(G_k^N)}\longrightarrow\bigl(e^{\gamma}\omega(s)\bigr)^2,\qquad\text{即}\qquad
+\frac{E_k(N)}{N\Haar(G_k^N)}\to\bigl(e^{\gamma}\omega(s)\bigr)^2-1 .
+\]
+\end{conj}
+\status{猜想}
+已知的部分：$s=2$ 时它等价于 HL 猜想（命题 \ref{prop:toperr}(c)，因 $(e^\gamma\omega(2))^2=e^{2\gamma}/4$）；
+$s\ge s_0$ 时命题 \ref{prop:FL} 给出 $\limsup|\cdot-1|\ll e^{-s}$，与 $(e^\gamma\omega(s))^2=1+O(e^{-s})$ 相容但不蕴含极限。
+\emph{启发式：}在 $p\le p_k$ 处的局部相关已全部计入 $\Haar(G_k^N)$；对 $p>p_k$ 假设 $n$ 与 $N-n$ 的“粗糙性”独立
+（$\prod_{p>p_k}c_p(N)\to1$），并用一维 Buchstab 密度 $\omega(\log t/\log y)/\log y$ 描述 $t$ 附近的 $y$-粗糙数，得有限 $N$ 版本
+\[
+F_N(y):=e^{2\gamma}\frac1N\int_0^N\omega\Bigl(\frac{\log t}{\log y}\Bigr)\omega\Bigl(\frac{\log(N-t)}{\log y}\Bigr)dt
+\qquad(\omega:=0\ \text{于}\ [0,1)),
+\]
+$N\to\infty$ 时 $F_N(N^{1/s})\to(e^\gamma\omega(s))^2$。极限曲线的若干值：
+$(e^\gamma\omega(s))^2=0.7931,\,0.8630,\,0.8993,\,0.9556,\,1.0026,\,1.0104$（$s=2,\,2.1,\,2.165,\,2.3,\,2.5,\,3$）。
+故（猜想地）$\rho_k>10\%$ 只发生在 $s<u^*:=2.1664$（$(e^\gamma\omega(u^*))^2=0.9$ 的数值根，g2\_scratch/sc\_pred.py），即 $p_k>N^{0.4616}$；且 $E_k$ 在 $s\approx2.48$ 附近变号（$s$ 更大时 $E_k>0$）。
+\emph{（补写修正：上一版写作“$s\lesssim2.165$，$N^{0.462}$”；由上表 $s=2.165$ 处值 $0.8993<0.9$ 可见根略大于 $2.165$，现改为 $2.1664$，结论不变。）}
+
+\begin{rem}[Mertens 因子的来源，及与 G1 注 rem:mertensrate 的衔接]\label{rem:mertenssource}
+\begin{enumerate}[leftmargin=*,label=(\arabic*)]
+\item \emph{来源。} 时间 $\to\infty$ 平均（Haar）给出主项 $N\Haar(G_k^N)$；它对 $k\le\kmax(N)$ 可严格控制（\S\ref{sec:legendre}），
+在基本引理范围 $s\ge s_0$ 内仍正确到 $O(e^{-s})$（命题 \ref{prop:FL}）。但长度 $N$ 的窗口只在模 $\le N$ 的结构上等分布（注 \ref{rem:level}），
+当 $s$ 降到 $2$ 时，窗口中被筛剩的数就是 $(\sqrt N,N)$ 中的素数，其密度是 $1/\log t$ 而不是 Haar 密度
+$\prod_{p\le\sqrt N}(1-\frac1p)\approx2e^{-\gamma}/\log N$。每个坐标损失因子 $e^\gamma\omega(2)=e^\gamma/2$（一维是定理，命题 \ref{prop:buchstab}），
+两个坐标（$n$ 与 $N-n$）合起来就是
+\[
+4e^{-2\gamma}=\bigl(e^\gamma\omega(2)\bigr)^{-2}.
+\]
+即：Mertens 因子不是“奇异级数错了”（$R_k(N)/\Sing(N)\to1$，G1 命题 prop:ratio），而是“窗口太短、Haar 平均不再是窗口平均”的定量表现。
+其严格部分是命题 \ref{prop:toperr}(a)(c)；“每坐标一个 $e^\gamma\omega(2)$”在二维情形等价于 HL，属猜想 \ref{conj:2dim}。
+\item \emph{收敛速度 $1/\log N$。} 在 $s=2$ 处 $\omega(\log t/\log\sqrt N)=\frac{\log N}{2\log t}$（$\sqrt N\le t\le N$），故
+\[
+F_N(\sqrt N)=\frac{e^{2\gamma}}4\cdot\frac{(\log N)^2}{N}\int_{\sqrt N}^{N-\sqrt N}\frac{dt}{\log t\,\log(N-t)}
+=\frac{e^{2\gamma}}{4}\cdot\frac1{B}\,\bigl(1+O(N^{-1/2})\bigr),
+\]
+其中 $B=N/(L^2I(N))=1-\frac2L+O(L^{-2})$ 正是 G1 注 rem:mertensrate 中的因子 $B$（$L=\log N$）。
+于是 G1 的分解 $\frac{N\Haar(G_k^N)}{r(N)}=A\cdot B\cdot D\cdot C$ 可读作：$A\to4e^{-2\gamma}$ 是“Buchstab 在 $s=2$ 的极限”，
+$B$ 是同一 Buchstab 积分的有限 $N$ 修正（$1/\log N$ 量级，慢收敛的唯一主要来源），$D\to1$ 是奇异级数尾部，$C$ 是 HL 本身的误差。
+\item \emph{数值（说明性，不作证明）。} G1 已报告 $N=10^8$ 时 $N\Haar(G_k^N)/r(N)=1.1197$（results/V9.json，字段
+\texttt{N\_Haar\_G\_over\_r}），故 $1-r/(N\Haar)=0.1069$；D2 在同一 $N=10^8$、顶层 $k=1229$ 处给出
+$\rho_k=0.1073$（results/D2.json，\texttt{cases[N=100000000].layers[k=1229].relative\_error}）。
+两者之差 $0.0004$ 落在命题 \ref{prop:toperr}(a) 的边界项范围 $2\pi(10^4)/(N\Haar)\le2458/652589\approx0.0038$ 之内。
+$0.107$ 距离极限 $0.207$ 只走了约一半，与 $B=1-2/L+\cdots$ 的慢收敛一致；渐近值 $0.207$ 是由 Mertens 定理推出的（在 HL 下），而不是由这些数推出的。
+\end{enumerate}
+\end{rem}
+
+%---------------------------------------------------------------------
+\subsection*{补写：筛法基本引理版本（以 $u=\log N/\log p_k$ 表述，筛维数 $\kappa=2$）}
+\label{subsec:sieveu}
+
+本小节是补写。\S\ref{sec:legendre} 的 Legendre 版本（命题 \ref{prop:legendre}、推论 \ref{cor:relative}、命题 \ref{prop:kmax}）保持不变，
+仍是本稿唯一\emph{全部显式}的严格版本；下面的筛法版本更强，但依赖引用的筛法定理，常数与 $o(1)$ 不显式。
+\textbf{记号约定。} 主控组所说的 $u$ 即 $u:=\log N/\log p_k$；本稿 \S\ref{sec:top}--\S\ref{sec:mertens}、猜想 \ref{conj:2dim}
+与 \S\ref{sec:D2} 中记作 $s$（及 $s_c$）的量就是这个 $u$。下面把 $s$ 保留给筛法中的 $s=\log D/\log z$（$D$ 为分布水平），二者相差
+$O(\log\log N/\log p_k)$。
+
+\begin{defn}[二维筛的标准化；凭记忆，未联网核对]\label{defn:sieve}
+取 $\mathcal A=\{0<n<N\}$，筛素数集 $\{p\le p_k\}$（即 $z\in(p_k,p_{k+1}]$，$P(z)=P_k$），$X=N$，
+$g(d)=\nu(d)/d$（$d\mid P_k$ 无平方因子），$V(z)=\prod_{p\le p_k}(1-g(p))=\Haar(G_k^N)$，
+$|\mathcal A_d|=Xg(d)+r_d$，$|r_d|\le\nu(d)\le\tau(d)$（命题 \ref{prop:legendre} 证明中的事实），筛函数 $S(\mathcal A,z)=\Cnt_k(N)$。
+$g(p)\le2/p$ 且 $g(2)=1/2<1$（$N$ 偶），由 Mertens 定理满足维数 $\kappa=2$ 的条件
+$\prod_{w\le p<z}(1-g(p))^{-1}\le(\log z/\log w)^{2}(1+K/\log w)$。
+\begin{enumerate}[label=(\roman*)]
+\item \emph{筛函数 $F_\kappa,f_\kappa$。} 它们定义在 $s\in(0,\infty)$ 上，使得对 $D\ge z$、$s=\log D/\log z$：
+\[
+X V(z)\bigl(f_\kappa(s)-o(1)\bigr)-R(D)\ \le\ S(\mathcal A,z)\ \le\ XV(z)\bigl(F_\kappa(s)+o(1)\bigr)+R(D),\qquad
+R(D)=\sum_{d<D,\ d\mid P(z)}\mu^2(d)|r_d| .
+\]
+\item \emph{Diamond--Halberstam--Richert（DHR）筛 \cite{DHR88,DH08}。} 存在常数 $\alpha_\kappa\ge\beta_\kappa>0$，使
+\[
+F_\kappa(s)=1/\sigma_\kappa(s)\ \ (0<s\le\alpha_\kappa),\qquad f_\kappa(s)=0\ \ (0<s\le\beta_\kappa),
+\]
+\[
+\bigl(s^\kappa F_\kappa(s)\bigr)'=\kappa s^{\kappa-1}f_\kappa(s-1)\ \ (s>\alpha_\kappa),\qquad
+\bigl(s^\kappa f_\kappa(s)\bigr)'=\kappa s^{\kappa-1}F_\kappa(s-1)\ \ (s>\beta_\kappa),
+\]
+边界条件为 $F_\kappa,f_\kappa$ 连续且 $F_\kappa(s)=1+O(e^{-s})$、$f_\kappa(s)=1+O(e^{-s})$（$s\to\infty$），$\alpha_\kappa,\beta_\kappa$ 由这两个渐近条件唯一确定。
+这里 $\sigma_\kappa$ 是 Ankeny--Onishi 函数 \cite{AO65}：$\sigma_\kappa(s)=\dfrac{s^\kappa}{(2e^{\gamma})^\kappa\Gamma(\kappa+1)}$（$0<s\le2$），
+$(s^{-\kappa}\sigma_\kappa(s))'=-\kappa s^{-\kappa-1}\sigma_\kappa(s-2)$（$s>2$）。$\kappa=2$ 时 $\sigma_2(s)=e^{-2\gamma}s^2/8$（$0<s\le2$），故 $F_2(2)=2e^{2\gamma}$。
+\item \emph{筛限（sifting limit）。} 对给定的筛，$\beta_\kappa:=\inf\{s:\ f_\kappa(s)>0\}$；DHR 中 $f_\kappa$ 在 $(\beta_\kappa,\infty)$ 上为正且递增，$F_\kappa$ 递减。
+\textbf{数值（全部凭记忆，未联网核对）：}
+DHR 筛 $\beta_2\approx4.2664$，$\alpha_2\approx5.36$（$\alpha_2$ 置信度低）；
+Rosser--Iwaniec $\beta$-筛 \cite{Iwa80,FI10}（$s^\kappa F(s)=A_\kappa$ 于 $0<s\le\beta+1$，$f=0$ 于 $0<s\le\beta$，同型差分--微分方程）在 $\kappa=2$ 时 $\beta\approx4.83$（置信度低）；
+Ankeny--Onishi 筛限 $\nu_2\approx4.42$（置信度低）。$\kappa=1$ 时 $\beta$-筛 $\beta_1=2$、$A_1=2e^\gamma$（经典，且由奇偶性知最优）。
+$\kappa=2$ 的\emph{最优}筛限未知。下文只用到“存在有限的 $\beta_2$（取上述任一筛），且 $\beta_2>2$”。
+\end{enumerate}
+\end{defn}
+
+\begin{prop}[筛法版本的可控层，$u$ 表述]\label{prop:sieveu}
+设 $N$ 为偶数，$k\ge1$，$u=\log N/\log p_k$，并令 $u':=\log(N/\log^4N)/\log p_k=u-4\log\log N/\log p_k$。$N\to\infty$ 时（$k$ 可随 $N$ 变）：
+\begin{enumerate}[label=(\alph*)]
+\item（上界，对一切 $u'>0$）$\Cnt_k(N)\le\bigl(F_2(u')+o(1)\bigr)N\Haar(G_k^N)$，即 $E_k(N)/(N\Haar)\le F_2(u')-1+o(1)$。
+$u=2$ 时即命题 \ref{prop:toperr}(b) 的 $2e^{2\gamma}-1$。
+\item（下界，sifting limit）若 $u'\ge\beta_2+\delta$（$\delta>0$ 固定），则 $\Cnt_k(N)\ge\bigl(f_2(u')-o(1)\bigr)N\Haar(G_k^N)>0$。
+即：$p_k\le N^{1/(\beta_2+\delta)}$ 时，存在 $n$ 使 $n$ 与 $N-n$ 都没有 $\le p_k$ 的素因子（“几乎素数”型哥德巴赫）。
+\item（基本引理）$\rho_k(N)\le\max\bigl(F_2(u')-1,\ 1-f_2(u')\bigr)+o(1)$，且右端主项 $\ll e^{-u'}$（命题 \ref{prop:FL}）。
+因此对每个 $\varepsilon\in(0,1)$，令 $u_{\mathrm{FL}}(\varepsilon):=\inf\{v:\ \max(F_2(t)-1,1-f_2(t))<\varepsilon\ \forall t\ge v\}$（只依赖 $\kappa=2$ 与 $\varepsilon$，
+且 $u_{\mathrm{FL}}(\varepsilon)>\beta_2$），则对固定 $\delta>0$ 与充分大的 $N$：凡 $u\ge u_{\mathrm{FL}}(\varepsilon)+\delta$ 的层都有 $\rho_k(N)\le\varepsilon$。
+特别地 D2 意义下的临界层满足 $p_{k_c}\ge N^{1/(u_{\mathrm{FL}}(0.1)+\delta)}$（$N\ge N_0(\delta)$）。
+\end{enumerate}
+\end{prop}
+\status{(a)(b)(c) 部分（引用 \cite{HR74,DHR88,DH08,FI10}，常数不显式）}
+（说明：(a)(b)(c) 都是经典筛法定理——Selberg 上界筛、DHR/$\beta$-筛下界、基本引理——的直接代入，形式以原文为准；
+$u_{\mathrm{FL}}(0.1)$ 本稿未数值计算，$o(1)$ 不显式，所以“$p_{k_c}\ge N^{1/(u_{\mathrm{FL}}(0.1)+\delta)}$”没有显式数值。
+状态标“部分”与命题 \ref{prop:toperr}(b)、命题 \ref{prop:FL} 采用同一标准：引用的定理本身是已证的经典结果，“部分”指本稿未重证、常数不显式。）
+\begin{proof}[证明梗概]
+按定义 \ref{defn:sieve} 取 $D=N/\log^4N$，则 $s=u'$，$R(D)\le\sum_{d<D}\tau(d)\le D(1+\log D)\le2N/\log^3N$；
+而 $XV(z)=N\Haar(G_k^N)\ge N\prod_{p\le p_k}(1-\frac1p)^2\cdot2C_2\gg N/\log^2N$（同命题 \ref{prop:toperr}(a) 的证明），故 $R(D)=o(XV(z))$。
+代入定义 \ref{defn:sieve}(i)，并用 $F_2,f_2$ 的连续性把 $s$ 换为 $u'$ 即得 (a)(b)；(c) 由 $|\Cnt/(N\Haar)-1|\le\max(F_2-1,1-f_2)+o(1)$ 及 $F_2,f_2=1+O(e^{-s})$。
+$u_{\mathrm{FL}}(\varepsilon)>\beta_2$ 是因为 $u\le\beta_2$ 时 $f_2=0$，$1-f_2=1>\varepsilon$。
+\end{proof}
+
+\begin{lem}[顶层精确恒等式；D2 末层计数不是 $r(N)$]\label{lem:topexact}
+设 $N\ge6$ 偶，$k=\pi(\sqrt N)$。则
+\[
+\Cnt_k(N)-r(N)=2\cdot\mathbf 1[N-1\ \text{为素数}]-2\,\#\{p\le\sqrt N:\ p,\ N-p\ \text{均为素数}\}.
+\]
+特别地 $-2\pi(\sqrt N)\le\Cnt_k(N)-r(N)\le2$（即命题 \ref{prop:toperr}(a)），相对差 $\le2\pi(\sqrt N)/(N\Haar(G_k^N))=O(\log N/\sqrt N)$。
+\end{lem}
+\status{已证}
+\begin{proof}
+$1<n\le\sqrt N$ 时 $n$ 有素因子 $\le n\le p_k$，$n\notin G_k^N$；$n=1\in G_k^N\iff N-1$ 无 $\le p_k$ 的素因子 $\iff N-1$ 为素数（合数 $N-1$ 必有 $\le\sqrt{N-1}$ 的素因子）。
+$\sqrt N<n<N-\sqrt N$ 时同理 $n\in G_k^N\iff n,N-n$ 都是素数。对 $N-n$ 对称。$r(N)$ 比中段多出的恰是 $\min(n,N-n)\le\sqrt N$ 的有序素数对，
+共 $2\#\{p\le\sqrt N:N-p\text{ 素}\}$ 个（$N\ge6$ 时 $p\ne N-p$）。
+\end{proof}
+\emph{说明。} D2 的定义（\texttt{method}：直接筛，$0<n<N$）把 $p\le p_k$ 的 $n$（以及 $N-n=p$ 的 $n$）也删掉了——这与 $G_k^N$ 的定义一致，
+所以 D2 的 \texttt{count} 恰是 $\Cnt_k(N)$，$\rho_k$ 的比较没有偏差；但末层 \texttt{count} 不是完整的 $r(N)$，差值由引理 \ref{lem:topexact} 精确给出。
+数值核对（g2\_scratch/topdiff.py）：对 D3 中有 $r(N)$ 的 4 个 D2 样本（\texttt{high\_samples[].r}），D2 末层 \texttt{count} 减 $r$ 依次为
+$-172$（$N=10002468$），$-280$（$10210200$），$-670$（$99999900$），$-238$（$10^8$），与恒等式右端逐一相等；
+$N=10^8$ 时相对差 $238/652589=3.6\times10^{-4}$（$N\cdot$\texttt{Haar} 取自 D2 末层）。其余 20 个 D2 样本的差值（恒等式计算）都在 $[-702,-2]$ 内，均满足 $\ge-2\pi(\sqrt N)$。
+
+\begin{rem}[两个版本的对照]\label{rem:twoversions}
+用同一个参数 $u=\log N/\log p_k$ 表示三个“可控范围”（$\varepsilon=0.1$）：
+\begin{enumerate}[leftmargin=*,label=(\arabic*)]
+\item \emph{Legendre（已证，全显式）。} 控制量是剩余类个数 $\Tmix_k\approx3^k$ 对比 $N$（不是周期 $P_k$），可控到 $p_k\approx\log N\log\log N/\log3$，即
+$u_{\mathrm{Leg}}(N)=\frac{\log N}{\log p_{\kmax}}\sim\frac{\log N}{\log\log N}\to\infty$（命题 \ref{prop:kmax}）。用 $P_k\le N^\theta$ 表述的判据（$\theta\lesssim\log\log N/\log3$）对应的
+仍是这个 $u\to\infty$ 的范围，所以从 $u$ 的角度看它极端悲观：D2 中 $x_c=\log P_{k_c}/\log N$ 达 $5$--$209$，而 Legendre 只保证 $x\le x_{\max}\le1.81$。
+\item \emph{筛法（部分：引用已证的经典定理，常数不显式）。} $u\ge u_{\mathrm{FL}}(0.1)+\delta$ 即可控（命题 \ref{prop:sieveu}(c)），$u_{\mathrm{FL}}(0.1)$ 是与 $N$ 无关的常数，且 $>\beta_2$；
+$u>\beta_2$（$\approx4.27$，DHR，凭记忆）时还有正下界（(b)）；对一切 $u$ 有上界 $F_2(u)$（(a)）。这里 $p_k$ 已是 $N$ 的固定幂次。
+\item \emph{二维 Buchstab（猜想 \ref{conj:2dim}）。} $\rho_k\to|(e^\gamma\omega(u))^2-1|$，超过 $0.1$ 当且仅当 $u<u^*=2.1664$。
+\end{enumerate}
+于是 $u_{\mathrm{Leg}}(N)\to\infty\ \gg\ u_{\mathrm{FL}}(0.1)>\beta_2\approx4.27\ >\ u_c^{\mathrm{D2}}\approx2.2\text{--}2.3\ >\ 2$。
+区分两件事：“$u>\beta_2$ 时下界筛给出正下界”是文献中\emph{已证}的定理（本稿引用，状态记“部分”仅因未重证）；“D2 的临界层在 $u_c\approx2.2$”是与 Buchstab 极限相关的\emph{启发式/猜想}，
+在 $(2,\beta_2]$ 上没有任何已知的下界筛能给出正下界，更不能给出 $10\%$ 的精度。
+在 $u=2$ 处得到正下界就是二元哥德巴赫猜想（奇偶性障碍；$\kappa=1$ 时 $\beta_1=2$ 是最优的）。
+\end{rem}
+
+\begin{rem}[为什么 D2 临界层落在 $p\approx c\sqrt N$]\label{rem:ucrit}
+\emph{（启发式/猜想，非证明。）} 若临界参数 $u_c$ 是常数，则 $p_c=N^{1/u_c}=c\sqrt N$，$c=N^{1/u_c-1/2}$；$u_c>2$ 时 $c\to0$，但极慢：
+$u_c=u^*=2.1664$ 时 $c\propto N^{-0.0384}$，每增大一个量级 $c$ 只乘以 $0.915$。这解释了 D2 中 $p_c/\sqrt N$ 随 $N$ 缓慢下降而 $u_c$ 几乎不动。
+有限 $N$ 下应以 $F_N$（猜想 \ref{conj:2dim} 后的启发式积分）代替极限曲线：令 $u_c^F(N)$ 为 $y$ 增大时 $1-F_N(y)>0.1$ 首次成立处的 $u$
+（g2\_scratch/sc\_pred.py，$u$ 步长 $0.0025$）。与 D2（\texttt{critical.p}，$u_c=\log N/\log p_c$）对照：
+\begin{center}
+\small
+\begin{tabular}{c|cc|ccc}
+\hline
+$N$ & D2 $u_c$ & D2 $p_c/\sqrt N$ & $u_c^F$ & $c^F=N^{1/u_c^F-1/2}$ & $\max_u(1-F_N)$（所在 $u$）\\
+\hline
+$10^4$ & 2.320 & 0.530 & 无 & — & 0.073 (2.195)\\
+$10^5$ & 无 & — & 无 & — & 0.095 (2.155)\\
+$10^6$ & 2.207 & 0.523 & 2.233 & 0.487 & 0.114 (2.125)\\
+$10^7$ & 2.248 & 0.411 & 2.255 & 0.402 & 0.128 (2.105)\\
+$10^8$ & 2.260 & 0.347 & 2.258 & 0.350 & 0.139 (2.090)\\
+$10^{10}$ & — & — & 2.253 & 0.275 & 0.154 (2.070)\\
+$10^{12}$ & — & — & 2.243 & 0.224 & 0.164 (2.055)\\
+$10^{16}$ & — & — & 2.228 & 0.152 & 0.175 (2.040)\\
+$10^{24}$ & — & — & 2.208 & 0.074 & 0.186 (2.025)\\
+$\infty$ & — & — & $u^*=2.166$ & $\to0$ & $0.207$ $(2)$\\
+\hline
+\end{tabular}
+\end{center}
+读法：(i) $10^6$--$10^8$ 上 $F_N$ 预测的 $u_c^F$ 与 $c^F$ 和 D2 吻合到 $0.03$ 与 $0.04$ 以内；$c$ 的下降 $0.52\to0.41\to0.35$ 来自 $c=N^{1/u_c-1/2}$ 中 $N$ 的增大，而不是 $u_c$ 的漂移。
+(ii) 有限 $N$ 的 $u_c$ 比极限 $u^*=2.166$ 大约 $0.04$--$0.09$，按 $F_N$ 它先略升（至 $10^8$ 附近约 $2.258$）再极慢地回落到 $u^*$——$1/\log N$ 量级的修正（注 \ref{rem:mertenssource}(2)）。
+(iii) $F_N$ 预测 $10^5$ 附近峰值 $<0.1$、无临界层，与 D2 的 $10^5$ 量级 4 个样本都无临界层一致；$10^4$ 处 $F_N$ 也预测无临界层，但 D2 的 $N=8192,10000$ 有
+（$\max\rho=0.111,0.108$），这是 $F_N$ 在 $N=10^4$ 的已知偏差（约 $0.04$，\S\ref{sec:D2} 读法 3）。
+(iv) $u_c$ 落在 $2$ 附近而不是 $\beta_2$ 附近，是因为在 $2<u<\beta_2$ 上真实计数（猜想地）仍接近 $(e^\gamma\omega(u))^2N\Haar$，只是筛法\emph{证不出}下界；
+筛限 $\beta_2$ 是证明方法的极限，不是误差的位置。
+\end{rem}
+
+%=====================================================================
+\section{与 Codex D2/D3 的对照}\label{sec:D2}
+
+\paragraph{数据来源与字段含义。} results/D2.json 与 results/D3.json 在本稿写作期间由 Codex 生成（开始写作时尚不存在，
+写作中途出现，文件时间戳 07:49/07:51），\texttt{status="passed"}。只读引用。
+\begin{itemize}[leftmargin=*]
+\item D2：\texttt{method} = ``direct sequential boolean sieve; count only newly removed positions; 0<n<N''（直接筛，不依赖 CRT 乘积公式）。
+\texttt{cases[]} 的字段：\texttt{N}，\texttt{labels}（选样类别），\texttt{S}（$=\Sing(N)$），
+\texttt{layers[]}：\texttt{k}、\texttt{p}（$=p_k$）、\texttt{count}（$=\Cnt_k(N)$）、\texttt{Haar}（$=\Haar(G_k^N)$）、
+\texttt{E}（$=E_k(N)$）、\texttt{relative\_error}（$=\rho_k(N)$）、\texttt{x}（$=\log P_k/\log N$）；
+\texttt{critical}：\texttt{relative\_error} 首次 $>0.1$ 的层（字段 \texttt{k,p,x,relative\_error}），无则为 \texttt{null}。
+我在 g2\_scratch/ 中复核了 \texttt{relative\_error}$=|E|/(N\cdot\mathrm{Haar})$、\texttt{x}$=\log P_k/\log N$、\texttt{E}$=$\texttt{count}$-N\cdot$\texttt{Haar} 对全部层成立。
+因此 D2 的 $k_c(N)$ 就是本稿 $\varepsilon=0.1$ 时“$\rho_k>\varepsilon$ 的第一层”。
+\item D3：\texttt{ratio}$=r(N)/(\Sing(N)I(N))$，$I(N)=\int_2^{N-2}\frac{dt}{\log t\log(N-t)}$，即 G1 分解中的 $1/C$。
+\end{itemize}
+
+\paragraph{严格的相容性要求（由命题 \ref{prop:legendre} 推出，必须成立）。}
+对每个 $N$：$k_c(N)>\kmax^{(N)}(N,0.1)\ge\kmax(N,0.1)$；并且每层 $|E_k(N)|\le\Tmix_k(N)$。
+D2 的 24 个 $N$、9871 层全部满足（后者见 \S\ref{sec:legendre} 的注）。
+
+\paragraph{对照表（说明性）。} 记 $s_c:=\log N/\log p_c$；“顶层”为 $k=\pi(\sqrt N)$；最后一列为各层 $\rho_k$ 的最大值及其所在的 $s$。
+前三列来自本稿的定义计算，其余来自 results/D2.json 的上述字段。
+\begin{center}
+\small
+\begin{tabular}{rcc|cccc|cc|c}
+\hline
+$N$ & $\kmax$ ($x_{\max}$) & $\kmax^{(N)}$ & $k_c$ & $p_c$ & $x_c$ & $s_c$ & 顶层 $k$ & 顶层 $\rho$ & $\max_k\rho_k$ ($s$)\\
+\hline
+$8192$ & 5 (0.86) & 5 & 17 & 59 & 5.4 & 2.21 & 24 & 0.0635 & 0.1111 (2.14)\\
+$10000$ & 5 (0.84) & 6 & 16 & 53 & 4.9 & 2.32 & 25 & 0.0208 & 0.1079 (2.26)\\
+$12468$ & 5 (0.82) & 5 & \multicolumn{4}{c|}{无（null）} & 29 & 0.0179 & 0.0429 (2.21)\\
+$30030$ & 6 (1.00) & 8 & \multicolumn{4}{c|}{无（null）} & 40 & 0.0077 & 0.0523 (2.33)\\
+$90090$ & 7 (1.15) & 9 & \multicolumn{4}{c|}{无（null）} & 62 & 0.0402 & 0.0873 (2.17)\\
+$100000$ & 7 (1.14) & 8 & \multicolumn{4}{c|}{无（null）} & 65 & 0.0249 & 0.0708 (2.22)\\
+$102468$ & 7 (1.14) & 7 & \multicolumn{4}{c|}{无（null）} & 66 & 0.0016 & 0.0584 (2.16)\\
+$131072$ & 7 (1.12) & 7 & \multicolumn{4}{c|}{无（null）} & 72 & 0.0387 & 0.0932 (2.15)\\
+$510510$ & 8 (1.22) & 11 & 82 & 421 & 30.0 & 2.18 & 127 & 0.0624 & 0.1025 (2.14)\\
+$990990$ & 9 (1.39) & 11 & 98 & 521 & 35.7 & 2.21 & 167 & 0.0681 & 0.1077 (2.13)\\
+$1000000$ & 9 (1.39) & 10 & 99 & 523 & 36.2 & 2.21 & 168 & 0.0674 & 0.1074 (2.15)\\
+$1002468$ & 9 (1.39) & 9 & 100 & 541 & 36.6 & 2.20 & 168 & 0.0637 & 0.1077 (2.14)\\
+$1021020$ & 9 (1.39) & 11 & 103 & 563 & 37.9 & 2.18 & 169 & 0.0681 & 0.1077 (2.12)\\
+$1048576$ & 9 (1.39) & 9 & 111 & 607 & 41.5 & 2.16 & 172 & 0.0628 & 0.1047 (2.13)\\
+$8388608$ & 11 (1.63) & 11 & 195 & 1187 & 71.8 & 2.25 & 418 & 0.0893 & 0.1260 (2.10)\\
+$9999990$ & 11 (1.61) & 13 & 209 & 1289 & 77.2 & 2.25 & 446 & 0.0915 & 0.1245 (2.10)\\
+$10000000$ & 11 (1.61) & 11 & 212 & 1301 & 78.6 & 2.25 & 446 & 0.0910 & 0.1248 (2.10)\\
+$10002468$ & 11 (1.61) & 11 & 215 & 1319 & 79.9 & 2.24 & 446 & 0.0894 & 0.1235 (2.11)\\
+$10210200$ & 11 (1.61) & 13 & 212 & 1301 & 78.5 & 2.25 & 452 & 0.0909 & 0.1255 (2.11)\\
+$99999900$ & 13 (1.81) & 15 & 490 & 3511 & 185.5 & 2.26 & 1229 & 0.1079 & 0.1384 (2.09)\\
+$100000000$ & 13 (1.81) & 14 & 487 & 3469 & 184.2 & 2.26 & 1229 & 0.1073 & 0.1382 (2.09)\\
+$100002468$ & 13 (1.81) & 13 & 488 & 3491 & 184.6 & 2.26 & 1229 & 0.1078 & 0.1383 (2.09)\\
+$100059960$ & 13 (1.81) & 15 & 492 & 3527 & 186.4 & 2.26 & 1229 & 0.1070 & 0.1378 (2.09)\\
+$134217728$ & 13 (1.78) & 13 & 549 & 3967 & 208.5 & 2.26 & 1393 & 0.1097 & 0.1388 (2.09)\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{读法（说明性，均非证明）。}
+\begin{enumerate}[leftmargin=*]
+\item \emph{Legendre 界极为保守。} 在 $k=\kmax^{(N)}$ 处，D2 的实际 $\rho_k$ 为 $10^{-6}$--$10^{-3}$ 量级（例如 $N=10^8$、$k=14$：$1.0\times10^{-5}$），
+$|E|/\Tmix_k$ 小于 $0.05$；混合界在 $N=10^8$ 附近从 $k\approx16$--$18$ 起就超过主项（命题 \ref{prop:kmax}(d) 的具体化），
+而实际 $\rho_k$ 直到 $k\approx300$ 才超过 $5\%$。
+\item \emph{$k_c$ 由 $s$ 决定，不由 Legendre 决定。} $k_c/\kmax$ 从约 $3$（$10^4$）增长到约 $37$（$10^8$）；
+$x_c$ 从 $\approx5$ 增长到 $\approx185$--$209$，而 $x_{\max}\le1.81$。所有存在临界层的 $N$ 都有 $s_c\in[2.16,2.32]$，
+$\rho_k$ 的最大值都出现在 $s\in[2.09,2.33]$。这与猜想 \ref{conj:2dim} 的图像一致：误差只在 $s$ 接近 $2$ 时变大。
+按此图像 $k_c(N)\approx\pi(N^{1/s_c})$，阶为 $N^{0.44\text{--}0.46}/\log N$，与 Legendre 的 $\kmax\asymp\log N$ 完全不同量级；
+命题 \ref{prop:FL} 严格地给出了中间的 $\log p_k\asymp\log N/\log(1/\varepsilon)$。
+\item \emph{有限 $N$ 的 Buchstab 积分与 D2 的吻合。} 用 g2\_scratch/buchstab.py 数值计算启发式 $F_N(p_k)$（取 $y=p_k$），与 D2 的
+$\Cnt_k/(N\Haar)=1+E/(N\cdot\mathrm{Haar})$ 比较：$N=10^8$ 时 $k=487,614,860,1044,1229$ 处分别为
+$0.9000/0.9002$，$0.8784/0.8781$，$0.8620/0.8609$，$0.8689/0.8676$，$0.8927/0.8905$（D2/$F_N$）；
+$N=10^6$ 时（$k=42,84,99,117,142,168$）差异在 $0.012$ 以内，$N=10^4$ 时差异达 $0.04$。有限 $N$ 下 $\rho_k$ 在 $s\approx2.09$ 达到峰值后向顶层回落，
+是 $F_N$ 中 $1/\log N$ 修正（注 \ref{rem:mertenssource}(2)）在 $s$ 接近 $2$ 时最强所致；极限曲线本身在 $[2,2.48]$ 上单调。
+D2 中 $E_k>0$ 的中间层（如 $N=10^6$，$s\approx3.2$；$N=10^8$，$s\approx2.7$--$3.4$）与 $\omega(s)>e^{-\gamma}$（$s\gtrsim2.48$）的符号预测一致。
+这些吻合不证明猜想 \ref{conj:2dim}。
+\item \emph{没有临界层的 $N$。} $N\in\{12468,30030,90090,100000,102468,131072\}$ 时各层 $\rho_k$ 均 $<10\%$。
+若猜想 \ref{conj:2dim} 成立，则 $\max_k\rho_k\to1-(e^\gamma\omega(2))^2\approx0.207>0.1$，充分大的 $N$ 都会有 $k_c$；
+但这不能从现有数据推出。$k_c$ 的存在与否在 $10^4$--$10^5$ 量级对 $N$ 的算术敏感（如 $\Sing(N)$ 较大的 $30030,90090$ 无临界层）。
+\item \emph{D3：HL 误差 $C$ 很小。} results/D3.json 的 \texttt{high\_random.bins[0]}（$[10^7,10^8)$，2700 个分层均匀随机偶数）
+给出 \texttt{mean}$=0.99962$、\texttt{std\_population}$=0.00154$；\texttt{full.bins} 中 $[10^6,10^7)$ 全部偶数 \texttt{mean}$=0.99887$、
+\texttt{std\_population}$=0.00399$。即在此范围 $1/C=r/(\Sing I)$ 与 $1$ 相差约 $0.1\%$--$0.4\%$，
+因此 D2 顶层约 $9\%$--$11\%$ 的偏差几乎全部来自 $A\cdot B$（Mertens 因子及其 $1/\log N$ 修正），而不是 HL 的失效。
+这与注 \ref{rem:mertenssource} 的解释相容，但同样不构成证明。
+\end{enumerate}
+
+\paragraph{补写：主控组转述的 D2 数字与文件的逐项核对。}
+以文件为准。$x_c$ 取 \texttt{cases[].critical.x}，$p_c$ 取 \texttt{critical.p}，$p_c/\sqrt N$ 由 \texttt{critical.p} 与 \texttt{N} 计算（不是 JSON 字段）。
+\begin{center}
+\small
+\begin{tabular}{c|cc|cc|c}
+\hline
+$N$（目标样本） & 转述 $x_c$ & 文件 \texttt{critical.x} & 转述 $p_c/\sqrt N$ & 文件计算值 & 结论\\
+\hline
+$10^4$ & $\approx5$ & 4.878 & 0.53 & 0.530 & 一致（取整）\\
+$10^5$ & 未超过 & \texttt{null} & — & — & 一致，见下\\
+$10^6$ & 36 & 36.157 & 0.52 & 0.523 & 一致\\
+$10^7$ & 79 & 78.562 & 0.41 & 0.411 & 一致\\
+$10^8$ & 184 & 184.203 & 0.35 & 0.347 & 一致\\
+\hline
+\end{tabular}
+\end{center}
+需要补充的两点（不算矛盾，但转述不完整）：
+(1) “$10^5$ 没有超过”对标签为 \texttt{10\^{}5:*} 且量级在 $10^5$ 内的 4 个样本（$90090,100000,102468,131072$，\texttt{critical=null}）成立；
+但标签同时含 \texttt{10\^{}5:multiple510510} 的 $N=510510$（超出该量级，REPORT\_stage2.md 已披露）有 $k_c=82$，$x_c=30.04$。
+(2) $10^4$ 量级并非全部超过：$12468$（ordinary）与 $30030$（multiple30030）为 \texttt{null}；超过的是 $10000$（$x_c=4.878$）与 $8192$（$x_c=5.439$）。
+所有存在临界层的 18 个样本 \texttt{critical.relative\_error}$\in[0.1000,0.1041]$，$u_c=\log N/\log p_c\in[2.163,2.320]$。
+
+\paragraph{补写：D3 分段统计与方差比（只作对照，不作证明）。}
+字段：$[10^m,10^{m+1})$，$m\le6$ 取 \texttt{full.bins[]}（全部偶数）的 \texttt{mean}、\texttt{variance\_population}、\texttt{count}；
+$[10^7,10^8)$ 取 \texttt{high\_random.bins[0]}（2700 个分层随机偶数；\texttt{full.bins} 中该区间只有 $N=10^7$ 一点，\texttt{high.bins[0]} 偏向 30030 倍数，均不用）。
+“比值”为上一行方差除以本行方差。“启发式”列为假设方差 $\propto\log^2N/N$（$r(N)$ 的 Poisson 型涨落，$\mathrm{Var}(r)\asymp\mathbb E r$）并在区间内对 $N$ 均匀平均后的比值，仅供参照。
+\begin{center}
+\small
+\begin{tabular}{c|r|c|c|c|c}
+\hline
+区间 & \texttt{count} & \texttt{mean} & \texttt{variance\_population} & 方差比 & 启发式比\\
+\hline
+$[10^2,10^3)$ & 450 & 0.86924 & $1.0945\times10^{-2}$ & — & —\\
+$[10^3,10^4)$ & 4500 & 0.95719 & $2.8207\times10^{-3}$ & 3.88 & 5.14\\
+$[10^4,10^5)$ & 45000 & 0.98710 & $5.6851\times10^{-4}$ & 4.96 & 6.07\\
+$[10^5,10^6)$ & 450000 & 0.99620 & $1.0060\times10^{-4}$ & 5.65 & 6.70\\
+$[10^6,10^7)$ & 4500000 & 0.99887 & $1.5920\times10^{-5}$ & 6.32 & 7.17\\
+$[10^7,10^8)$ 随机 & 2700 & 0.99962 & $2.3683\times10^{-6}$ & 6.72 & 7.51\\
+\hline
+\end{tabular}
+\end{center}
+与主控组转述对照：均值 $0.957,0.987,0.996,0.9989,0.9996$ 与文件一致（$0.95719,0.98710,0.99620,0.99887,0.99962$）。
+“方差每个量级约降为 $1/5$”只对 $[10^3,10^4)\to[10^4,10^5)$ 准确（比值 $4.96$）；此后比值逐段增大为 $5.65,6.32,6.72$（对应标准差比 $2.38,2.51,2.59$；第一段为 $2.23$），
+\textbf{应修正为“约降为 $1/5$ 到 $1/7$，且比值随 $N$ 增大”}。启发式比值同样递增（并趋于 $10$），实际比值约为其 $0.75$--$0.9$ 倍；
+区间内均值漂移、$\Sing$ 的分布与 $I(N)$ 的模型误差都会影响方差，本稿不据此下任何结论。最后一行是随机抽样（$n=2700$）与全量的比较，抽样误差未估计。
+
+\paragraph{补写：小比值与 $\Sing$、与 2 的幂。}
+字段：\texttt{concentration}、\texttt{minimum20}、\texttt{maximum20}、\texttt{minimum20\_N\_at\_least\_10000}、\texttt{high\_random.minimum20/maximum20}、\texttt{powers\_of\_two}。
+\begin{itemize}[leftmargin=*]
+\item 全量 $6\le N\le10^7$：\texttt{full\_mean\_S}$=1.99999864$，\texttt{full\_fraction\_S\_le\_1\_5}$=0.4368$（$\Sing\le1.5$ 的基线比例）。
+\item $N\ge10^4$ 的最小 20 个比值：\texttt{tail\_minimum20\_fraction\_S\_le\_1\_5}$=0.90$，\texttt{tail\_minimum20\_mean\_S}$=1.3665$，\texttt{tail\_minimum20\_power2\_count}$=0$。
+即低比值尾部富集小 $\Sing$，\emph{不}富集 2 的幂（2 的幂的 $\Sing=2C_2=1.3203$ 是最小值，但只占极少数 $N$）。
+\item 但（本稿由上述字段计算）最大 20 个比值（\texttt{maximum20}，$N\in[64,18484]$）\emph{全部} $\Sing\le1.5$，平均 $\Sing=1.349$；
+$[10^7,10^8)$ 随机段的最小 20 与最大 20 中 $\Sing\le1.5$ 的比例都是 $0.85$。所以小 $\Sing$ 同时富集在两个尾部：它表现为\emph{离散度更大}
+（$r(N)\approx\Sing I$ 较小，相对涨落较大），而不是系统性偏低。
+\item 未限制 $N$ 的最小 20（\texttt{minimum20}，$N\le398$）平均 $\Sing=2.041$、$\Sing\le1.5$ 的只占 $0.40$，与基线无差异，2 的幂只有 $N=128$ 一个；
+最小的几个（$N=6,12,30,18$）$\Sing\ge2.64$。这一段是 $I(N)$ 对极小 $N$ 失真主导的。
+\end{itemize}
+与主控组转述对照：“小 $N$ 的低比值集中在 $\Sing$ 小的 $N$ 上，而不是 2 的幂”——“不是 2 的幂”一致；“集中在 $\Sing$ 小的 $N$”只在 $N\ge10^4$ 的尾部成立，
+且高比值尾部同样富集小 $\Sing$，宜表述为“小 $\Sing$ 的 $N$ 离散度大”；对 $N<400$ 的最小值不成立。阈值 $1.5$ 是事后选的（REPORT\_stage2.md 已声明），不是统计检验。
+
+%=====================================================================
+\section{小结与不确定之处}\label{sec:summary}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{项数。} Legendre 展开按“（$d$，剩余类）”计有 $3^{k-\omega_k(N)}2^{\omega_k(N)}$ 项；“$2^{\omega(P_k)}$ 型误差”我们无法证明，
+数值（$k\le6$）未见反例。本稿所有严格界都是 $\Tmix_k(N)\le2\cdot3^{k-2}$。
+\item \textbf{$\kmax$。} $\kmax(N,\varepsilon)=\frac{\log(\varepsilon N)-2\log\log\log N}{\log3}+O(1)$，$x_{\max}\sim\log\log N/\log3$。
+这是 \emph{Legendre} 可控的阶，不是真实可控的阶；后者由筛法参数 $s=\log N/\log p_k$ 决定（命题 \ref{prop:FL}、猜想 \ref{conj:2dim}）。
+\item \textbf{显式常数。} 推论 \ref{cor:relative} 的 $c_*$ 依赖 \cite{RS62} 的不等式，本稿未重证，仅在 $y\le2\times10^5$ 抽查；
+命题 \ref{prop:toperr}(b) 的常数 $8$ 与命题 \ref{prop:FL} 的 $s_0,C$ 均为引用，具体条件以原文为准。
+\item \textbf{文献。} 本稿新增文献的元数据按记忆转录，\emph{未}在本稿中联网核对。
+\item \textbf{启发式离散化。} $F_N(y)$ 用 $y=p_k$ 代入（$\Phi$ 的“$>y$”与 $G_k^N$ 的“$>p_k$”一致），$\omega$ 用步长 $10^{-4}$ 的梯形法数值求解；
+它只是说明工具。
+\item \textbf{“Polignac $=$ 时间 $\to\infty$ 平均”} 只对\emph{固定} $k$ 精确；真实的间隔 $N$ 素数计数同样需要 $p_k\approx\sqrt X$（注 \ref{rem:level}）。
+\item \textbf{（补写）两个版本。} Legendre 版本（\S\ref{sec:legendre}）全显式，可控到 $u_{\mathrm{Leg}}\sim\log N/\log\log N$；筛法版本（命题 \ref{prop:sieveu}）可控到常数
+$u_{\mathrm{FL}}(\varepsilon)$，下界筛在 $u>\beta_2$ 时给正下界；D2 的 $u_c\approx2.2$--$2.3$ 由猜想 \ref{conj:2dim} 及其有限 $N$ 修正 $F_N$ 解释（注 \ref{rem:ucrit}），是启发式。
+\item \textbf{（补写）筛法常数凭记忆。} $\beta_2\approx4.2664$、$\alpha_2\approx5.36$（DHR）、$\beta$-筛 $\approx4.83$、Ankeny--Onishi $\nu_2\approx4.42$、$\sigma_\kappa$ 的显式式、
+DHR 方程组的确切形式及文献 \cite{DHR88,DH08,Iwa80,AO65} 的卷期页码，均\emph{凭记忆，未联网核对}；其中只有 $F_2(2)=2e^{2\gamma}$ 与命题 \ref{prop:toperr}(b) 的常数 $8$ 相互印证。
+$u_{\mathrm{FL}}(0.1)$ 未数值计算。
+\item \textbf{（补写）自查结论。} $\kmax$ 公式、注 \ref{rem:kmaxtable} 表中的数值、推论 \ref{cor:relative} 的 $c_*=e^{2\gamma}/(18C_2)=0.26695$、命题 \ref{prop:toperr}、\S\ref{sec:D2} 对照表全部重算（g2\_scratch/verify\_table.py），无需修改；
+唯一数值修正是猜想 \ref{conj:2dim} 后的临界值 $2.165\to2.1664$（$N^{0.462}\to N^{0.4616}$）。命题 \ref{prop:toperr}(a) 由引理 \ref{lem:topexact} 加强为恒等式（原陈述不变）。
+\end{enumerate}
+
+%=====================================================================
+\section*{文献说明}
+\cite{G1} 为本项目 G1 稿；\cite{HL23} 元数据沿用 G1（已核）。其余文献元数据未在本稿中联网核对，以原书/原文为准；补写新增的 \cite{DHR88,DH08,Iwa80,AO65} 及其中的筛法数值均凭记忆。
+
+\begin{thebibliography}{99}
+\bibitem{G1} （G1 工作稿）\emph{G1：哥德巴赫筛 $=$ 有限窗口的 Polignac 筛——字典、奇异级数与平均}，goldbach\_props.tex，2026-11-02。
+\bibitem{HL23} G. H. Hardy, J. E. Littlewood, \emph{Some problems of `Partitio numerorum'; III: On the expression of a number as a sum of primes},
+Acta Math. \textbf{44} (1923), 1--70. DOI: \url{10.1007/BF02403921}.
+\bibitem{Buc37} A. A. Buchstab, \emph{Asymptotic estimates of a general number-theoretic function}（俄文），Mat. Sb. \textbf{2(44)} (1937), 1239--1246.
+\bibitem{dB50} N. G. de Bruijn, \emph{On the number of uncancelled elements in the sieve of Eratosthenes},
+Proc. Kon. Ned. Akad. Wetensch. \textbf{53} (1950), 803--812.
+\bibitem{Ten15} G. Tenenbaum, \emph{Introduction to Analytic and Probabilistic Number Theory}, 3rd ed., Graduate Studies in Math.\ \textbf{163}, AMS, 2015（第 III.6 章：Buchstab 函数）。
+\bibitem{HR74} H. Halberstam, H.-E. Richert, \emph{Sieve Methods}, Academic Press, London, 1974.
+\bibitem{FI10} J. Friedlander, H. Iwaniec, \emph{Opera de Cribro}, AMS Colloquium Publications \textbf{57}, 2010.
+\bibitem{RS62} J. B. Rosser, L. Schoenfeld, \emph{Approximate formulas for some functions of prime numbers}, Illinois J. Math. \textbf{6} (1962), 64--94.
+% 以下四条为补写新增，元数据凭记忆，未联网核对
+\bibitem{DHR88} H. G. Diamond, H. Halberstam, H.-E. Richert, \emph{Combinatorial sieves of dimension exceeding one}, J. Number Theory \textbf{28} (1988), 306--346.（凭记忆，未联网核对）
+\bibitem{DH08} H. G. Diamond, H. Halberstam（with W. F. Galway）, \emph{A Higher-Dimensional Sieve Method}, Cambridge Tracts in Math.\ \textbf{177}, Cambridge Univ. Press, 2008（含 $\alpha_\kappa,\beta_\kappa$ 数值表；凭记忆，未联网核对）。
+\bibitem{Iwa80} H. Iwaniec, \emph{Rosser's sieve}, Acta Arith. \textbf{36} (1980), 171--202.（凭记忆，未联网核对）
+\bibitem{AO65} N. C. Ankeny, H. Onishi, \emph{The general sieve}, Acta Arith. \textbf{10} (1964/65), 31--62.（凭记忆，未联网核对）
+\end{thebibliography}
+
+\end{CJK}
+\end{document}

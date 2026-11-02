@@ -1,0 +1,139 @@
+{
+  "finite_layer_rows": [
+    {
+      "k": 1,
+      "actual_second_moment": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      },
+      "expected": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      },
+      "exact_equal": true
+    },
+    {
+      "k": 2,
+      "actual_second_moment": {
+        "numerator": 9,
+        "denominator": 4,
+        "float": 2.25
+      },
+      "expected": {
+        "numerator": 9,
+        "denominator": 4,
+        "float": 2.25
+      },
+      "exact_equal": true
+    },
+    {
+      "k": 3,
+      "actual_second_moment": {
+        "numerator": 585,
+        "denominator": 256,
+        "float": 2.28515625
+      },
+      "expected": {
+        "numerator": 585,
+        "denominator": 256,
+        "float": 2.28515625
+      },
+      "exact_equal": true
+    },
+    {
+      "k": 4,
+      "actual_second_moment": {
+        "numerator": 14105,
+        "denominator": 6144,
+        "float": 2.2957356770833335
+      },
+      "expected": {
+        "numerator": 14105,
+        "denominator": 6144,
+        "float": 2.2957356770833335
+      },
+      "exact_equal": true
+    },
+    {
+      "k": 5,
+      "actual_second_moment": {
+        "numerator": 2823821,
+        "denominator": 1228800,
+        "float": 2.2980314127604164
+      },
+      "expected": {
+        "numerator": 2823821,
+        "denominator": 1228800,
+        "float": 2.2980314127604164
+      },
+      "exact_equal": true
+    },
+    {
+      "k": 6,
+      "actual_second_moment": {
+        "numerator": 4882386509,
+        "denominator": 2123366400,
+        "float": 2.2993612920502087
+      },
+      "expected": {
+        "numerator": 4882386509,
+        "denominator": 2123366400,
+        "float": 2.2993612920502087
+      },
+      "exact_equal": true
+    }
+  ],
+  "finite_layer_status": "通过",
+  "integer_average_trend": [
+    {
+      "X": 1000,
+      "even_S_squared_mean": 4.545442254576316,
+      "target_truncated_at_1e6": 4.601923089421935,
+      "mean_minus_target": -0.056480834845618944
+    },
+    {
+      "X": 10000,
+      "even_S_squared_mean": 4.593801966866492,
+      "target_truncated_at_1e6": 4.601923089421935,
+      "mean_minus_target": -0.008121122555443172
+    },
+    {
+      "X": 100000,
+      "even_S_squared_mean": 4.600773438319034,
+      "target_truncated_at_1e6": 4.601923089421935,
+      "mean_minus_target": -0.0011496511029012169
+    },
+    {
+      "X": 1000000,
+      "even_S_squared_mean": 4.601766037661835,
+      "target_truncated_at_1e6": 4.601923089421935,
+      "mean_minus_target": -0.0001570517600999466
+    },
+    {
+      "X": 10000000,
+      "even_S_squared_mean": 4.601904175107281,
+      "target_truncated_at_1e6": 4.601923089421935,
+      "mean_minus_target": -1.891431465406157e-05
+    },
+    {
+      "X": 100000000,
+      "even_S_squared_mean": 4.60192064355045,
+      "target_truncated_at_1e6": 4.601923089421935,
+      "mean_minus_target": -2.4458714849018293e-06
+    }
+  ],
+  "target_product": 4.601923089421935,
+  "product_max_prime": 999983,
+  "omitted_log_tail_upper_bound": 5.000180004860117e-13,
+  "tail_bound_method": "log∏(1+a)≤Σa；以所有整数尾部替代素数，用积分 1/(2(p_k−1)²) 作上界",
+  "failures": [],
+  "trend_shared_V6_seconds": 2.1197651670000006,
+  "interpretation": "有限二阶矩严格核对；整数 S² 平均仅为数值趋势，不判断猜测。",
+  "status": "只给趋势",
+  "elapsed_seconds": 0.007931957999996797,
+  "criteria_sha256": "5e7bc000392ebf24f0d1abefa71d0e6ea6e08536d63b3343aba9c3603b471626",
+  "range": "k=1..6 finite layers; X=10^3..10^8 integer trend",
+  "method": "直接枚举基数的平方和算有限层精确矩；V6 完整奇异级数数组计算整数均值"
+}

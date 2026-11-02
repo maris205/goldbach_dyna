@@ -1,0 +1,61 @@
+{
+  "method": "直接逐 N、逐 x 布尔集合枚举完整周期；np.roll(a,s)[x]=a[x−s]",
+  "ranges": [
+    {
+      "k": 1,
+      "P": 2,
+      "N_count": 2,
+      "ordered_N_x_checks": 4
+    },
+    {
+      "k": 2,
+      "P": 6,
+      "N_count": 6,
+      "ordered_N_x_checks": 36
+    },
+    {
+      "k": 3,
+      "P": 30,
+      "N_count": 30,
+      "ordered_N_x_checks": 900
+    },
+    {
+      "k": 4,
+      "P": 210,
+      "N_count": 210,
+      "ordered_N_x_checks": 44100
+    },
+    {
+      "k": 5,
+      "P": 2310,
+      "N_count": 2310,
+      "ordered_N_x_checks": 5336100
+    },
+    {
+      "k": 6,
+      "P": 30030,
+      "N_count": 30030,
+      "ordered_N_x_checks": 901800900
+    }
+  ],
+  "counterexample": {
+    "k": 2,
+    "N": 2,
+    "P": 6,
+    "U": [
+      1,
+      5
+    ],
+    "G": [
+      1
+    ],
+    "Pi": [
+      5
+    ],
+    "G_equals_Pi": false
+  },
+  "failures": [],
+  "status": "通过",
+  "elapsed_seconds": 2.6083000419999998,
+  "criteria_sha256": "5e7bc000392ebf24f0d1abefa71d0e6ea6e08536d63b3343aba9c3603b471626"
+}

@@ -1,0 +1,35 @@
+任务：哥德巴赫研究第 3 阶段（仅 D4）。工作目录 ~/goldbach_sd/。用 .venv（numpy/scipy 已装；画图可用 AppKit 或 pip 装 matplotlib 进 .venv）。
+
+硬约束：
+- 不要修改任何已有文件（包括 goldbach_props*.tex、goldbach_G2*.tex、g1_scratch/、REPORT*.md、STARTER.md、starter.py、validate_stage.py、stage2.py、results/ 下已有 json/png/log、spec*.txt、last*.md 等）。只新建文件。
+- 不要 git commit/push，不要联网发送任何东西（可本地读文件）。
+- 运行前先在 REPORT_stage3.md 顶部写出成功标准，再写代码、跑实验；结果只追加在成功标准之后。
+- 新代码写在 stage3_d4.py；输出 results/D4.json、必要 PNG、REPORT_stage3.md。
+- 运行前后记录并核验已有文件 SHA-256。
+
+参数与背景：
+- logistic：f(x)=1−u x²，u_* ≈ 1.4855245（声称是 W₂*W₃*W₅*W₇ 超稳定点）。本地 ~/goldbach_sd 与可读目录未找到更高精度或 W 星积实现；请先再搜一遍（含 Documents/Desktop/Downloads/app_dev 与本目录 tex/md/py）。找不到就用 1.4855245，并在报告写明来源与精度局限。
+- 临界点轨道：x_0=0，x_{n+1}=f(x_n)。注意数值稳定性：用 float64；必要时对符号/分区用临界值邻域保护；报告最大 |x_n| 与是否溢出。
+
+D4 目标：对若干偶数 N，统计 (x_n, x_{N−n})（或对整数地址 (n, N−n)）落入“双存活”柱集的频率，并与 Haar(G_k^N) 比较。
+
+N 选取（至少 12 个偶数）：覆盖 10²…10⁴ 量级；必须含 2 的幂（如 128,256,512,1024,2048,4096,8192,16384）、若干 30030 的倍数（如 30030 本身若太大则用较小合适偶数+说明）、目标尺度附近普通偶数；可加 10⁴、10⁵ 若算力允许。对每个 N 要么全量 n=1…N−1，要么分层/均匀抽样 ≥10⁴ 点且披露抽样。
+
+两种判据都要做：
+A) 里程计地址版（与 G1 直接对照，必须做）：
+   双存活 ⇔ gcd(n, P_k)=1 且 gcd(N−n, P_k)=1，P_k=∏_{i≤k} p_i，k=1…4（p=2,3,5,7）。
+   freq_k^{odo}(N) = #{合格 n}/#{采样 n}。这应与精确计数/N·Haar 一致到 O(1/N)；用它核验实现。
+B) 真实 kneading / 柱集版（尽量做）：
+   用临界轨道的符号序列 / itinerary。标准 logistic 分区：临界点 c=0，L={x<0}，R={x>0}（或按你采用的方向约定，须与论文1 的 S_p=R L^{p−1} 对齐并在报告写明）。
+   第 p 层“被筛掉”对应周期-p 禁止柱（与埃拉托色尼 / Q_k 对应）。更稳妥的可操作定义：若临界轨道符号动力学共轭于里程计 +1，则第 n 步地址 ≡ n (mod P_k)；此时 kneading 双存活应与里程计版一致。请：
+   1) 实现基于符号/柱的存活测试（对前 k 个素数层同时要求两条轨道存活）；
+   2) 对每个 (N,k) 比较 kneading 频率与里程计频率是否一致（逐点或频率差）；
+   3) 若数值 kneading 因浮点不可靠，明确报告不一致处与原因，仍保留里程计结果为主。
+
+Haar：R_k(N)=Haar(G_k^N)= ∏_{p≤p_k, p|N}(1−1/p)·∏_{p≤p_k, p∤N}(1−2/p)。
+输出表：每个 (N,k) 的 freq_odo、freq_knead（若有）、Haar、|freq−Haar|、|freq/Haar−1|。
+成功目标：对足够大的 N（建议 N≥10³ 或 N≥10⁴），里程计版相对误差 |freq/Haar−1| < 10⁻³；kneading 若与里程计一致则同样达标。未达标要如实写。
+
+图：freq 与 Haar 对比（按 k 分面或分色），以及相对误差 vs N（对数横轴）。
+
+REPORT_stage3.md 写清：成功标准及是否达成、u_* 来源、两种判据是否一致、结果表摘要、是否达到 10⁻³、图路径、耗时、局限。最后回复用中文简洁总结关键数值。

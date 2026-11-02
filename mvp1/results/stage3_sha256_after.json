@@ -1,0 +1,22 @@
+{
+  "checked": 2899,
+  "missing": [],
+  "changed": [
+    {
+      "path": "run_stage3.log",
+      "before": "3c0eb4e444f0767ad3c6a6c311187736fbcd6d86a6046ef9463ac3585ca25f8c",
+      "after": "6e83782c790d12f6ec0a2ed0e31865dc29a326f54e31efd5c6aa3639e225a0ee"
+    }
+  ],
+  "all_unchanged": false,
+  "timestamp_unix": 1793600628.4876292,
+  "criteria_sha256": "230b294a2387345d4108849d69789be8ca168f4ec31b411e1200653e8f1d5dab",
+  "report_prefix_unchanged": true,
+  "stage_outputs_sha256": {
+    "stage3_d4.py": "56ca2589cc23642eff98f431917512e13b85ea4bb92db31183afb624d5b13e44",
+    "REPORT_stage3.md": "50f5dc3c7ab385d3ae5e687b305eb485ffccfc4e3af2bb339af32825e3bd2dd5",
+    "results/D4.json": "ac38e845411f4599f883d1bfe5c1fc00b45abcd97e68ced4071a9f779419d08b",
+    "results/D4_frequency.png": "14ef7b5226a8985ccf69a74de3b940e5c5cea49942a10654d3b278d64c780390",
+    "results/D4_relative_error.png": "3a13d922a051b54ff50a1d3441afd29db087244f2da99de662e137932cccb7ea"
+  }
+}

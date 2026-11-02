@@ -1,0 +1,24 @@
+{
+  "timestamp_unix": 1793608449.309549,
+  "observations": [
+    {
+      "path": "u_star/spec.txt",
+      "initial_observed_size": 3735,
+      "snapshot_size": 3735,
+      "snapshot_sha256": "05a6ca4f598bf179e79851f6bac8db42a41e0bd2deab83d7d68778b23dba4a75",
+      "initial_sha256": null,
+      "size_changed": false,
+      "scope": "Pre-existing u_star input, excluded from parent-tree baseline; no retrospective pre-run SHA claim"
+    },
+    {
+      "path": "u_star/run.log",
+      "initial_observed_size": 7521,
+      "snapshot_size": 326991,
+      "snapshot_sha256": "dc1b78388d5a7a528b2ba0bc5ca1d18516bb00fdc2140fe1a7e687ae556beaab",
+      "initial_sha256": null,
+      "size_changed": true,
+      "scope": "Pre-existing u_star input, excluded from parent-tree baseline; no retrospective pre-run SHA claim"
+    }
+  ],
+  "limitation": "The parent SHA baseline excludes all of u_star, including two runner-provided pre-existing files. Initial file sizes are recorded from the first directory listing, not from a pre-run digest. No task operation wrote these input files."
+}

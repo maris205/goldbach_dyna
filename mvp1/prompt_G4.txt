@@ -1,0 +1,32 @@
+【工作目录与约束】你在 ~/goldbach_sd 目录下工作。任务：新建 ~/goldbach_sd/goldbach_G4.tex（CJKutf8；风格、宏、记号与 goldbach_props.tex / goldbach_G2.tex / goldbach_G3.tex 一致——先 Read 三者作参考，尤其 G1 的 U_k、G_k^N、Haar、R_k、里程计，G2 筛法边界，G3 的 Δ_N/ρ_N 与 D4 层次声明）。
+- 只能创建/修改 goldbach_G4.tex；临时脚本只放 g4_scratch/。
+- 只读勿改：一切已有 tex（含 .v1）、REPORT*.md、spec*.txt、run*.log、starter.py、stage*.py、validate_stage.py、STARTER.md、last*.md、.venv/、results/ 下任何文件。Codex 可能并行写 D5，只能读。
+- 不要 git 提交/推送，不要发消息。不做 G5。本机无 LaTeX，只做静态配对检查。
+- 编号：命题/问题用 G4.x（自定义计数器或 theprop=G4.\arabic）；label 前缀 g4:；勿与 G1/G2/G3 冲突。
+- 这是**障碍备忘录**，不是哥德巴赫证明。不要声称改进陈景润或 Pintz。
+
+【任务原文】
+(a) 奇偶障碍：有限层观测量是零熵系统上的 clopen 函数，Möbius/Liouville 与之正交（Karagulyan 2015；Downarowicz–Kasjan 2015 / arXiv:1502.02307；Sarnak 讲义）。因此筛型权重最多得到陈景润型 p+P₂。写清：本框架的 U_k、1_{G_k^N} 为何落在该正交结论的适用范围内。
+(b) 二元次弧障碍：圆法对三元可行（Helfgott），对二元只有例外集；Pintz E(X)<X^{0.72}（arXiv:1804.09084），GRH 下更好。写清对照：主弧 = 有限层 = 里程计；次弧 = 里程计之外；二元少一个变量所以平方平均不够。
+(c) 明确列表：本框架能复述什么（𝔖、均值、有限层等价、窗口误差的 u≈2 位置、CML 的里程计精确版），不能越过什么（奇偶、次弧、从而不能证 r(N)>0）。
+(d) 问题 4.3：例外集作为“窗口命中相对 Haar 的大偏差”；有限层模型中例外集为空，层数随 N 增长后例外从何而来——写成开放问题，对接 Codex 的 D5。
+附录：把前几阶段仍开放的文献降级项（α₂、ν₂、论文1 全文）收进「待核」。
+
+【已核引用（写入 bib 时用这些；页码/卷期以本列表为准；不确定处标「待核」）】
+1. Karagulyan, D. On Möbius orthogonality for interval maps of zero entropy and orientation-preserving circle homeomorphisms. Ark. Mat. 53 (2015), 317–327. DOI: 10.1007/s11512-014-0208-5.
+   **适用范围注意（必须写清）：** 该文针对连续零熵区间映射与保向圆同胚，不是“里程计上 clopen 函数”的直接定理。对本框架：若把观测放到区间侧，可作旁证；对里程计上的 1_{U_k}、1_{G_k^N}，主引用应是 DK + Sarnak（μ 与周期序列正交 ⇒ 对 odometer 成立），不要把 Karagulyan 说成直接覆盖 odometer clopen。
+2. Downarowicz, T.; Kasjan, S. Odometers and Toeplitz systems revisited in the context of Sarnak’s conjecture. arXiv:1502.02307 (2015)；正式发表 Studia Math. 229 (1) (2015), 45–72. DOI: 10.4064/sm8314-12-2015.
+   要点：里程计本身满足 Sarnak；μ 与任意周期序列不相关；对 odometer 的拓扑扩张模型在一定条件下亦然。
+3. Sarnak, P. Three lectures on the Möbius function: randomness and dynamics. IAS/WAM 讲义，约 2010。可核 URL：https://www.math.ias.edu/files/wam/2011/PSMobius.pdf （亦有 IAS publications 镜像）。不要编造出版年份为期刊论文。
+4. Pintz, J. A new explicit formula in the additive theory of primes with applications II. The exceptional set in Goldbach’s problem. arXiv:1804.09084. 定理：存在无效常数 X₂ 使 X>X₂ 时 E(X)<X^{0.72}。GRH 下经典界 E(X)≪_ε X^{1/2+ε}（Hardy–Littlewood；Goldston 改进对数因子）——若引用请标来源，页码待核可写 arXiv 定理号。
+5. Helfgott, H. A. The ternary Goldbach conjecture is true. arXiv:1312.7748；综述 The ternary Goldbach problem arXiv:1501.05438。三元已证；二元未证。
+6. 陈景润型 p+P₂：若写 Chen 定理，用经典出处 Jing-Run Chen, On the representation of a larger even integer as the sum of a prime and the product of at most two primes, Sci. Sinica 16 (1973), 157–176（元数据可核；若对页码不确定标待核）。不要声称本框架改进该结果。
+7. 附录待核项（从前几阶段）：DHR α₂≈5.36 未核到；Ankeny–Onishi ν₂≈4.42 仅见二次表、未在 AO65 原文核到；论文1 Wang26 全文未取得（DOI 可解析但全文抓取失败）。β₂≈4.26645、DHR88/Iwa80/AO65 书目元数据已核可，不必再标待核除非复述数值细节。
+
+【写作要求】
+- 每条引用旁用中文或脚注标明核对状态：可核 / 待核 + 原因。
+- 写清 U_k、1_{G_k^N} 是里程计（或 ℤ̂）上的 clopen（有限层柱并），故沿轨道的读数是最终周期/局部常值序列，落入 μ 与周期序列正交的范围；奇偶障碍 ⇒ 仅靠此类权重无法区分素数与几乎素数，筛法上界于陈型。
+- 圆法对照用“类比备忘”语气，不要伪造定理说“主弧=里程计”已在文献中等同；写成框架内的字典式对照并标“类比/启发式”。
+- 问题 G4.3（或任务所称 4.3）明确开放，对接 D5：例外集 ↔ 窗口相对 Haar 的大偏差；固定 k 时有限层例外空，k=k(N)→∞ 时例外从何而来。
+- 状态标签：障碍陈述用“已述/标准结论转述”；本框架适用性论证标“已证（框架内）”或“部分”；开放问题标“开放”。
+- 最后用中文输出：路径、章节命题清单、每条引用核对状态、问题 G4.3 一句话。

@@ -1,0 +1,94 @@
+{
+  "root_independent_checks": [
+    {
+      "index": 1,
+      "decimal160_residual": "-6.72491058047864556620951274618028776175875289475062286092071463E-97",
+      "bracket_lower_residual": "-2.08991532925857905546114252887793184168640556276986E-109",
+      "bracket_upper_residual": "1.39343482116856072957606681748278979044743422579855E-110",
+      "residual_tolerance_pass": true,
+      "period_hull_sign_checks_pass": true,
+      "printed_rounding_bound_pass": true
+    },
+    {
+      "index": 2,
+      "decimal160_residual": "-4.82931735027299377209536288319479979819485955534314906965135808E-97",
+      "bracket_lower_residual": "3.27243887483858402767731715012335097319715283131029E-110",
+      "bracket_upper_residual": "-2.57266773269630088988548473704641215035504269386610E-109",
+      "residual_tolerance_pass": true,
+      "period_hull_sign_checks_pass": true,
+      "printed_rounding_bound_pass": true
+    },
+    {
+      "index": 3,
+      "decimal160_residual": "-1.270893007174019475924138892459734283967914022907929283354395456E-96",
+      "bracket_lower_residual": "-6.1376443502832588636215731980970878086084486799983E-110",
+      "bracket_upper_residual": "5.253500321583079040088911312161104649970768050439842E-109",
+      "residual_tolerance_pass": true,
+      "period_hull_sign_checks_pass": true,
+      "printed_rounding_bound_pass": true
+    },
+    {
+      "index": 4,
+      "decimal160_residual": "1.8751505079301540346579824569983296771027423556627505025299158237E-96",
+      "bracket_lower_residual": "2.736338970578088990640514852031200732347149352622434E-109",
+      "bracket_upper_residual": "-6.31553210668148939840356213174935523850354609282470E-109",
+      "residual_tolerance_pass": true,
+      "period_hull_sign_checks_pass": true,
+      "printed_rounding_bound_pass": true
+    },
+    {
+      "index": 5,
+      "decimal160_residual": "1.9849926557083486017737228863768772206080715977401757553161579496E-96",
+      "bracket_lower_residual": "-2.3709680652338941689383239753363647104669227481487E-110",
+      "bracket_upper_residual": "1.1360084513624428855700091408326659679754244741553131E-108",
+      "residual_tolerance_pass": true,
+      "period_hull_sign_checks_pass": true,
+      "printed_rounding_bound_pass": true
+    },
+    {
+      "index": 6,
+      "decimal160_residual": "-6.635256330832122384184171347725824344647112112857180929787227658E-96",
+      "bracket_lower_residual": "1.4175379423454775360931372450209057710288921674015554E-108",
+      "bracket_upper_residual": "-1.00137318920306093615280181121152742492655172750109E-109",
+      "residual_tolerance_pass": true,
+      "period_hull_sign_checks_pass": true,
+      "printed_rounding_bound_pass": true
+    },
+    {
+      "index": 7,
+      "decimal160_residual": "5.5048536564271528617918618530104908764014569572107842900218525261E-96",
+      "bracket_lower_residual": "-1.202120809105526565892992642525165703816114723388673E-108",
+      "bracket_upper_residual": "1.3060072800026136098258046822399112309300648387974528E-108",
+      "residual_tolerance_pass": true,
+      "period_hull_sign_checks_pass": true,
+      "printed_rounding_bound_pass": true
+    },
+    {
+      "index": 8,
+      "decimal160_residual": "-1.1192330198678809894579609470641915798758779745958932687287081984E-95",
+      "bracket_lower_residual": "1.7201899656737508374759585578560139434907749190457799E-108",
+      "bracket_upper_residual": "-2.560891135338100722697302894053946507215744403972163E-108",
+      "residual_tolerance_pass": true,
+      "period_hull_sign_checks_pass": true,
+      "printed_rounding_bound_pass": true
+    },
+    {
+      "index": 9,
+      "decimal160_residual": "2.10676063450330871886568438034440264617547226379929604313374898450E-95",
+      "bracket_lower_residual": "-1.0541385288981531397460775626187549268790085057111746E-107",
+      "bracket_upper_residual": "2.4344300082220018748937627063013361806767353180328127E-108",
+      "residual_tolerance_pass": true,
+      "period_hull_sign_checks_pass": true,
+      "printed_rounding_bound_pass": true
+    }
+  ],
+  "D4_CRT_inclusion_exclusion_rows": 126,
+  "exact_threshold_checks": true,
+  "higher_level_obstruction_verified": true,
+  "elapsed_seconds": 0.065741375,
+  "artifact_sha256": {
+    "u_star.json": "ab76b5b8c1ad0f7770670c20a8b98e2b640fa6f3697064a494c276e916281f90",
+    "cylinders.json": "f733ebf061c36518e7079df718f8f0cdb9a5e8924a3e5e6c878a37f0cb9f3d26",
+    "d4_rerun.json": "0c21e3bfeb336d087081eae889c523a68d677e199101eaefc9a6e0175639d2dd"
+  }
+}

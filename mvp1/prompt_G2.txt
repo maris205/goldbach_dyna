@@ -1,0 +1,20 @@
+【工作目录与约束】你在 ~/goldbach_sd 目录下工作。任务：新建 ~/goldbach_sd/goldbach_G2.tex（用 CJKutf8 处理中文，排版风格、宏和记号与 goldbach_props.tex 保持一致；可以先 Read goldbach_props.tex 参考）。
+- 你只能创建/修改 goldbach_G2.tex（以及它的编译产物，如有）；临时脚本只能放在 ~/goldbach_sd/g2_scratch/。
+- goldbach_props.tex、goldbach_props.v1.tex 只读，不得修改。
+- 不得修改、移动、删除 results/ 下任何文件、REPORT.md、spec*.txt、run*.log、starter.py、validate_stage.py、STARTER.md、last*.md、.venv/ 等 Codex 文件。results/D2.json、results/D3.json 可能由 Codex 并行写入，只能读。
+- 不要 git 提交/推送，不要发送任何消息。只做 G2，不做 G3–G4。
+
+【任务原文】
+G2（有限时间窗口）：哥德巴赫是“时间 [0,N] 内的轨道平均”，Polignac 是“时间→∞ 的平均”，二者观测量相同。
+- 命题 2.1：当 P_k ≤ N^θ 时，#{n<N : n ∈ G_k^N} = N·Haar(G_k^N) + O(2^{ω(P_k)}) 级误差（Legendre），给出显式常数和 θ 的允许范围；
+- 解释 k = π(√N) 时 P_k = e^{(1+o(1))√N} ≫ N，窗口太短，误差压倒主项；
+- 用此说明 Mertens 因子 4e^{−2γ} 的来源，并接上 goldbach_props.tex 的 rem:mertensrate（收敛速度 1/log N，10⁸ 时偏高 12%）；不要用数值去“证明”渐近结论。
+- 写出最大可控层 k_max(N)（使 Legendre 误差 ≤ 主项的 ε）随 N 的阶，和 Codex 的 D2 临界层对照（数据在 ~/goldbach_sd/results/D2.json、D3.json；若尚未生成就注明待对照，不要编数）。
+每条命题标“已证/部分/猜想”。
+
+【补充要求】
+- 证明要严格：写清误差项的显式常数（例如 |误差| ≤ 某个显式的 c·2^{ω} 或 3^{ω} 型界——请自己核实 G_k^N 的局部剩余类个数，p∤N 时删 2 类、p|N 时删 1 类，所以 Legendre 展开的项数到底是多少要算对），以及由此得到的 θ 允许范围与 k_max(N) 的阶（含 log/loglog 因子）。
+- 明确区分“已证”“部分”“猜想”；对数值只做说明性引用，不作证明。
+- 如果 results/D2.json、D3.json 在你开始时不存在，请在写完前再检查一次；仍不存在就在文中注明“待对照”，绝不编造数字。若存在，先读懂其字段含义再引用，引用时注明字段名。
+- Mac 上没有 LaTeX，不用编译；只做括号/环境配对等静态检查。
+- 最后用中文输出：文件路径、命题清单及各自状态、k_max(N) 的公式、与 D2/D3 的对照情况、任何不确定之处。

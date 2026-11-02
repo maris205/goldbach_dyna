@@ -1,0 +1,26 @@
+【工作目录与约束】你在 ~/goldbach_sd 目录下工作。任务：在已有 ~/goldbach_sd/goldbach_G3.tex 上**补写/修订**（不要整文件重写；保留已有正确的里程计主线证明）。已备份为 goldbach_G3.v1.tex（只读勿改）。
+- 只能修改 goldbach_G3.tex；临时脚本只放 g3_scratch/。
+- 只读勿改：goldbach_props.tex、goldbach_props.v1.tex、goldbach_G2.tex、goldbach_G2.v1.tex、goldbach_G3.v1.tex、REPORT.md、REPORT_stage2.md、REPORT_stage3.md、spec*.txt、run*.log、starter.py、stage2.py、validate_stage.py、STARTER.md、last*.md、.venv/，以及 results/ 下任何文件（含 D4.json）。
+- 不要 git 提交/推送，不要发消息。不做 G4。本机无 LaTeX，只做静态配对检查。
+- 编号继续用命题 G3.x / 标签 g3:；可新增小节或注记，勿与 G1/G2 label 冲突。
+
+【数学主控组收紧要求——必须落实到 tex】
+Codex 的 D4 已完成，请 Read REPORT_stage3.md 与 results/D4.json（只读），把下列结论写进 G3（建议新开一节「与 D4 数值对照」或在相关命题后加注；数字必须以文件为准，勿凭记忆改写）：
+
+达成（里程计地址版）：双存活 ⇔ gcd(n,P_k)=1 且 gcd(N−n,P_k)=1。对 N≥10⁴、k≤4，|freq/Haar−1| 全部 < 10⁻³（最差约 9.0×10⁻⁴，在 N=10000、k=3）。这只验证有限周期局部密度 ≈ Haar，不是哥德巴赫证明。
+
+未达成（真实 kneading / 柱词版）：不能宣称区间映射与里程计共轭已数值证实。要点（写入文中）：
+- u_*=1.4855245 只有 7 位小数；D4 敏感性：±5e−8 扰动在第 120–162 步就会改符号；
+- P=210 训练出现冲突柱（D4：冲突柱数 8）；72 组都有未知对（knead_rows_resolved=0，knead_all_match=false）；
+- G1 里的 S_p=RL^{p−1} 是里程计筛编码，不能直接等同于从 logistic 轨道学出来的柱词。
+
+因此请调整措辞与状态标签：
+1. 主线严格写在里程计 / 乘积系统层面（Δ_N、ρ_N、集合恒等式、ν_N(Δ_N∩(U_k×U_k))=Haar(G_k^N)，比值 = R_k(N)），标明**已证**。保留你对“任务原文把 Haar(G) 与 R_k 混写”的澄清——但不要说任务错到需要改主结论；写成：绝对测度为 Haar(G_k^N)，相对独立模型的圆柱比为 R_k(N)。
+2. “区间映射上的自然实现 / 临界轨道共轭 / (H_∞)”标为**部分或开放**；明确写：数值上因 u_* 截断敏感而未能验证共轭；D4 未建立真实物流映射与指定里程计的共轭。若首轮文中有“在 u_* 处做了数值核对 (H_4)”之类偏乐观表述，改为与 D4 一致：固定 u=1.4855245 为任务转述参数，周期检验与符号诊断均未支持宣称共轭。
+3. **不要**根据 D4 声称 CML 在区间映射层已经数值证实；可以说：“里程计层与 G1/D4 地址版数值一致；区间层仍缺精确 u_* 与禁止柱字典”。
+4. 若首轮对 u_* 附近做了独立搜索并列出候选超稳定点：保留为附注可以，但必须标明与 D4 官方实验参数/结论的关系，且不得用来覆盖 D4“未达成共轭”的结论。
+5. 命题 G3.5 / CML 对照：里程计坐标下的等价 n∈G_k^N 保持已证；“与论文1 §6.3 / 区间混沌轨道”保持待核对 + 部分/开放。
+
+【自检】补写后静态检查括号/环境/标签；确认引用的 D4 数字与 REPORT_stage3.md / D4.json 一致（至少写入：max_relative_error_N_ge_10000≈0.00090009、N=10000 k=3 最差、knead_all_match=false、P=210 conflicting_cylinders=8、敏感性 first_sign_difference 120/162）。
+
+最后用中文输出：改动摘要、命题状态是否按收紧要求调整、所引 D4 数字列表、Δ↔G 一句话是否仍成立。

@@ -1,0 +1,35 @@
+D2 N=8192: kc={'k': 17, 'p': 59, 'x': 5.43874376548167, 'relative_error': 0.10409343718358664}, 0.02s
+D2 N=10000: kc={'k': 16, 'p': 53, 'x': 4.878268286545932, 'relative_error': 0.10146530496845627}, 0.02s
+D2 N=12468: kc=None, 0.04s
+D2 N=30030: kc=None, 0.15s
+D2 N=90090: kc=None, 0.00s
+D2 N=100000: kc=None, 0.00s
+D2 N=102468: kc=None, 0.00s
+D2 N=131072: kc=None, 0.00s
+D2 N=510510: kc={'k': 82, 'p': 421, 'x': 30.040050353533974, 'relative_error': 0.10047467325720974}, 0.00s
+D2 N=990990: kc={'k': 98, 'p': 521, 'x': 35.726988837062, 'relative_error': 0.10010598098794217}, 0.00s
+D2 N=1000000: kc={'k': 99, 'p': 523, 'x': 36.15666693976801, 'relative_error': 0.10021577858790257}, 0.00s
+D2 N=1002468: kc={'k': 100, 'p': 541, 'x': 36.60566864423067, 'relative_error': 0.10034505122168765}, 0.00s
+D2 N=1021020: kc={'k': 103, 'p': 563, 'x': 37.927483912885194, 'relative_error': 0.10075415502542495}, 0.00s
+D2 N=1048576: kc={'k': 111, 'p': 607, 'x': 41.53434215689844, 'relative_error': 0.10037042823424423}, 0.01s
+D2 N=8388608: kc={'k': 195, 'p': 1187, 'x': 71.82320202837779, 'relative_error': 0.10046491792987157}, 0.03s
+D2 N=9999990: kc={'k': 209, 'p': 1289, 'x': 77.22781173361123, 'relative_error': 0.10008164502172122}, 0.03s
+D2 N=10000000: kc={'k': 212, 'p': 1301, 'x': 78.56182744436593, 'relative_error': 0.10037368477963556}, 0.03s
+D2 N=10002468: kc={'k': 215, 'p': 1319, 'x': 79.89652776375468, 'relative_error': 0.10008381442449411}, 0.03s
+D2 N=10210200: kc={'k': 212, 'p': 1301, 'x': 78.46056568636321, 'relative_error': 0.10004428230938092}, 0.03s
+D2 N=99999900: kc={'k': 490, 'p': 3511, 'x': 185.53174411594455, 'relative_error': 0.10014975214223422}, 0.90s
+D2 N=100000000: kc={'k': 487, 'p': 3469, 'x': 184.2026934664176, 'relative_error': 0.10001099554793219}, 0.93s
+D2 N=100002468: kc={'k': 488, 'p': 3491, 'x': 184.64531481306057, 'relative_error': 0.10019865427871032}, 0.88s
+D2 N=100059960: kc={'k': 492, 'p': 3527, 'x': 186.4123652991806, 'relative_error': 0.10014679135777602}, 0.90s
+D2 N=134217728: kc={'k': 549, 'p': 3967, 'x': 208.5417874356813, 'relative_error': 0.10002981374759698}, 1.38s
+D3 FFT 0.19s residual=7.45786e-11
+Traceback (most recent call last):
+  File "/Users/maris/goldbach_sd/stage2.py", line 242, in <module>
+    D2=d2(prime);D3=d3(prime);plots(D2,D3)
+  File "/Users/maris/goldbach_sd/stage2.py", line 127, in d3
+    vals=np.array([integral(float(n))[0] for n in knots]);interp=CubicSpline(np.log(knots),np.log(vals))
+  File "/Users/maris/goldbach_sd/.venv/lib/python3.9/site-packages/scipy/interpolate/_cubic.py", line 742, in __init__
+    x, dx, y, axis, _ = prepare_input(x, y, axis)
+  File "/Users/maris/goldbach_sd/.venv/lib/python3.9/site-packages/scipy/interpolate/_cubic.py", line 70, in prepare_input
+    raise ValueError("`x` must be strictly increasing sequence.")
+ValueError: `x` must be strictly increasing sequence.

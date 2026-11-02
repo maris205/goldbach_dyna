@@ -1,0 +1,674 @@
+% goldbach_paper.tex  ---  短文：筛法与符号动力学对应下的哥德巴赫有限层模型
+% 由 G1（goldbach_props.tex）、G2（goldbach_G2.tex）、G3（goldbach_G3.tex）、G4（goldbach_G4.tex）
+% 与 REPORT.md / REPORT_stage2--4.md、results/D1--D5.json 合并精简而成。旧稿不改。
+% 编译：pdflatex goldbach_paper.tex（需要 CJKutf8 与 gbsn 字体；本机无 pdflatex，未编译，只做了静态配对检查）。
+% 本文件的 label 一律带前缀 paper:。正文命题编号为 P.1, P.2, ...；状态总表注明其在 G1--G4 中的出处。
+\documentclass[11pt,a4paper]{article}
+\usepackage{CJKutf8}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage[margin=2.5cm]{geometry}
+
+% ---- 宏：与 G1--G4 一致 ----
+\newcommand{\Zhat}{\widehat{\mathbb Z}}
+\newcommand{\Haar}{\mu}
+\newcommand{\Sing}{\mathfrak S}
+\newcommand{\Lsym}{\ensuremath{\mathsf{L}}}
+\newcommand{\Rsym}{\ensuremath{\mathsf{R}}}
+\newcommand{\status}[1]{\par\noindent\fbox{\textbf{状态：#1}}\par\smallskip}
+\newcommand{\Cnt}{\mathcal N}          % 窗口计数（G2）
+\newcommand{\kmax}{k_{\max}}           % Legendre 可控层（G2）
+\newcommand{\Om}{\Omega}               % 里程计 prod_p Z/pZ（G3）
+\newcommand{\cyl}[2]{[#1]_{#2}}        % 第 k 层柱集（G3）
+\newcommand{\pr}{\mathrm{pr}}
+\newcommand{\ust}{u_{*}}               % 任务转述参数（G3）
+\newcommand{\uinf}{u_{\infty}}
+\newcommand{\Mob}{\mu_{\mathrm{M}}}    % M\"obius 函数（与 Haar 测度 \mu 区分；G4）
+\newcommand{\Liou}{\lambda}            % Liouville 函数（G4）
+\newcommand{\ee}{\mathrm e}
+\newcommand{\Ram}{c^{\mathrm{Ram}}}    % Ramanujan 和（G4）
+\newcommand{\Exc}{\mathcal E}          % 例外集（G4）
+\newcommand{\Maj}{\mathfrak M}
+\newcommand{\Min}{\mathfrak m}
+
+\theoremstyle{plain}
+% 正文命题使用独立计数器 P.1, P.2, ...；猜想与问题另行编号
+\newtheorem{prop}{命题}
+\renewcommand{\theprop}{P.\arabic{prop}}
+\newtheorem{conj}{猜想}
+\renewcommand{\theconj}{C.\arabic{conj}}
+\newtheorem{quest}{问题}
+\renewcommand{\thequest}{Q.\arabic{quest}}
+\newtheorem{lem}{引理}[section]
+\newtheorem{cor}[lem]{推论}
+\theoremstyle{definition}
+\newtheorem{defn}[lem]{定义}
+\newtheorem{hyp}[lem]{假设}
+\newtheorem{rem}[lem]{注}
+\renewcommand{\proofname}{证明}
+
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+
+\title{筛法与符号动力学对应下的哥德巴赫有限层模型\\[2pt]
+\large ——{}字典、窗口误差、里程计复述与障碍定位}
+\author{（工作稿；由 G1--G4 合并精简）}
+\date{2026-11-02}
+\maketitle
+
+\begin{abstract}
+在 $\Zhat$（及其商 $\Om=\prod_p\mathbb Z/p\mathbb Z$）上把埃拉托色尼筛的第 $k$ 层写成 clopen 集 $U_k$，把哥德巴赫的第 $k$ 层写成
+$G_k^N=U_k\cap(N-U_k)$。在这一有限层模型中我们复述并整理以下事实：
+(i) 哥德巴赫集与间隔 $N$ 的 Polignac 集相差一个平移或反射，其 Haar 测度相对独立模型之比\emph{恰为}截断的 Hardy--Littlewood 奇异级数 $R_k(N)$，并有 Haar 平均与自然密度平均；
+(ii) 时间窗口 $[0,N)$ 上的命中数与 Haar 预测之差有全显式的 Legendre 界 $2\cdot3^{k-2}$，可控层由剩余类个数而非周期决定；顶层 $k=\pi(\sqrt N)$ 的窗口计数与有序表示数 $r(N)$ 之差有精确恒等式；
+(iii) 把“两条混沌轨道之和与整数格相交”在里程计坐标中写成精确陈述：反同步集是反射 $\rho_N$ 的图像而非平移的图像，双存活 $\iff n\in G_k^N$；区间映射侧的共轭开放，数值上未达成；
+(iv) 定位障碍：一切有限层观测量都是里程计 clopen 函数（读数为周期序列），在浅层与 M\"obius 正交，而在哥德巴赫层与 M\"obius \emph{完全相关}——这是奇偶障碍在本框架中的形状；圆法的主弧算术部分可在里程计上精确复现，次弧没有对应物（类比 / 启发式）；固定层例外集严格有限，增长层开放。
+数值实验 D1--D5 只作对照。
+
+\textbf{定位声明。} 本文\emph{不}宣称证明二元哥德巴赫猜想，\emph{不}改进陈景润定理 \cite{Chen73}，\emph{不}改进 Pintz 的例外集界 \cite{Pin18} 或任何解析例外集上界，
+\emph{不}对哥德巴赫或 Polignac 猜想提供新的数论证据。全文是有限层模型的复述与障碍定位：严格结论均为紧群上的初等事实或经典定理的直接套用；凡涉及区间映射、
+论文1 \cite{Wang26} 原意、未核文献常数之处，均标为条件性、开放或待核。
+\end{abstract}
+
+\section*{状态总表}
+\begin{center}
+\small
+\begin{tabular}{p{1.5cm}p{6.6cm}p{2.3cm}p{4.0cm}}
+\hline
+编号 & 内容 & 出处 & 状态\\
+\hline
+命题 \ref{paper:prop:dict} & $G_k^N=U_k\cap(U_k+N)$；Polignac 集 $=-G_k^N$；符号序列字典（方向修正） & G1 prop:dict & 已证\\
+命题 \ref{paper:prop:window} & 有限窗口：中段计数 $=$ 两素数均 $>\sqrt N$ 的表示数 & G1 prop:window & 已证\\
+命题 \ref{paper:prop:ratio} & 柱集比 $=R_k(N)\to\Sing(N)$；$=\sum_{q\mid P_k}\Mob^2\Ram_q/\varphi^2$ & G1 prop:ratio；G4.2(c) & 已证\\
+命题 \ref{paper:prop:avg} & Haar 平均 $1$（偶数上 $2$）；鞅延拓；自然密度平均 $\to2$ & G1 prop:haaravg/martingale/density & 已证\\
+注 \ref{paper:rem:FG} & 误差次项 $-\frac12\log X$ & G1 rem:FG & 部分（引用，数值只给趋势）\\
+命题 \ref{paper:prop:legendre} & 窗口误差 $|E_k(N)|\le2\cdot3^{k-2}$；$\kmax(N)$ 的阶 & G2 prop:legendre/kmax & 已证\\
+命题 \ref{paper:prop:top} & 顶层恒等式 $\Cnt_k-r=2\cdot\mathbf 1[N-1\text{ 素}]-2\#\{\cdots\}$；与 HL 的等价 & G2 lem:topexact、prop:toperr & 恒等式与等价已证；HL 本身为猜想\\
+命题 \ref{paper:prop:sieve} & 筛法 $u$ 表述：上界 $F_2$、$u>\beta_2$ 正下界、基本引理可控层 & G2 prop:FL/sieveu & 部分（引用，常数不显式）\\
+猜想 \ref{paper:conj:2dim} & 二维 Buchstab：$Z_k\to(\ee^\gamma\omega(u))^2$ & G2 conj:2dim & 猜想\\
+命题 \ref{paper:prop:cml} & 里程计精确版：$D_N=$ 图$(\rho_N)$，$\Haar_N$-测度 $=\Haar(G_k^N)$，比值 $=R_k(N)$，地址双存活 $\iff n\in G_k^N$ & G3.1--G3.3、G3.5、lem:address & 已证（里程计层）\\
+命题 \ref{paper:prop:nomono} & 在 $(H_\infty)$/$(H_k)$ 下反射在区间上不可单调实现 & G3.4 & 条件性（前提开放）\\
+假设 $(H_k)$/$(H_\infty)$ & 区间映射临界轨道共轭于里程计；kneading 柱词版 & G3 hyp & 开放；D4 未达成\\
+命题 \ref{paper:prop:parity} & clopen $\Rightarrow$ 周期 $\Rightarrow$ M\"obius 正交；一致范围；顶层完全相关 & G4.1 & 框架内已证；正交性为标准结论转述\\
+命题 \ref{paper:prop:circle} & 点谱、主弧系数 $=$ Haar 条件期望；$L^2$ 记账 & G4.2 & 已证（(d) 所需估计为转述）\\
+注 \ref{paper:rem:dict} & “主弧 $=$ 有限层，次弧 $=$ 里程计之外” & G4 rem:dict & 类比 / 启发式\\
+命题 \ref{paper:prop:fixedk} & 固定层例外集严格有限（周期论证）$+$ Legendre 显式界 & G4.4 & 已证\\
+命题 \ref{paper:prop:monotone} & 例外集随 $k$ 单调；顶层包含哥德巴赫例外 & G4.5 & (a)(b) 已证；(c) 部分\\
+问题 \ref{paper:quest:ld} & 增长层 $k(N)\to\infty$ 的例外从何而来（大偏差） & G4.3 & 开放\\
+\S\ref{paper:sec:numerics} & D1--D5 数值 & REPORT*、D*.json & 数值对照，非证明\\
+\S\ref{paper:sec:list} & 能复述 / 不能越过 & G4 \S(c) & 已述\\
+\hline
+\end{tabular}
+\end{center}
+
+%=====================================================================
+\section{引言}\label{paper:sec:intro}
+
+论文1 \cite{Wang26}（Wang，\emph{The emergence of prime distribution from low-dimensional deterministic chaos}）提出用 logistic 映射的揉序（kneading，参见 \cite{MSS73}）与
+重整化塔描述素数筛：周期 $p$ 的符号块 $S_p=\Rsym\Lsym^{p-1}$ 对应“被 $p$ 筛去 / 过筛”，逐素数取逐位与得到 $Q_k$；
+并在其 \S6.3 建议用耦合映射格点（CML，参见 \cite{Kan84}）的同步流形为哥德巴赫问题建模，“两条混沌轨道之和与整数格相交”。\footnote{论文1 全文未能取得（出版社页面拒绝访问），
+$S_p,Q_k$ 记号、\S6.3 的 CML 表述与参数 $\ust$ 均按任务说明转述，与原文逐字约定\textbf{待核}，见附录 \ref{paper:app:pending}。}
+
+本文把这一动机落到一个可以严格陈述的对象上：\emph{有限层模型}。在 $\Zhat$ 或 $\Om$ 上，筛的第 $k$ 层是 clopen 集 $U_k$，
+哥德巴赫的第 $k$ 层是 $G_k^N=U_k\cap(N-U_k)$，里程计 $T(x)=x+1$ 从 $0$ 出发的轨道读出整数。于是有三层对应：
+\begin{center}
+\begin{tabular}{p{4.2cm}p{4.8cm}p{5.4cm}}
+\hline
+筛法 & 符号动力学 / 里程计 & 本文位置\\
+\hline
+剩余类条件 $\gcd(n(N-n),P_k)=1$ & clopen 集 $G_k^N$，柱集 $\cyl ak$ & \S\ref{paper:sec:prelim}、\S\ref{paper:sec:G1}\\
+局部密度 / 奇异级数 & Haar 测度比 $R_k(N)$ & \S\ref{paper:sec:G1}\\
+窗口长度 $N$、筛参数 $u$ & 有限时间平均 vs.\ 时间 $\to\infty$ 平均 & \S\ref{paper:sec:G2}\\
+$n$ 与 $N-n$ & 反射 $\rho_N$ 的图像 $D_N$ & \S\ref{paper:sec:G3}\\
+奇偶障碍、次弧 & clopen 观测量的极限 & \S\ref{paper:sec:G4}\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{本文做什么、不做什么。}
+本文复述已知结果（Hardy--Littlewood 奇异级数 \cite{HL23}、其平均 \cite{Gal76,FG95}、Legendre/Buchstab/筛法基本引理、M\"obius 正交与圆法的标准结论），
+给出它们在有限层模型中的精确形式，并定位模型\emph{不能越过}的障碍。本文\textbf{不}宣称证明哥德巴赫猜想，\textbf{不}改进陈景润 $p+P_2$ \cite{Chen73}，
+\textbf{不}改进 Pintz 的 $|\Exc(X)|<X^{0.72}$ \cite{Pin18}。新意仅在于：把“哥德巴赫 $=$ 有限窗口的 Polignac”与“两轨道之和”写成精确的集合恒等式，
+核正方向约定，并把各条结论的状态（已证 / 部分 / 猜想 / 开放）逐一标清。详细证明多已在工作稿 G1--G4 \cite{G1,G2,G3,G4} 中给出，本文只保留短证或指向原稿。
+
+%=====================================================================
+\section{预备}\label{paper:sec:prelim}
+
+\begin{itemize}[leftmargin=*]
+\item $p_1=2<p_2=3<\cdots$ 为素数，$P_k=\prod_{i\le k}p_i$。$\Zhat=\varprojlim\mathbb Z/m\cong\prod_p\mathbb Z_p$，$\Om:=\varprojlim\mathbb Z/P_k\cong\prod_p\mathbb Z/p$ 为其商；
+$\Haar$ 为 Haar 概率测度（在 $\Om$ 上取像测度，记号不变）。$\mathbb Z$ 对角嵌入二者且稠密。$x_p:=x\bmod p$；由 CRT，$(x_p)_p$ 在 $\Haar$ 下独立均匀。
+本文一切有限层命题只依赖 $x\bmod P_k$，在 $\Zhat$ 与 $\Om$ 上写法等价（G1 \S1、G3 \S1）。
+\item 里程计 $T(x)=x+1$。第 $k$ 层柱集 $\cyl ak:=\{x:x\bmod P_k=a\}$，$\Haar(\cyl ak)=1/P_k$。
+\item $U_k:=\{x:x_p\ne0,\ \forall p\le p_k\}$（clopen，$\Haar(U_k)=\prod_{p\le p_k}(1-1/p)$，$U_k=-U_k$，$U_k\cap\mathbb Z=\{n:\gcd(n,P_k)=1\}$）。
+\item $G_k^N:=U_k\cap(N-U_k)$，$\Pi_k^N:=U_k\cap(U_k-N)$（Polignac）。$\nu_p(N):=\#\{0,N\bmod p\}\in\{1,2\}$。
+\item 局部因子 $c_p(N)=\frac{p}{p-1}$（$p\mid N$）或 $\frac{p(p-2)}{(p-1)^2}$（$p\nmid N$），$R_k(N):=\prod_{p\le p_k}c_p(N)$；
+$C_2=\prod_{p\ge3}(1-(p-1)^{-2})=0.6601618158\ldots$，$\Sing(N)=2C_2\prod_{p\mid N,p\ge3}\frac{p-1}{p-2}$（$N$ 偶）。
+\item 窗口量（G2）：$\Cnt_k(N):=\#\{0<n<N:n\in G_k^N\}$，$E_k(N):=\Cnt_k(N)-N\Haar(G_k^N)$，规范化命中 $Z_k(N):=\Cnt_k(N)/(N\Haar(G_k^N))$（G4）。
+G2 中的相对误差 $\rho_k(N)$ 即 $|Z_k(N)-1|$；为避免与反射 $\rho_N$ 冲突，本文一律写 $|Z_k(N)-1|$。D5 的 $m_k(N)$ 即 $\Cnt_k(N)$。
+\item 筛参数 $u:=\log N/\log p_k$；哥德巴赫层 $k=\pi(\sqrt N)$ 对应 $u\approx2$。$r(N)$ 为有序哥德巴赫表示数。
+\item 例外集：$\Exc(X):=\{4\le N\le X\ \text{偶}:r(N)=0\}$；固定层例外集 $\Exc_k(X):=\{4\le N\le X\ \text{偶}:\Cnt_k(N)=0\}$。
+\item 符号序列（G1 \S1）：双边序列 $w\in\{\Lsym,\Rsym\}^{\mathbb Z}$，左移 $(\sigma w)_n=w_{n+1}$；$(S_p)_n=\Rsym\iff p\mid n$（从 $n=0$ 起读 $\Rsym\Lsym^{p-1}$）；
+$\wedge$ 为以 $\Lsym$ 为“真”的逐位与；$Q_k=S_{p_1}\wedge\cdots\wedge S_{p_k}$，$(Q_k)_n=\Lsym\iff n\in U_k$。周期 $P_k$ 序列 $\leftrightarrow$ 第 $k$ 层 clopen 集，$\wedge\leftrightarrow\cap$，
+$\sigma^N w\leftrightarrow A-N$，$\sigma^{-N}w\leftrightarrow A+N$。
+\end{itemize}
+
+\begin{lem}[里程计；G1 prop:odometer、G3 lem:odo]\label{paper:lem:odo}
+$T$ 在 $\Zhat$ 与 $\Om$ 上极小且唯一遍历（唯一不变概率测度为 $\Haar$）；与 $T$ 交换的同胚恰为平移；对任意第 $k$ 层 clopen 集 $A$ 与任意起点 $x$，
+$\frac1L\#\{0\le n<L:T^nx\in A\}\to\Haar(A)$。编码 $c_A(x)=(\mathbf 1_A(T^nx))_n$ 满足 $c_A\circ T=\sigma\circ c_A$，$c_{U_k}(0)=Q_k$。
+\end{lem}
+\status{已证（标准事实；证明见 G1、G3）}
+
+%=====================================================================
+\section{G1：奇异级数 $=$ Haar 柱集比}\label{paper:sec:G1}
+
+\begin{prop}[字典；G1 prop:dict]\label{paper:prop:dict}
+对 $N\in\Zhat$、$k\ge1$：(a) $G_k^N=U_k\cap(U_k+N)$；(b) $\Pi_k^N=G_k^N-N=-G_k^N$；(c) $N=2M$ 时 $G_k^N-M=(U_k+M)\cap(U_k-M)$，关于取负对称；
+(d) $G_k^N\leftrightarrow Q_k\wedge\sigma^{-N}Q_k$，$\Pi_k^N\leftrightarrow Q_k\wedge\sigma^NQ_k$。
+\end{prop}
+\status{已证}
+\begin{proof}
+全部由 $U_k=-U_k$ 得出：$N-U_k=N+U_k$；其余是平移与 $\sigma^{\pm N}\leftrightarrow A\mp N$ 的翻译（详见 G1）。
+\end{proof}
+
+\begin{rem}[方向修正]\label{paper:rem:direction}
+在左移约定下，“$G_k^N=Q_k\wedge\sigma^NQ_k$”\textbf{字面上不成立}：右边是 Polignac 集 $\Pi_k^N$。反例：$k=2$，$N=2$，$G_2^2\bmod6=\{1\}$，$\Pi_2^2\bmod6=\{5\}$
+（V1 复现，REPORT.md）。正确说法是“相差平移 $\sigma^N$（或反射）后相等”，或“以 $N/2$ 为中心时严格相等”。一切平移不变量对二者相同。
+\end{rem}
+
+\begin{prop}[有限窗口；G1 prop:window]\label{paper:prop:window}
+设 $N\ge4$，$k=\pi(\sqrt N)$。则 $\#\{\sqrt N<n<N-\sqrt N:n\in G_k^N\}=\#\{(p,q):p+q=N,\ p,q>\sqrt N\}$，从而
+$0\le r(N)-\#\{\sqrt N<n<N-\sqrt N:n\in G_k^N\}\le2\pi(\sqrt N)$。
+\end{prop}
+\status{已证}
+\noindent 哥德巴赫只读一个长度 $N$ 的窗口，而周期 $P_k=\ee^{(1+o(1))\sqrt N}\gg N$；Polignac 在固定层读时间 $\to\infty$ 平均。\emph{从 Haar 测度过渡到单一短窗口是全部困难所在}，本文不触及。
+
+\begin{prop}[柱集比 $=$ 截断奇异级数；G1 prop:ratio，G4.2(c)]\label{paper:prop:ratio}
+(a) 对 $N\in\Zhat$、$k\ge1$：$\Haar(G_k^N)/\Haar(U_k)^2=R_k(N)$；$N$ 奇时 $G_k^N=\varnothing$。
+(b) $N$ 偶时 $R_k(N)=2C_2(k)\prod_{3\le p\le p_k,\,p\mid N}\frac{p-1}{p-2}$，$C_2(k)$ 为截断孪生素数常数。
+(c) 偶数 $N\ne0$ 时 $R_k(N)\to\Sing(N)$；当 $p_k$ 不小于 $N$ 的最大素因子时 $1\le R_k(N)/\Sing(N)\le(1-\frac1{p_k-1})^{-1}$。
+(d)（圆法形式）以 $\Ram_q$ 记 Ramanujan 和，则 $\sum_{q\mid P_k}\frac{\Mob(q)^2}{\varphi(q)^2}\Ram_q(N)=R_k(N)$ 对一切整数 $N$ 精确成立。
+\end{prop}
+\status{已证}
+\begin{proof}
+(a) $G_k^N=\{x:x_p\notin\{0,N_p\}\}$，CRT 独立性给出 $\Haar(G_k^N)=\prod_p(1-\nu_p(N)/p)$，除以 $\Haar(U_k)^2$。(b)(c) 直接计算与 $\sum(p-1)^{-2}<\infty$。
+(d) 左边积性，局部因子 $1+\Ram_p(N)/(p-1)^2$ 与 $c_p(N)$ 逐项相同（G4）。
+\end{proof}
+
+\begin{rem}
+“柱集比 $=$ 奇异级数”在数论上就是 Hardy--Littlewood 局部密度的定义本身，不含新的数论内容。常数 $2C_2$ 中的 $2$ 是 $p=2$ 的局部因子 $c_2=2$。
+\end{rem}
+
+\begin{prop}[平均；G1 prop:haaravg、prop:martingale、prop:density]\label{paper:prop:avg}
+(a) $\int_{\Zhat}R_k\,d\Haar=1$，偶剩余类上平均为 $2$。
+(b) 在 $(\Zhat,\Haar)$ 上 $c_p$ 独立、$\mathbb E c_p=1$，$R_k$ 是 $L^2$ 有界鞅，a.e.\ 收敛到 $R_\infty$，$\int R_\infty=1$，$\int R_\infty^2=2\prod_{p\ge3}(1+(p-1)^{-3})$；偶整数处 $R_\infty=\Sing$。
+(c) $\sum_{N\le X,\,2\mid N}R_k(N)=X-\theta_k(X)$，$0\le\theta_k(X)<\prod_{p\le p_k}\frac p{p-1}$；$\sum_{N\le X,\,2\mid N}\Sing(N)=X+O(\log X)$。
+\end{prop}
+\status{已证}
+\begin{proof}
+(a) Fubini 与 $x\mapsto N-x$ 的 Haar 不变性。(b) $L^2$ 鞅收敛。(c) 展开 $\prod(1+\frac1{p-2})=\sum_{d}h(d)$ 并交换求和；$k\to\infty$ 部分取 $p_k\ge X$。详见 G1。
+\end{proof}
+
+\begin{rem}[次项；部分]\label{paper:rem:FG}
+据 Friedlander--Goldston \cite{FG95}，$\sum_{h\le H}\Sing(h)=H-\frac12\log H+O((\log H)^{2/3})$（按我们的理解转述，以原文为准）。
+V6 数值 $E(X)/\log X$ 为 $-0.567,-0.530,-0.541,-0.538,-0.505,-0.516$（$X=10^3,\dots,10^8$），与 $-\frac12$ 相容但不单调，\emph{只给趋势}。
+\end{rem}
+
+\begin{rem}[Mertens 因子：只能取比值]\label{paper:rem:mertens}
+$N\Haar(G_k^N)$（$k=\pi(\sqrt N)$）不是 $r(N)$ 的正确预测：由 Mertens 第三定理 $\Haar(U_k)^2(\log N)^2\to4\ee^{-2\gamma}\approx1.2609$，
+渐近地多出这一因子。G1 的分解 $\frac{N\Haar(G_k^N)}{r(N)}=A\cdot B\cdot D\cdot C$ 中，$A\to4\ee^{-2\gamma}$，$B=1-\frac2{\log N}+\cdots$ 是慢收敛的唯一主要来源，
+$D\to1$ 是奇异级数尾部，$C$ 是 HL 本身的误差。V9 实测偏高 $0.5\%,1.3\%,6.8\%,9.9\%,12.0\%$（$N=10^4,\dots,10^8$），只给趋势。
+\end{rem}
+
+%=====================================================================
+\section{G2：有限时间窗口与可控层}\label{paper:sec:G2}
+
+$\Cnt_k(N)$ 是 $0$ 的 $T$-轨道在时间 $[0,N)$ 内访问 $G_k^N$ 的次数（$0,N\notin G_k^N$），$N\Haar(G_k^N)$ 是时间 $\to\infty$ 平均给出的预测。
+
+\begin{prop}[Legendre 窗口误差与可控层；G2 lem:local、prop:legendre、prop:kmax]\label{paper:prop:legendre}
+(a) $G_k^N$ 在每个 $p\le p_k$ 处删去 $\nu_p(N)$ 个剩余类；按“（$d$，剩余类）”计，Legendre 展开有 $\prod_{p\le p_k}(1+\nu_p(N))=3^{k-\omega_k(N)}2^{\omega_k(N)}$ 项（不是 $2^k$ 项）。
+(b) 对任意起点与长度，$|E_k(N;x_0,L)|\le\prod_{p\le p_k}\min(p-\nu_p,1+\nu_p)$；对偶数 $N$、$k\ge2$，$|E_k(N)|\le2\cdot3^{k-2}$；另有周期界 $|E_k|\le P_k\Haar(G_k^N)$。
+(c) 令 $\kmax(N,\varepsilon)$ 为使上界保证 $|Z_k(N)-1|\le\varepsilon$ 的最大层，则
+$\kmax(N,\varepsilon)=\bigl(\log(\varepsilon N)-2\log\log\log N\bigr)/\log3+O(1)$，对应 $\log P_{\kmax}/\log N\sim\log\log N/\log3\to\infty$：
+\emph{即使 $P_k\gg N$（窗口短于周期）仍可控，约束是剩余类个数 $3^k$ 而非周期}。$k\ge(1+\delta)\log N/\log3$ 时该界本身失效。
+\end{prop}
+\status{已证（(c) 的显式常数 $c_*=\ee^{2\gamma}/(18C_2)$ 依赖 Rosser--Schoenfeld 不等式 \cite{RS62}，渐近部分只用 Mertens 与素数定理）}
+\begin{proof}[证明梗概]
+把满足 $p-\nu_p\le1+\nu_p$ 的素数直接按剩余类处理，其余素数作 M\"obius 展开；每个模 $Qd$ 的剩余类在窗口中计数误差 $<1$，主项之和为 $L\Haar(G_k^N)$。详见 G2 \S2。
+\end{proof}
+
+\begin{prop}[顶层：恒等式与 HL 等价；G2 lem:topexact、prop:toperr]\label{paper:prop:top}
+设 $N\ge6$ 偶，$k=\pi(\sqrt N)$。
+(a) $\Cnt_k(N)-r(N)=2\cdot\mathbf 1[N-1\ \text{为素数}]-2\#\{p\le\sqrt N:\ p,\ N-p\ \text{均为素数}\}$。
+(b) Legendre 界在此超过主项 $\ee^{\Theta(\sqrt N/\log N)}$ 倍，但\emph{真实}偏差无条件地满足 $-1\le Z_k(N)-1\le2\ee^{2\gamma}-1+o(1)$（上界引用 Selberg 上界筛）。
+(c) HL 猜想 $r(N)\sim\Sing(N)N/(\log N)^2$ $\iff$ $Z_{\pi(\sqrt N)}(N)\to\ee^{2\gamma}/4$（即 $Z-1\to-0.20694\ldots$）。
+\end{prop}
+\status{(a) 已证；(b) 部分（上界引用 \cite{HR74}）；(c) 中的等价已证，HL 本身为猜想}
+\begin{proof}
+(a) $1<n\le\sqrt N$ 不在 $G_k^N$；$n=1\in G_k^N\iff N-1$ 为素数；中段 $n\in G_k^N\iff n,N-n$ 均素（命题 \ref{paper:prop:window}）。(c) 由 $\Haar(U_k)^2(\log N)^2\to4\ee^{-2\gamma}$ 与 $R_k/\Sing\to1$。
+\end{proof}
+
+\noindent 被“压倒”的是 Legendre 型误差\emph{界}，不是真实误差；窗口太短的后果是“主项换了”：Haar 密度 $\prod_{p\le\sqrt N}(1-\frac1p)\approx2\ee^{-\gamma}/\log N$ 与素数定理密度 $1/\log t$ 不同，
+每个坐标损失 $\ee^\gamma\omega(2)=\ee^\gamma/2$（一维 Buchstab 定理，\cite{Buc37,dB50,Ten15}），两坐标合起来就是 $4\ee^{-2\gamma}=(\ee^\gamma\omega(2))^{-2}$。
+
+\begin{prop}[筛法版本，$u$ 表述；G2 prop:FL、prop:sieveu]\label{paper:prop:sieve}
+设 $N$ 偶，$u=\log N/\log p_k$，$u'=u-4\log\log N/\log p_k$，筛维数 $\kappa=2$，$F_2,f_2$ 为 DHR 筛函数 \cite{DHR88,DH08}，$\beta_2$ 为其筛限。$N\to\infty$ 时：
+(a) $Z_k(N)\le F_2(u')+o(1)$（$u=2$ 时即 $2\ee^{2\gamma}$）；
+(b) $u'\ge\beta_2+\delta$ 时 $Z_k(N)\ge f_2(u')-o(1)>0$；
+(c) 存在只依赖 $\varepsilon$ 的 $u_{\mathrm{FL}}(\varepsilon)>\beta_2$，使 $u\ge u_{\mathrm{FL}}(\varepsilon)+\delta$ 的层都有 $|Z_k(N)-1|\le\varepsilon$。
+\end{prop}
+\status{部分（引用经典筛法定理 \cite{HR74,FI10,DHR88,DH08}，常数与 $o(1)$ 不显式；$u_{\mathrm{FL}}(0.1)$ 未数值确定）}
+\noindent 数值常数：DHR 筛限 $\beta_2\approx4.26645$。\footnote{$\beta_2\approx4.26645$ 在 G4 附录中记为已核；G2 中另有凭记忆给出的
+$\alpha_2\approx5.36$（DHR）、$\beta$-筛 $\kappa=2$ 筛限 $\approx4.83$、Ankeny--Onishi 筛限 $\approx4.42$ \cite{AO65}，均\textbf{待核}，本文不使用，见附录 \ref{paper:app:pending}。}
+于是三种“可控范围”依次为：Legendre $u_{\mathrm{Leg}}\sim\log N/\log\log N\to\infty$ $\gg$ 基本引理 $u_{\mathrm{FL}}(0.1)$ $>$ $\beta_2$ $>$ D2 观测到的 $u_c\approx2.2$--$2.3$ $>$ $2$。
+筛限 $\beta_2$ 是证明方法的极限，不是误差的位置；在 $u=2$ 处得到正下界就是二元哥德巴赫本身（奇偶性障碍）。
+
+\begin{conj}[二维 Buchstab；G2 conj:2dim]\label{paper:conj:2dim}
+若 $\log N/\log p_k\to u\in[2,\infty)$，则 $Z_k(N)\to(\ee^\gamma\omega(u))^2$，$\omega$ 为 Buchstab 函数。
+\end{conj}
+\status{猜想（$u=2$ 时等价于 HL，见命题 \ref{paper:prop:top}(c)；$u$ 大时与基本引理相容但不被其蕴含）}
+\noindent \emph{启发式（非证明）。} 极限曲线 $(\ee^\gamma\omega(u))^2$ 在 $u^*=2.1664$ 处等于 $0.9$；有限 $N$ 的 Buchstab 积分 $F_N$ 预测的临界参数 $u_c^F$ 在
+$N=10^6,10^7,10^8$ 为 $2.233,2.255,2.258$，与 D2 的 $u_c=2.207,2.248,2.260$ 相差 $0.03$ 以内（G2 rem:ucrit）。这解释了 D2 中临界层落在 $p_c\approx c\sqrt N$ 且 $c$ 缓慢下降，但不构成证明。
+
+%=====================================================================
+\section{G3：CML 表述的里程计精确版}\label{paper:sec:G3}
+
+在 $\Om\times\Om$ 中令 $D_N:=\{(\xi,\eta):\xi+\eta=N\}$（反同步），$\Gamma_N:=\{(\xi,\eta):\eta=\xi+N\}$（滞后同步）；$\rho_N(\xi):=N-\xi$；
+$\Haar_N:=(\mathrm{id},\rho_N)_*\Haar$ 为 $D_N$ 上的自然测度（G3 中记作 $\nu_N$）。
+
+\begin{prop}[里程计精确版；G3.1--G3.3、G3.5、G3 lem:address]\label{paper:prop:cml}
+设 $N\in\Om$，$k\ge1$。
+\begin{enumerate}[label=(\alph*)]
+\item $D_N$ 是反射 $\rho_N$ 的图像，$\Gamma_N$ 是平移 $\tau_N$（$N\in\mathbb Z$ 时为 $T^N$）的图像；$(T\times T)D_N=D_{N+2}$，$(T\times T^{-1})D_N=D_N$，$(T\times T)\Gamma_N=\Gamma_N$；
+$\iota\times\mathrm{id}$（$\iota\xi=-\xi$）互换 $\Gamma_N$ 与 $D_N$。
+\item $\rho_NT\rho_N=T^{-1}$：$\rho_N$ 是 $T$ 的反向对称，不是任何 $T^m$，也不在 $\{T^m\}$ 的一致闭包中。$N$ 奇时 $\rho_N$ 无不动点；$N=2M$ 时在 $\Om$ 上恰有两个不动点 $\{M,M+e_2\}$。
+\item $D_N\cap(U_k\times U_k)=\{(\xi,N-\xi):\xi\in G_k^N\}$；$\Haar_N$ 是 $D_N$ 上唯一的 $T\times T^{-1}$ 不变概率测度，且
+\[
+\Haar_N\bigl(D_N\cap(U_k\times U_k)\bigr)=\Haar(G_k^N),\qquad
+\frac{\Haar_N(U_k\times U_k)}{(\Haar\otimes\Haar)(U_k\times U_k)}=R_k(N).
+\]
+$\{\Haar_N\}$ 是 $\Haar\otimes\Haar$ 沿 $\xi+\eta$ 的解体。
+\item（地址版双存活）对 $N,n\in\mathbb Z$：$(n,N-n)\in U_k\times U_k\iff n\in G_k^N\iff\gcd(n,P_k)=\gcd(N-n,P_k)=1$；任何长为 $P_k$ 整数倍的区间上命中频率精确等于 $\Haar(G_k^N)$。
+\end{enumerate}
+\end{prop}
+\status{已证（里程计层，无条件）}
+\begin{proof}
+(a)(c)(d) 是定义的直接翻译加上 $U_k=-U_k$、命题 \ref{paper:prop:ratio}(a) 与引理 \ref{paper:lem:odo}；(b) 若 $\rho_N$ 与 $T$ 交换则 $2=0$ 于 $\Om$，矛盾；不动点由 $2\xi=N$ 逐坐标求解。详见 G3。
+\end{proof}
+
+\noindent 于是“两条轨道之和与整数格相交”只能读作里程计坐标中的加法：实坐标中 $x+y\in[-2,2]$ 与 $N$ 无关，且 logistic 为偶函数，反对角线一步就被压到对角线上（G3 rem:literal）。
+$(n)$ 与 $(N-n)$ 是\emph{同一条}轨道的正、反两向读数；两格点各自正向演化的自然产物是 $\Gamma_N$（Polignac 侧），而不是 $D_N$。
+
+\paragraph{区间映射侧（开放）。}
+设 $f_u(x)=1-ux^2$，$x_n=f_u^n(0)$。假设 $(H_k)$：$0$ 的最小周期为 $P_k$；假设 $(H_\infty)$：极限参数 $\uinf$ 处 $f|\omega(0)$ 共轭于 $(\Om,T)$，柱集对应第 $k$ 层重整化区间环
+（无穷重整化的标准理论，参见 \cite{dMvS93}，凭记忆引用）。二者均为\textbf{开放}：塔在 $p\ge11$ 处的 $W_p$ 未指定，$\uinf$ 无数值，禁止柱字典未知。
+参数 $u=1.4855245$ 是任务对“$W_2*W_3*W_5*W_7$ 超稳定点”的\emph{转述}，\textbf{不是}经验证的超稳定参数。\footnote{精确 $\ust$ 的计算属并行任务（u\_star/），本文写作时尚无结果，不引用、不抢写。
+G3 注 rem:ustar 附注中的 9 个候选周期 210 超稳定参数是首轮独立搜索，非 D4 官方结论，本文亦不使用。}
+
+\begin{prop}[反射在区间上不可单调实现；G3.4]\label{paper:prop:nomono}
+在 $(H_\infty)$ 下且 $N_2=0$（或在 $(H_k)$、$k\ge2$ 下且 $N$ 偶），$\tilde\rho_N=h^{-1}\rho_Nh$ 关于 $\omega(0)\subset\mathbb R$ 的序不单调；故它不是任何区间同胚或区间连续对合的限制。
+logistic 的自带对称 $x\mapsto-x$ 满足 $f\sigma=f$，且 $\omega(0)\cap(-\omega(0))=\{0\}$。
+\end{prop}
+\status{条件性（蕴含式已证；前提 $(H_\infty)$/$(H_k)$ 开放）。$N$ 奇的情形为猜想（G3.C1）}
+\begin{proof}
+非恒等的对合若严格单调则为递减且至多一个不动点，而 $\tilde\rho_N$ 有两个（命题 \ref{paper:prop:cml}(b)）。
+\end{proof}
+
+\paragraph{D4 的结论（以 REPORT\_stage3.md、results/D4.json 为准）。}
+地址版（命题 \ref{paper:prop:cml}(d)）：$18$ 个 $N$、$k=1,\dots,4$ 共 $72$ 组全量枚举，对所选 $N\ge10^4$ 最大相对误差 $0.000900090009$（$N=10000$，$k=3$，count $=1332$，$\Haar=2/15$），\textbf{全部通过} $10^{-3}$ 目标。
+符号 / kneading 版：\textbf{未达成}——$72$ 组无一可完全辨识（knead\_rows\_resolved $=0$），$P=210$ 训练有 $8$ 个冲突柱、$1884$ 个单轨误分类；
+$u=1.4855245\mp5\times10^{-8}$ 的轨道分别在第 $120$、$162$ 步出现符号差异；$x_{210}\approx-4.36\times10^{-4}\ne0$。D4 \textbf{未}建立真实 logistic 映射与指定里程计的共轭。
+即使将来符号实验全部匹配，由于训练标签含地址信息，也不构成共轭证明。
+
+%=====================================================================
+\section{G4：障碍定位}\label{paper:sec:G4}
+
+\subsection{奇偶障碍：clopen $\to$ 周期 $\to$ M\"obius}
+
+称 $f$ 为\emph{第 $k$ 层观测量}，若它只依赖 $\xi\bmod P_k$（等价地，是第 $k$ 层柱集上的局部常值函数）。
+
+\begin{prop}[有限层观测量与 M\"obius；G4.1]\label{paper:prop:parity}
+设 $f$ 为第 $k$ 层观测量（如 $\mathbf 1_{U_k}$、$\mathbf 1_{G_k^N}$、$\mathbf 1_{\Pi_k^N}$）。
+\begin{enumerate}[label=(\alph*)]
+\item 读数 $n\mapsto f(T^n\xi)$ 以 $P_k$ 为周期；反之任意无平方因子周期的序列都是某层观测量的读数。
+\item 对任意 $\xi$，$\frac1X\sum_{n\le X}\Mob(n)f(T^n\xi)\to0$（$\Liou$ 同理），且对一切 $f\in C(\Om)$ 成立。
+\item $\bigl|\sum_{n\le X}\Mob(n)f(T^n\xi)\bigr|\le\sqrt{P_k}\,\|f\|_2\sup_\alpha\bigl|\sum_{n\le X}\Mob(n)\ee(n\alpha)\bigr|\ll_A\sqrt{P_k}\,X(\log X)^{-A}$；
+故正交性只在 $p_k\ll\log\log X$ 时对 $k$ 一致。
+\item（顶层完全相关）$N\ge4$，$k=\pi(\sqrt N)$ 时
+$\sum_{0<n<N}\Mob(n)\mathbf 1_{G_k^N}(n)=\sum_{0<n<N}\Liou(n)\mathbf 1_{G_k^N}(n)=2\cdot\mathbf 1[N-1\ \text{素}]-\Cnt_k(N)$。
+\item Brun、Selberg $\Lambda^2$、$\beta$-筛、DHR 筛的一维与哥德巴赫二维筛权（$d\mid P(z)$，$z\le p_k$）都是第 $k$ 层观测量。
+\end{enumerate}
+\end{prop}
+\status{(a)(d)(e) 已证（框架内）；(b) 适用性已证，正交性本身为标准结论转述（主引 Downarowicz--Kasjan \cite{DK15} 与 Sarnak \cite{Sar10}）；(c) 已证，所用 Davenport 估计 \cite{Dav37} 书目待核}
+\begin{proof}
+(a)(e) 只依赖 $\bmod P_k$。(b) 周期序列是加性特征的有限组合，再用算术级数中的 $\Mob$-素数定理与一致逼近。(c) Fourier 展开 $+$ Cauchy--Schwarz $+$ Davenport。
+(d) 窗口内 $n\in G_k^N$、$n>1$ 蕴含 $n$ 素，$\Mob(n)=-1$；$n=1$ 的贡献为 $\mathbf 1[N-1\text{ 素}]$。
+\end{proof}
+
+\begin{rem}[奇偶原理；已述]\label{paper:rem:selberg}
+\emph{（标准结论转述。）} 筛法的输入是序列在模 $d<D$ 剩余类中的密度，即对有限层 clopen 观测量的统计。Selberg \cite{Sel49} 指出把序列换成 $(1\pm\Liou)$ 加权时这些统计几乎不变，
+而 $1+\Liou$ 在素数上为 $0$；故仅凭此类输入不能产出素数，也不能区分素因子个数的奇偶。陈景润 $p+P_2$ \cite{Chen73} 另用了 Bombieri--Vinogradov 型素数分布与转换论证——这些输入是关于素数的，
+不是关于 clopen 集的，本框架不提供。“筛型权重最多到 $p+P_2$”是通行表述，严格意义上是对一类筛公理的反例构造，而非对一切方法的不可能性定理。
+\end{rem}
+
+\noindent 命题 \ref{paper:prop:parity}(b)(c)(d) 合起来：浅层（$p_k\ll\log\log X$）正交，顶层（$p_k\approx\sqrt N$）完全相关。二者之间不是技术缺口，而是两个极端。
+
+\begin{rem}[Karagulyan 只作旁证；部分]\label{paper:rem:karagulyan}
+Karagulyan \cite{Kar15} 处理零熵连续区间映射与保向圆同胚，不直接覆盖里程计 clopen 函数。若经 $(H_k)$ 移到区间侧，$0$ 的最小周期 $P_k$（$k\ge2$）不是 $2$ 的幂，
+按“零熵 $\iff$ 一切周期为 $2$ 的幂”（凭记忆，参见 \cite{BC92}，\textbf{待核}）有 $h_{\mathrm{top}}(f_u)>0$，该定理前提不成立。主引用仍为 \cite{DK15,Sar10}。
+\end{rem}
+
+\subsection{次弧障碍：圆法对照}
+
+记 $S(\alpha)=\sum_{p\le N}(\log p)\ee(p\alpha)$，主弧 $\Maj(Q)$ 为 $a/q$（$q\le Q$）附近 $Q/N$ 邻域之并，次弧 $\Min(Q)$ 为其余部分。
+
+\begin{prop}[圆法与里程计；G4.2]\label{paper:prop:circle}
+(a) $(\Om,T)$ 的特征值恰为 $\{\ee(a/q):q\ \text{无平方因子}\}$（$\Zhat$ 上为全体 $\mathbb Q/\mathbb Z$）。
+(b) 对无平方因子 $q$、$(a,q)=1$，特征 $\chi_{a/q}$ 在 $U^{(q)}=\{\xi:\xi_p\ne0,\ p\mid q\}$ 上的 Haar 条件期望为 $\Mob(q)/\varphi(q)$——恰是主弧系数。
+(c) 截断奇异级数精确等于柱集比（命题 \ref{paper:prop:ratio}(d)）。
+(d)（$L^2$ 记账）三元：$|\int_\Min S^3\ee(-N\alpha)|\le\sup_\Min|S|\int|S|^2$，在 Vinogradov 型估计下小于主项；
+二元：$\int_\Min|S|^2\le N\log N$ 大于主项 $\asymp\Sing(N)N$，只能经 Bessel 不等式对 $N$ 平均，得到例外集估计。
+(e) 第 $k$ 层观测量的频率都在 $\{b/P_k\}$；$P_k\le Q$ 时全在主弧中心，而在哥德巴赫层 $P_k=\ee^{(1+o(1))\sqrt N}\gg N$，$\{b/P_k\}$ 在 $[0,1)$ 中 $1/N$-稠密，“有限层”已不能区分主次弧。
+\end{prop}
+\status{(a)(b)(c)(e) 已证（框架内）；(d) 不等式已证，所需 Vinogradov / Siegel--Walfisz 为标准结论转述}
+
+\begin{rem}[字典；类比 / 启发式]\label{paper:rem:dict}
+\emph{以下是框架内的类比备忘，文献中并无“主弧 $=$ 里程计”的等同陈述。}
+主弧的\emph{算术}部分（中心 $a/q$、系数 $\Mob(q)/\varphi(q)$、奇异级数）在里程计上精确复现；主弧中的阿基米德因子（素数定理密度 $1/\log t$）\emph{不在}里程计中，
+它正是 G2 中 Mertens / Buchstab 因子 $4\ee^{-2\gamma}$ 的来源；次弧可启发式地读作“里程计之外”（深层与非有理频率）。三元多一个变量可用 $\sup_\Min|S|$ 吸收次弧
+（Helfgott \cite{Hel13,Hel15}），二元只有 $L^2$，只能给出例外集（Pintz \cite{Pin18}：$|\Exc(X)|<X^{0.72}$，$X$ 大于某无效常数）。
+\end{rem}
+
+\subsection{例外集：固定层已闭合，增长层开放}
+
+\begin{prop}[固定层例外集；G4.4]\label{paper:prop:fixedk}
+设 $k\ge1$ 固定，$N\ge2$ 偶。
+(a)（周期论证）一个完整周期内的存活数为 $\prod_{p\le p_k}(p-\nu_p(N))=P_k\Haar(G_k^N)\ge1$，从而 $|E_k(N)|<P_k\Haar(G_k^N)$，$|Z_k(N)-1|<P_k/N$；
+$N\ge P_k$ 时 $\Cnt_k(N)\ge1$。故 $\Exc_k\subset[4,P_k)$，\textbf{固定层例外集严格有限}。
+(b)（Legendre 显式界）$k\ge2$ 时令 $m_k=\frac12\prod_{3\le p\le p_k}(1-\frac2p)$，$N_k^*=2\cdot3^{k-2}/m_k$，则 $|Z_k(N)-1|\le N_k^*/N$，$\Exc_k\subset[4,N_k^*]$。
+(c) 有限扫描能外推“例外有限”与“$N>B_k:=\min(P_k,N_k^*)$ 无例外”，\emph{不能}外推最大例外的精确值，除非扫描上限 $X\ge B_k$。
+\end{prop}
+\status{已证（框架内）}
+\begin{proof}
+(a) 写 $N=qP_k+r$；完整周期精确贡献 $qP_k\Haar(G_k^N)$，余段贡献在 $[0,P_k\Haar(G_k^N)]$；偶 $N$ 时 $p-\nu_p\ge1$。(b) 由命题 \ref{paper:prop:legendre}(b) 与 $\Haar(G_k^N)\ge m_k$。
+\end{proof}
+
+\begin{prop}[单调性与顶层包含；G4.5]\label{paper:prop:monotone}
+(a) $G_{k+1}^N\subseteq G_k^N$，故 $\Exc_k(X)\subseteq\Exc_{k+1}(X)$。
+(b) $k=\pi(\sqrt N)$ 时 $r(N)=0\Rightarrow\Cnt_k(N)=2\cdot\mathbf 1[N-1\ \text{素}]\le2$；故 $\Exc(X)\subseteq\{N:\Cnt_{\pi(\sqrt N)}(N)\le2\}$，反向一般不成立。
+(c) 已知区间：固定 $k$ 例外有限；$k\le\kmax(N,\varepsilon)$ 时 $\Cnt_k(N)>0$；$u\ge\beta_2+\delta$ 时对充分大 $N$ 有 $\Cnt_k(N)>0$（DHR 下界筛）。
+\end{prop}
+\status{(a)(b) 已证；(c) 部分（引用经典筛法，常数不显式）}
+
+\begin{rem}[口径：模型空集 $\ne$ 经典例外]\label{paper:rem:caliber}
+固定层划掉 $\le p_k$ 的小素数（如 $4=2+2$ 在 $k\ge2$、$6=3+3$ 在 $k\ge3$ 时为空），同时保留 $1$ 与 $>p_k$ 的合数（$1+1$ 使 $N=2$ 时 $\Cnt_k(2)=1$，而 $2$ 无素数对）。
+因此 $\Exc_k$ 与 $\Exc(X)$ 在两个方向上都不可比；D5 的例外\emph{不是}哥德巴赫反例。本文\emph{不}改进 Pintz \cite{Pin18} 或任何解析例外集上界。
+\end{rem}
+
+\begin{quest}[增长层的例外从何而来；G4.3]\label{paper:quest:ld}
+把例外读作 $Z_k(N)$ 相对 Haar 均值 $1$ 的满幅大偏差（$Z=0$）。固定层部分已由命题 \ref{paper:prop:fixedk} 与 D5 闭合。
+\textbf{开放：} 当 $k=k(N)\to\infty$（以 $u$ 参数化，直到 $u\approx2$）时，满幅偏差的机制是什么？能否用零命中集
+$\mathcal Z(N,k)=\{\xi:\#\{0\le n<N:\xi+n\in G_k^N\}=0\}$（Jacobsthal 型量）描述 $\Exc_{k(N)}$？整数起点 $0$ 在顶层（猜想地）已有 $-20.7\%$ 的典型偏差（阿基米德因子），
+例外（$-100\%$）如何与之区分？在 $u\in(2,\beta_2]$ 上 $\Exc_{k(N)}$ 的大小如何随 $u$ 变化？
+\end{quest}
+\status{固定层：已证 $+$ D5；增长层：开放}
+
+%=====================================================================
+\section{数值一览（D1--D5）}\label{paper:sec:numerics}
+
+以下数字取自 REPORT.md、REPORT\_stage2.md--REPORT\_stage4.md 与 results/D1.json--D5.json（只读引用）。一切有限计算\emph{不}构成渐近陈述或哥德巴赫猜想的证明。
+
+\paragraph{D1（通过；非独立）。} $k=1,\dots,9$（$P_9=223092870$）、每个偶数 $2\le N\le10^4$，共 $45000$ 组，乘积公式 $\Haar(G_k^N)/\Haar(U_k)^2=R_k(N)$ 以精确有理数核验，失败 $0$。
+D1 用 CRT 局部计数相乘，近乎同义反复；对 $\#G_k^N$ 的独立暴力枚举（V1--V3）只做到 $k\le6$。$R_k/\Sing$ 的分布随 $k$ 收紧：$k=1$ 时 $[0.426,1.515]$，$k=9$ 时 $[0.940,1.009]$，
+$|R_9/\Sing-1|\le1\%$ 的比例为 $0.8288$（完整表见附录 \ref{paper:app:tables}）。
+
+\paragraph{D2（窗口相对误差的临界层）。} 直接布尔筛（不用 CRT），$24$ 个 $N$；$k_c$ 为 $|Z_k(N)-1|$ 首次 $>10\%$ 的层，$x_c=\log P_{k_c}/\log N$，$u_c=\log N/\log p_c$。关键行：
+\begin{center}
+\small
+\begin{tabular}{rcrrrrr}
+\hline
+$N$ & $\Sing(N)$ & $k_c$ & $p_c$ & $x_c$ & $u_c$ & $p_c/\sqrt N$\\
+\hline
+$8192$ & 1.32032 & 17 & 59 & 5.439 & 2.210 & 0.652\\
+$10000$ & 1.76043 & 16 & 53 & 4.878 & 2.320 & 0.530\\
+$100000$ & 1.76043 & \multicolumn{5}{c}{未超过（$10^5$ 量级 4 个样本均无）}\\
+$510510$ & 5.46267 & 82 & 421 & 30.040 & 2.175 & 0.589\\
+$1000000$ & 1.76043 & 99 & 523 & 36.157 & 2.207 & 0.523\\
+$1048576$ & 1.32032 & 111 & 607 & 41.534 & 2.163 & 0.593\\
+$10000000$ & 1.76043 & 212 & 1301 & 78.562 & 2.248 & 0.411\\
+$100000000$ & 1.76043 & 487 & 3469 & 184.203 & 2.260 & 0.347\\
+$134217728$ & 1.32032 & 549 & 3967 & 208.542 & 2.259 & 0.342\\
+\hline
+\end{tabular}
+\end{center}
+所有存在临界层的 $18$ 个样本 $u_c\in[2.163,2.320]$；Legendre 只保证到 $x\le x_{\max}\le1.81$（$N\le10^8$），实际可控层远深于此。顶层 $N=10^8$ 处 $|Z-1|=0.1073$，离极限 $0.207$ 约一半（$1/\log N$ 慢收敛）。
+
+\paragraph{D3（$r(N)/(\Sing(N)I(N))$ 的分布；只给趋势）。} 全量 $6\le N\le10^7$ 的偶数（$N=2,4$ 无定义），$[10^7,10^8)$ 为 $2700$ 个分层随机样本：
+\begin{center}
+\small
+\begin{tabular}{lrcc}
+\hline
+区间 & 个数 & 均值 & 总体方差\\
+\hline
+$[10^2,10^3)$ & 450 & 0.86924 & $1.0945\times10^{-2}$\\
+$[10^3,10^4)$ & 4500 & 0.95719 & $2.8207\times10^{-3}$\\
+$[10^4,10^5)$ & 45000 & 0.98710 & $5.6851\times10^{-4}$\\
+$[10^5,10^6)$ & 450000 & 0.99620 & $1.0060\times10^{-4}$\\
+$[10^6,10^7)$ & 4500000 & 0.99887 & $1.5920\times10^{-5}$\\
+$[10^7,10^8)$（随机） & 2700 & 0.99962 & $2.3683\times10^{-6}$\\
+\hline
+\end{tabular}
+\end{center}
+均值单调趋近 $1$，方差每量级约降为 $1/5$ 到 $1/7$；全量 $N\ge10^4$ 的最小比值为 $0.8424$（$N=13892$）。最小比值尾部富集小 $\Sing$ 而不富集 $2$ 的幂，但最大比值尾部同样富集小 $\Sing$——
+宜读作“小 $\Sing$ 离散度大”；阈值 $1.5$ 为事后选取，非统计检验。这说明 D2 顶层约 $9\%$--$11\%$ 的偏差几乎全部来自 Mertens 因子及其修正，而非 HL 失效（说明性）。
+
+\paragraph{D4（地址版通过；符号版未达成）。} 见 \S\ref{paper:sec:G3} 末段。要点：地址版 $N\ge10^4$ 最大相对误差 $0.000900090009$，全部通过；符号 / kneading 版未达成；
+$u=1.4855245$ 为转述参数，非验证过的超稳定参数。$N\ge1000$ 中未达 $10^{-3}$ 的 $14$ 组（$N\le8192$）已如实披露，与固定 $k$ 误差 $O(P_k/N)$ 一致。
+
+\paragraph{D5（固定层例外，$k=1,\dots,12$，$X=2\times10^6$）。} 全部 $10^6$ 个正偶数全量扫描；整数 NTT 卷积精确计数，独立浮点 FFT 全部 $1.2\times10^7$ 个系数一致，
+$1306$ 个 $N$（$15672$ 个 $(k,N)$）逐 $N$ 布尔重建一致；未用 CRT 公式替代区间计数。
+\begin{center}
+\small
+\begin{tabular}{rrrrrrrrrrrrr}
+\hline
+$k$ & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12\\
+$p_k$ & 2 & 3 & 5 & 7 & 11 & 13 & 17 & 19 & 23 & 29 & 31 & 37\\
+\hline
+$|\Exc_k(X)|$ & 0 & 1 & 4 & 5 & 8 & 10 & 14 & 17 & 21 & 26 & 28 & 30\\
+最大例外 & — & 4 & 16 & 16 & 28 & 28 & 40 & 56 & 64 & 76 & 92 & 92\\
+\hline
+\end{tabular}
+\end{center}
+例外个数 $0$--$30$，最大 $92$；全部例外满足 $N<p_k^2$（$u<2$，受限哥德巴赫型小数现象）。$k\le11$ 时 $X\ge B_k$，上表即完整的 $\Exc_k$；$k=12$ 时 $X<B_{12}\approx4.02\times10^6$，
+“$\Exc_{12}$ 有限”由周期论证保证，“最大例外恰为 $92$”在 $(2\times10^6,4.02\times10^6]$ 上 D5 未覆盖。$N=2$ 时全部 $12$ 层 $m_k(2)=1$（$1+1$），模型空集 $\ne$ 经典例外（注 \ref{paper:rem:caliber}）。
+
+$k=12$ 的窗口最小值（闭区间 $[Y,2Y]$，全部偶数；有理数交叉乘法比较，见证唯一）：
+\begin{center}
+\small
+\begin{tabular}{rrrrl}
+\hline
+$Y$ & $u=\log Y/\log37$ & $\min\Cnt_{12}$（见证 $N$） & $\min Z_{12}$（见证 $N$） & 精确值\\
+\hline
+$10^2$ & 1.28 & 2（116） & 0.5661（116） & $6516107/11510100$\\
+$10^3$ & 1.91 & 28（1028） & 0.7235（1412） & $6516107/9006795$\\
+$10^4$ & 2.55 & 274（10004） & 0.9159（10484） & $306257029/334374075$\\
+$10^5$ & 3.19 & 2933（100174） & 0.9880（108322） & $2925732043/2961252675$\\
+$10^6$ & 3.83 & 29318（1000204） & 0.9972（1115272） & $15202077631/15244374150$\\
+\hline
+\end{tabular}
+\end{center}
+即 $\min Z_{12}\approx0.566\to0.723\to0.916\to0.988\to0.997$，单调升向 $1$；$Y=10^6$ 时 $k=1,\dots,12$ 的 $\min Z_k$ 全部 $\ge0.997$。命题 \ref{paper:prop:fixedk} 的最坏下界在 $Y\le10^6$ 时为负（无信息），实际远好于最坏界。
+这些是固定层的数值事实，\emph{不}改进 Pintz，\emph{不}涉及增长层。
+
+%=====================================================================
+\section{能复述 / 不能越过}\label{paper:sec:list}
+
+\subsection{能复述（均为已知结果的重述）}
+\begin{center}
+\small
+\begin{tabular}{p{3.6cm}p{7.2cm}p{3.8cm}}
+\hline
+内容 & 本框架中的形式 & 状态\\
+\hline
+奇异级数 & $R_k(N)=\Haar(G_k^N)/\Haar(U_k)^2\to\Sing(N)$；$=\sum_{q\mid P_k}\Mob^2\Ram_q/\varphi^2$（命题 \ref{paper:prop:ratio}） & 已证（重述 \cite{HL23}）\\
+均值 & Haar 平均 $1$（偶数上 $2$），密度平均 $\to2$（命题 \ref{paper:prop:avg}） & 已证（重述 \cite{Gal76} 等）\\
+有限层等价 & 哥德巴赫 $=$ 有限窗口 Polignac（命题 \ref{paper:prop:dict}、\ref{paper:prop:window}、\ref{paper:prop:top}(a)） & 已证\\
+窗口误差 & $|E_k|\le2\cdot3^{k-2}$，$\kmax\approx\log N/\log3$（命题 \ref{paper:prop:legendre}） & 已证\\
+$u\approx2$ 的误差位置 & D2 的 $u_c\approx2.2$--$2.3$ 由二维 Buchstab 及其 $1/\log N$ 修正解释；顶层 $-20.7\%\iff$ HL & 解释：启发式 / 猜想；等价已证\\
+CML 的里程计版 & $D_N=$ 图$(\rho_N)$，双存活 $\iff n\in G_k^N$，比值 $=R_k(N)$（命题 \ref{paper:prop:cml}） & 里程计层已证；区间层开放\\
+浅层 M\"obius 正交 & 一致到 $p_k\ll\log\log X$（命题 \ref{paper:prop:parity}(b)(c)） & 适用性已证；正交性为标准结论\\
+主弧算术部分 & 点谱与主弧系数（命题 \ref{paper:prop:circle}(a)(b)） & 已证（框架内）\\
+固定层例外集 & 严格有限；$k\le12$ 实际最大 $92$（命题 \ref{paper:prop:fixedk}，D5） & 已证 $+$ 数值\\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{不能越过}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{奇偶障碍。} 一切观测量与筛权都是有限层 clopen 函数（命题 \ref{paper:prop:parity}(a)(e)）；由奇偶原理，仅凭其统计不能产出素数。框架内没有 Bombieri--Vinogradov 或 Chen 转换的对应物，
+连 $p+P_2$ 也\emph{不能}在框架内复现，只能引用。
+\item \textbf{次弧障碍。} 里程计只看到有理频率的算术系数；次弧估计在框架中无对应物（类比 / 启发式）。即使引入，二元也只给例外集（命题 \ref{paper:prop:circle}(d)）。
+\item \textbf{阿基米德因子。} Haar 密度 $\ne$ 素数定理密度；顶层的 $4\ee^{-2\gamma}$ 与次弧无关，是窗口太短、Haar 平均不再是窗口平均的定量表现（\S\ref{paper:sec:G2}）。
+\item \textbf{不能证明 $r(N)>0$。} 顶层窗口与 Haar 之差恰是与 $\Mob$ 的完全相关和（命题 \ref{paper:prop:parity}(d)）；证明 $\Cnt_{\pi(\sqrt N)}(N)>2$ 对充分大 $N$ 就是二元哥德巴赫本身。
+\item \textbf{区间映射层。} $(H_k)$/$(H_\infty)$ 开放，D4 未建立共轭；即使成立，它也只是同一个里程计的另一种坐标，不增加数论信息。
+\item \textbf{增长层例外。} 固定层例外有限不能外推到 $k=k(N)\to\infty$；问题 \ref{paper:quest:ld} 开放。
+\end{enumerate}
+
+%=====================================================================
+\section{展望}\label{paper:sec:outlook}
+\begin{enumerate}[leftmargin=*]
+\item \textbf{精确 $\ust$。} 用区间算术或高精度求出 $W_2*W_3*W_5*W_7$ 的超稳定参数，并给出独立于地址标签的禁止柱字典与 $S_p$ 和 logistic 柱词之间的字典。这是并行任务（u\_star/），本文不抢写其结果；
+即使成功，也只是把命题 \ref{paper:prop:cml} 移到区间坐标，不改变 \S\ref{paper:sec:list} 的障碍。
+\item \textbf{三元校准。} 在同一框架中写出三元的 $G_k^{N,(3)}$、其柱集比与 $\Sing_3$，检验“多一个变量吸收次弧”在有限层模型中的形状，作为二元障碍定位的对照组。
+\item \textbf{大偏差。} 问题 \ref{paper:quest:ld}：率函数 $I_u(z)$ 是否存在，零命中集 $\mathcal Z(N,k)$ 与 Jacobsthal 函数的关系，$u\in(2,\beta_2]$ 上例外的规模。
+\item \textbf{非 clopen 权重（单列）。} 越过奇偶障碍需要非有限层的输入（如 Bombieri--Vinogradov 型素数分布、双线性型估计）。在里程计语言中它们是什么、能否以“非 clopen 但可测”的观测量表述，本文不作任何断言，单列为开放方向。
+\end{enumerate}
+
+%=====================================================================
+\appendix
+\section{待核项}\label{paper:app:pending}
+\begin{center}
+\small
+\begin{tabular}{p{4.0cm}p{7.0cm}p{3.4cm}}
+\hline
+项目 & 情况 & 状态\\
+\hline
+DHR 筛 $\alpha_2\approx5.36$ & G2 凭记忆给出；未在 \cite{DHR88,DH08} 中核到 & 待核\\
+Ankeny--Onishi 筛限 $\nu_2\approx4.42$ & 仅见二次资料，未在 \cite{AO65} 原文核到 & 待核\\
+$\beta$-筛 $\kappa=2$ 筛限 $\approx4.83$ & G2 凭记忆，置信度低 & 待核\\
+DHR $\beta_2\approx4.26645$ & G4 附录记为已核 & 已核（沿用 G4）\\
+论文1 \cite{Wang26} 全文 & DOI 可解析，全文未取得；$S_p,Q_k$、\S6.3、$\ust$ 均按任务转述 & 待核\\
+FG95 次项 $-\frac12\log H$ & 按理解转述；V6 只给趋势 & 部分\\
+Rosser--Schoenfeld 常数 \cite{RS62} & 只在 $y\le2\times10^5$ 抽查 & 引用，未重证\\
+Selberg 上界筛常数 $8$ \cite{HR74} & 与 $F_2(2)=2\ee^{2\gamma}$ 相互印证 & 引用，以原文为准\\
+Davenport 估计 \cite{Dav37} & 书目与定理形式凭记忆 & 待核\\
+Selberg 奇偶原理 \cite{Sel49}；\cite{FI10} 章节号 & 凭记忆 & 待核\\
+零熵 $\iff$ 周期皆为 $2$ 的幂 \cite{BC92} & 凭记忆；logistic 熵单调性亦然 & 待核\\
+无穷重整化与 adding machine \cite{dMvS93} & 凭记忆，定理号未核 & 待核\\
+Pintz \cite{Pin18} & 以 arXiv 版本为准；正式发表页码未核 & 部分可核\\
+陈景润 \cite{Chen73} 页码 & 未独立复核 & 部分可核\\
+GRH 下例外集 \cite{HL24}；Montgomery--Vaughan \cite{MV75} & 凭记忆 & 待核\\
+\hline
+\end{tabular}
+\end{center}
+
+\section{数值完整表}\label{paper:app:tables}
+
+\paragraph{D1：$R_k(N)/\Sing(N)$ 在偶数 $2\le N\le10^4$ 上的分布（REPORT.md）。}
+\begin{center}
+\small
+\begin{tabular}{rcccccc}
+\hline
+$k$ & 均值 & 标准差 & 最小 & 中位 & 最大 & $|\cdot-1|\le1\%$ 比例\\
+\hline
+1 & 1.133050 & 0.354537 & 0.426032 & 1.241278 & 1.514780 & 0.0044\\
+2 & 1.019690 & 0.131307 & 0.639048 & 1.072969 & 1.136085 & 0.0202\\
+3 & 1.006303 & 0.074363 & 0.732242 & 1.048942 & 1.065080 & 0.0644\\
+4 & 1.002217 & 0.043673 & 0.800890 & 1.027529 & 1.035494 & 0.0684\\
+5 & 1.001297 & 0.032782 & 0.832036 & 1.019179 & 1.025139 & 0.1112\\
+6 & 1.000755 & 0.024173 & 0.901372 & 1.013435 & 1.018020 & 0.1794\\
+7 & 1.000528 & 0.019366 & 0.914176 & 1.010173 & 1.014044 & 0.2744\\
+8 & 1.000367 & 0.015072 & 0.930500 & 1.007653 & 1.010914 & 0.4906\\
+9 & 1.000276 & 0.012100 & 0.940369 & 1.006069 & 1.008825 & 0.8288\\
+\hline
+\end{tabular}
+\end{center}
+
+\paragraph{D4：地址版代表行（REPORT\_stage3.md，分母 $N-1$）。}
+\begin{center}
+\small
+\begin{tabular}{rrrcl}
+\hline
+$N$ & $k$ & count & $\Haar(G_k^N)$ & 相对误差\\
+\hline
+$10000$ & 3 & 1332 & $2/15$ & $0.000900090009$（$N\ge10^4$ 中最大）\\
+$10000$ & 4 & — & $2/21$ & $0.0003$\\
+$30030$ & 4 & — & $8/35$ & $3.33\times10^{-5}$\\
+$100000$ & 4 & 9524 & $2/21$ & $3.0\times10^{-5}$\\
+\hline
+\end{tabular}
+\end{center}
+符号版：$P=2,6,30,210$ 的训练柱数 $1,5,29,62$，冲突柱 $0,0,0,8$，单轨已知误分类 $0,0,0,1884$；$72$ 组均有未知对，无唯一 freq\_knead。
+
+\paragraph{D5：各层全部例外（results/D5.json，exceptions\_by\_k）。}
+\begin{itemize}[leftmargin=*]
+\item $k=2$：$4$。$k=3$：$4,6,10,16$。$k=4$：$4,6,8,10,16$。$k=5$：$4,6,8,10,12,16,22,28$。
+\item $k=6$：$4,\dots,16$（偶）$,22,26,28$。$k=7$：$4,\dots,18$（偶）$,22,26,28,34,36,40$。
+\item $k=8$：$4,\dots,22$（偶）$,26,28,34,36,40,50,56$。$k=9$：$4,\dots,28$（偶）$,34,36,40,46,50,52,56,64$。
+\item $k=10$：$4,\dots,30$（偶）$,34,36,40,46,50,52,56,58,64,66,70,76$。
+\item $k=11$：$4,\dots,36$（偶）$,40,46,50,52,56,58,64,66,70,76,92$。
+\item $k=12$：$4,\dots,40$（偶，共 $19$ 个）$,46,50,52,56,58,64,66,70,76,78,92$。
+\end{itemize}
+
+%=====================================================================
+\section*{文献说明}
+\cite{G1,G2,G3,G4} 为本项目工作稿，D1--D5 为本项目数值实验（REPORT*.md、results/*.json，只读引用）。各条文献的核对状态沿用 G1--G4，未核项见附录 \ref{paper:app:pending}。
+
+\begin{thebibliography}{99}
+\bibitem{G1} （G1 工作稿）\emph{G1：哥德巴赫筛 $=$ 有限窗口的 Polignac 筛——字典、奇异级数与平均}，goldbach\_props.tex，2026-11-02。
+\bibitem{G2} （G2 工作稿）\emph{G2：有限时间窗口——Legendre 误差的显式界、可控层 $k_{\max}(N)$ 与 Mertens 因子的来源}，goldbach\_G2.tex，2026-11-02。
+\bibitem{G3} （G3 工作稿）\emph{G3：反同步集 $\Delta_N$ 与里程计上的反射}，goldbach\_G3.tex，2026-11-02。
+\bibitem{G4} （G4 工作稿）\emph{G4：障碍备忘录——奇偶障碍、二元次弧障碍，以及本框架能复述什么、不能越过什么}，goldbach\_G4.tex，2026-11-02。
+\bibitem{Wang26} Liang Wang, \emph{The emergence of prime distribution from low-dimensional deterministic chaos},
+Research in Mathematics \textbf{13}(1) (2026), Article 2684334. DOI: \url{10.1080/27684830.2026.2684334}.（元数据已核；全文未取得。）
+\bibitem{HL23} G. H. Hardy, J. E. Littlewood, \emph{Some problems of `Partitio numerorum'; III: On the expression of a number as a sum of primes},
+Acta Math.\ \textbf{44} (1923), 1--70. DOI: \url{10.1007/BF02403921}.
+\bibitem{HL24} G. H. Hardy, J. E. Littlewood, \emph{Some problems of `Partitio numerorum' (V): A further contribution to the study of Goldbach's problem},
+Proc.\ London Math.\ Soc.\ (2) \textbf{22} (1924), 46--56.（待核。）
+\bibitem{Gal76} P. X. Gallagher, \emph{On the distribution of primes in short intervals}, Mathematika \textbf{23} (1976), 4--9. DOI: \url{10.1112/S0025579300016442}.
+\bibitem{FG95} J. B. Friedlander, D. A. Goldston, \emph{Some singular series averages and the distribution of Goldbach numbers in short intervals},
+Illinois J.\ Math.\ \textbf{39}(1) (1995), 158--180. DOI: \url{10.1215/ijm/1255986635}.
+\bibitem{Buc37} A. A. Buchstab, \emph{Asymptotic estimates of a general number-theoretic function}（俄文），Mat.\ Sb.\ \textbf{2(44)} (1937), 1239--1246.
+\bibitem{dB50} N. G. de Bruijn, \emph{On the number of uncancelled elements in the sieve of Eratosthenes}, Proc.\ Kon.\ Ned.\ Akad.\ Wetensch.\ \textbf{53} (1950), 803--812.
+\bibitem{Ten15} G. Tenenbaum, \emph{Introduction to Analytic and Probabilistic Number Theory}, 3rd ed., GSM \textbf{163}, AMS, 2015.
+\bibitem{HR74} H. Halberstam, H.-E. Richert, \emph{Sieve Methods}, Academic Press, London, 1974.
+\bibitem{FI10} J. Friedlander, H. Iwaniec, \emph{Opera de Cribro}, AMS Colloquium Publications \textbf{57}, 2010.
+\bibitem{RS62} J. B. Rosser, L. Schoenfeld, \emph{Approximate formulas for some functions of prime numbers}, Illinois J.\ Math.\ \textbf{6} (1962), 64--94.
+\bibitem{DHR88} H. G. Diamond, H. Halberstam, H.-E. Richert, \emph{Combinatorial sieves of dimension exceeding one}, J.\ Number Theory \textbf{28} (1988), 306--346.
+\bibitem{DH08} H. G. Diamond, H. Halberstam（with W. F. Galway）, \emph{A Higher-Dimensional Sieve Method}, Cambridge Tracts in Math.\ \textbf{177}, Cambridge Univ.\ Press, 2008.
+\bibitem{AO65} N. C. Ankeny, H. Onishi, \emph{The general sieve}, Acta Arith.\ \textbf{10} (1964/65), 31--62.
+\bibitem{MSS73} N. Metropolis, M. L. Stein, P. R. Stein, \emph{On finite limit sets for transformations on the unit interval},
+J.\ Combin.\ Theory Ser.\ A \textbf{15} (1973), 25--44. DOI: \url{10.1016/0097-3165(73)90033-2}.
+\bibitem{Kan84} K. Kaneko, \emph{Period-doubling of kink-antikink patterns, quasiperiodicity in antiferro-like structures and spatial intermittency in coupled logistic lattice},
+Prog.\ Theor.\ Phys.\ \textbf{72}(3) (1984), 480--486. DOI: \url{10.1143/PTP.72.480}.
+\bibitem{dMvS93} W. de Melo, S. van Strien, \emph{One-Dimensional Dynamics}, Ergebnisse der Math.\ (3) \textbf{25}, Springer, 1993.（凭记忆。）
+\bibitem{DK15} T. Downarowicz, S. Kasjan, \emph{Odometers and Toeplitz systems revisited in the context of Sarnak's conjecture},
+Studia Math.\ \textbf{229}(1) (2015), 45--72. DOI: \url{10.4064/sm8314-12-2015}；arXiv:\url{1502.02307}.
+\bibitem{Sar10} P. Sarnak, \emph{Three lectures on the M\"obius function: randomness and dynamics}, IAS 讲义（约 2010），
+\url{https://www.math.ias.edu/files/wam/2011/PSMobius.pdf}.
+\bibitem{Kar15} D. Karagulyan, \emph{On M\"obius orthogonality for interval maps of zero entropy and orientation-preserving circle homeomorphisms},
+Ark.\ Mat.\ \textbf{53} (2015), 317--327. DOI: \url{10.1007/s11512-014-0208-5}.
+\bibitem{Dav37} H. Davenport, \emph{On some infinite series involving arithmetical functions (II)}, Quart.\ J.\ Math.\ Oxford \textbf{8} (1937), 313--320.（待核。）
+\bibitem{Sel49} A. Selberg, \emph{On elementary methods in prime number theory and their limitations}, 11th Scand.\ Math.\ Congr.\ (Trondheim, 1949), 13--22.（待核。）
+\bibitem{BC92} L. S. Block, W. A. Coppel, \emph{Dynamics in One Dimension}, Lecture Notes in Math.\ \textbf{1513}, Springer, 1992.（待核。）
+\bibitem{Chen73} Jing-Run Chen, \emph{On the representation of a larger even integer as the sum of a prime and the product of at most two primes},
+Sci.\ Sinica \textbf{16} (1973), 157--176.（本文不改进该结果。）
+\bibitem{Pin18} J. Pintz, \emph{A new explicit formula in the additive theory of primes with applications II. The exceptional set in Goldbach's problem},
+arXiv:\url{1804.09084}.（本文不改进该结果。）
+\bibitem{Hel13} H. A. Helfgott, \emph{The ternary Goldbach conjecture is true}, arXiv:\url{1312.7748}.
+\bibitem{Hel15} H. A. Helfgott, \emph{The ternary Goldbach problem}, arXiv:\url{1501.05438}.
+\bibitem{MV75} H. L. Montgomery, R. C. Vaughan, \emph{The exceptional set in Goldbach's problem}, Acta Arith.\ \textbf{27} (1975), 353--370.（待核。）
+\end{thebibliography}
+
+\end{CJK}
+\end{document}

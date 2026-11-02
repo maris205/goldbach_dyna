@@ -1,0 +1,112 @@
+{
+  "rows": [
+    {
+      "k": 1,
+      "P": 2,
+      "phi": 1,
+      "tested_N": 2,
+      "odd_zero": true,
+      "N_zero_ratio": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      },
+      "N_zero_expected": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      }
+    },
+    {
+      "k": 2,
+      "P": 6,
+      "phi": 2,
+      "tested_N": 6,
+      "odd_zero": true,
+      "N_zero_ratio": {
+        "numerator": 3,
+        "denominator": 1,
+        "float": 3.0
+      },
+      "N_zero_expected": {
+        "numerator": 3,
+        "denominator": 1,
+        "float": 3.0
+      }
+    },
+    {
+      "k": 3,
+      "P": 30,
+      "phi": 8,
+      "tested_N": 30,
+      "odd_zero": true,
+      "N_zero_ratio": {
+        "numerator": 15,
+        "denominator": 4,
+        "float": 3.75
+      },
+      "N_zero_expected": {
+        "numerator": 15,
+        "denominator": 4,
+        "float": 3.75
+      }
+    },
+    {
+      "k": 4,
+      "P": 210,
+      "phi": 48,
+      "tested_N": 210,
+      "odd_zero": true,
+      "N_zero_ratio": {
+        "numerator": 35,
+        "denominator": 8,
+        "float": 4.375
+      },
+      "N_zero_expected": {
+        "numerator": 35,
+        "denominator": 8,
+        "float": 4.375
+      }
+    },
+    {
+      "k": 5,
+      "P": 2310,
+      "phi": 480,
+      "tested_N": 2310,
+      "odd_zero": true,
+      "N_zero_ratio": {
+        "numerator": 77,
+        "denominator": 16,
+        "float": 4.8125
+      },
+      "N_zero_expected": {
+        "numerator": 77,
+        "denominator": 16,
+        "float": 4.8125
+      }
+    },
+    {
+      "k": 6,
+      "P": 30030,
+      "phi": 5760,
+      "tested_N": 30030,
+      "odd_zero": true,
+      "N_zero_ratio": {
+        "numerator": 1001,
+        "denominator": 192,
+        "float": 5.213541666666667
+      },
+      "N_zero_expected": {
+        "numerator": 1001,
+        "denominator": 192,
+        "float": 5.213541666666667
+      }
+    }
+  ],
+  "failures": [],
+  "status": "通过",
+  "elapsed_seconds": 0.22188408400000004,
+  "criteria_sha256": "5e7bc000392ebf24f0d1abefa71d0e6ea6e08536d63b3343aba9c3603b471626",
+  "range": "k=1..6; every N mod P_k",
+  "method": "Fraction(P_k*direct_G_count,phi(P_k)^2) 与逐素数有理数乘积比较"
+}

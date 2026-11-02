@@ -1,0 +1,17 @@
+D3 FFT 0.44s residual=7.45786e-11
+D3 integral validation max=7.10543e-15
+D3 high samples 0/5702 elapsed 0.0s
+D3 high samples 500/5702 elapsed 0.7s
+D3 high samples 1000/5702 elapsed 1.4s
+D3 high samples 1500/5702 elapsed 2.3s
+D3 high samples 2000/5702 elapsed 3.1s
+D3 high samples 2500/5702 elapsed 4.1s
+D3 high samples 3000/5702 elapsed 5.2s
+D3 high samples 3500/5702 elapsed 6.5s
+D3 high samples 4000/5702 elapsed 7.9s
+D3 high samples 4500/5702 elapsed 9.3s
+D3 high samples 5000/5702 elapsed 11.1s
+D3 high samples 5500/5702 elapsed 13.0s
+2026-11-02 07:50:16.971 xcodebuild[59387:22948022]  DVTFilePathFSEvents: Failed to start fs event stream.
+2026-11-02 07:50:17.616 xcodebuild[59390:22948063]  DVTFilePathFSEvents: Failed to start fs event stream.
+COMPLETE 22.42s

@@ -1,0 +1,45 @@
+{
+  "u": "1.4855245007561368721556607962061545768951092913892454622954623483648946255456114903453547357770128219",
+  "selected_index": 9,
+  "candidate_count": 9,
+  "identification": "Candidate set; main has canonical MS factors RC * RLC * RLLLC * RLLLLLC; no paper-1 identity verification",
+  "criteria_status": {
+    "precision_and_residual": true,
+    "nine_numerical_candidates": true,
+    "unique_identification_by_7dp": false,
+    "independent_root_and_count_verification": true,
+    "finite_dictionaries_k1_to_k4": true,
+    "dictionaries_k5_to_k7": false,
+    "D4_primary_large_N_target": true,
+    "infinite_conjugacy_proof": false,
+    "parent_entire_tree_unchanged": false
+  },
+  "successful_computation_seconds": 22.588836292000003,
+  "elapsed_wall_seconds_since_baseline": 521.8864080905914,
+  "parent_integrity": {
+    "timestamp_unix": 1793608258.529634,
+    "errors": [],
+    "checked": 3050,
+    "changed_external_run_logs": [],
+    "changed_other": [
+      {
+        "path": "paper.json",
+        "before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "after": "b5964be55635ade6a1235db3da33e08d14cf95527d8b36947e2db7edb7d4d94e"
+      }
+    ],
+    "missing": [],
+    "added_outside": [
+      "goldbach_paper.tex",
+      "paper_scratch/check.py"
+    ],
+    "all_existing_unchanged": false
+  },
+  "plots_visually_checked": [
+    "D4_frequency.png",
+    "D4_relative_error.png"
+  ],
+  "all_task_writes_confined_to": "/Users/maris/goldbach_sd/u_star",
+  "no_network_requests": true,
+  "no_git_mutations": true
+}

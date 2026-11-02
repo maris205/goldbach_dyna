@@ -1,0 +1,24 @@
+【任务】在已有 ~/goldbach_sd/goldbach_G4.tex 上**补写**（不要整篇重写）。已备份为 goldbach_G4.v1.tex——不要改 v1。只能改 goldbach_G4.tex；临时文件放 g4_scratch/。只读勿改：一切其他 tex、REPORT*、spec*、results/（含 D5.json）、.venv、stage*.py 等。不 commit/push、不发消息。本机无 LaTeX，只做静态配对检查。编号继续 G4.x / label g4:。
+
+Codex 的 D5 已完成。请先 Read：
+- ~/goldbach_sd/REPORT_stage4.md
+- ~/goldbach_sd/results/D5.json（以文件数字为准）
+- 当前 goldbach_G4.tex 的 §(d)（问题 G4.3、命题 G4.4/G4.5、rem:scratch、bibitem{D5}）
+
+【补写内容——写入问题 4.3 / D5 对照节；可改写 rem:scratch 与 bibitem{D5}，可在 quest/prop 后追加 subsection，不要删掉已有障碍论证】
+
+1. D5 全量扫描（k=1…12，偶数 N≤2×10^6）：空集例外全部很小；扫描内 N>92 各层均非空。k=12 最大例外是 92；例外个数随 k 从 0 增到 30。把表格或精简表写入（与 D5.json / REPORT_stage4.md 数字一致；若与 rem:scratch 自检一致，注明“与 D5 官方一致，现以 D5 为准”）。
+
+2. 周期论证写成**已证命题**（可强化/改写现有 G4.4，或新增命题并交叉引用）：固定 k 时完整周期存活数 = P_k·Haar(G_k^N)（对偶数 N）≥1，故 m_k(N)=N·Haar+O(P_k)，从而 N≥P_k 时必非空，例外严格有限。明确写：有限扫描不能外推「最大例外的精确值」，但能外推「例外有限」。保留你已有的 Legendre 显式界亦可，但主叙述对齐 D5 的周期论证口径。
+
+3. 窗口最小值：k=12 时 min m/(N·Haar) 在 Y=10²…10⁶ 为约 0.566→0.724→0.916→0.988→0.997（请用 D5.json 精确值或 REPORT 表中小数；可写 3–4 位并指向 exact 分数）。升向 1。
+
+4. 口径注意：有限层会划掉小素数、保留 1，所以本模型空集 ≠ 经典哥德巴赫例外；N=2 在本模型里 m=1（1+1），不是空集（D5 端点核对）。
+
+5. 结论表述：固定 k 几乎没有例外；真正经典 E(X) 只能来自 k(N)→∞ 的误差。不要声称改进 Pintz。问题 G4.3 中“固定层例外从何而来”可标为已由周期论证+D5 闭合（固定 k）；“k(N)→∞ 时例外从何而来 / 与经典 E(X) 的关系”保持**开放**。
+
+6. 更新 bibitem{D5} 与附录中“D5 尚未生成”的待核条目：改为已生成、路径 REPORT_stage4.md / results/D5.json；核对状态可核（数值）。
+
+7. 状态总表如有“问题 G4.3”一行，相应更新为“固定层：已证+D5；增长层：开放”。
+
+最后用中文输出：改了哪些段落/命题、D5 数字是否与 json 一致、周期论证是否标已证。

@@ -1,0 +1,22 @@
+{
+  "REPORT.md": "33af3c3e2b5a7c4262d809f9f5c0cdf38373215e32d3b8dc2cd25cff1a5c183c",
+  "audit.py": "8ef5cd140b4bc3f312b30679ca585281a877ffdd4924e14597876218332958bf",
+  "experiment.py": "9769be22f98418edac6e17cbf4b0cd277b63692d3bb2fd053eabbbb8e352bbc5",
+  "finalize.py": "ced3812706e1f2bfaf49ed109073d6eba1acc1de7d794e1a5d8f77c0a0627d12",
+  "plot.py": "431fd9dd2c8ae722192315d3c803d980f1f5297ea3e8cd17038637aa604952d9",
+  "results/D4_frequency.png": "8f1ca69b3b437ceb61405c02e26a54a07aa087abafaf6b1a802a57555778448e",
+  "results/D4_relative_error.png": "9789cbc0f002134366e465887e861a239b9ec57bb34db22f690f09c3f5a699ac",
+  "results/completion.json": "60aa6703b3175e5b5f2a93db2ddcd67c7b7fa60691279beed1f5d5fb9507b861",
+  "results/cylinders.json": "f733ebf061c36518e7079df718f8f0cdb9a5e8924a3e5e6c878a37f0cb9f3d26",
+  "results/d4_rerun.json": "0c21e3bfeb336d087081eae889c523a68d677e199101eaefc9a6e0175639d2dd",
+  "results/independent_verification.json": "2d06a8cbce78480485e87be761e7d7a1a4da7552ed4310e51070934976ee8641",
+  "results/output_manifest.json": "d4f0d50b23a4c56c124939c5553a3a4e324ebba1439ecd264c9fa41d9cc82ec1",
+  "results/plot_timing.json": "529770812205db0855e6a1427fcec8079a28704351ff9f7221226d73082ec778",
+  "results/runner_input_observation.json": "be713911dae3e0118d4e0ea9485a93081953fd794c02012bc001498392d08ebc",
+  "results/sha256_after.json": "7937a821fe8696c71845d524121682f1b0ea578408767efd44de8da40d5d1666",
+  "results/sha256_before.json": "ce21d938f1dcde9b1670abf617ff2841b2bc420b4c7acc13cc420fd2d462bbb9",
+  "results/sha256_final.json": "ff9925445c1e0049fbf11eb2151d3973313648fbeb874b6e877ba430709e0d5a",
+  "results/u_star.json": "ab76b5b8c1ad0f7770670c20a8b98e2b640fa6f3697064a494c276e916281f90",
+  "roots.py": "55e59f4c14fe7085813933072f58977f4a07bcb35b9267fc0df20d5af6455656",
+  "verify.py": "603583fe26d7a958ddf5493ff4d52841692bc987ef13a1d7e8e3c0d11935e48a"
+}

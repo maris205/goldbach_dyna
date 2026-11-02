@@ -1,0 +1,23 @@
+【工作目录与约束】你在 ~/goldbach_sd 目录下工作。任务：新建 ~/goldbach_sd/goldbach_G3.tex（用 CJKutf8 处理中文；排版风格、宏和记号与 goldbach_props.tex / goldbach_G2.tex 保持一致——先 Read 二者作参考，尤其是 G1 的里程计命题 prop:odometer、字典 prop:dict、Haar/R_k、以及 G1 §未决里对论文1 CML 的转述）。
+- 你只能创建/修改 goldbach_G3.tex（以及它的编译产物，如有）；临时脚本只能放在 ~/goldbach_sd/g3_scratch/。
+- 只读、不得修改：goldbach_props.tex、goldbach_props.v1.tex、goldbach_G2.tex、goldbach_G2.v1.tex、REPORT.md、REPORT_stage2.md、spec*.txt、run*.log、starter.py、stage2.py、validate_stage.py、STARTER.md、last*.md、.venv/，以及 results/ 下任何文件。Codex 可能并行写 D4，只能读。
+- 不要 git 提交/推送，不要发送任何消息。只做 G3，不做 G4。
+- Mac 上没有 LaTeX，不用编译；只做括号/环境/标签配对等静态检查。
+- 编号：文件独立，但为避免与 G2 口头引用冲突，状态总表与命题标题使用「命题 G3.x」样式（可用自定义计数器，或 section 编号配合标签前缀 g3:）。不要复用 G2 的 label 名。
+
+【任务原文】
+背景：论文1 §6.3 说哥德巴赫可用 CML 同步流形建模，“两条混沌轨道之和与整数格相交”。在 2·3·5·… 重整化塔参数 u_*（W₂*W₃*W₅*W₇ 超稳定点 ≈1.4855245）处，f|ω(0) 共轭于里程计 ∏_p ℤ/pℤ 上的 +1。
+请写出：
+1. 构造：乘积系统 (ω(0)×ω(0), f×f) 与反同步集 Δ_N = {(x,y): x+y=N}；在里程计坐标下 Δ_N 是什么（+N 平移的图像？）。
+2. 命题：+N 平移在里程计上对应什么映射；反射 ρ_N: x ↦ N−x 在里程计坐标下对应什么（注意反射不是 f 的迭代）。
+3. 命题：Δ_N ∩ (U_k × U_k) 与 G_k^N 的精确关系，以及它的 Haar 测度（应等于 Haar(G_k^N)，即圆柱比 R_k(N)）。
+4. 问题/注记：反射在区间映射本身（而非里程计）上有没有自然实现？没有就明确说“只在里程计层面陈述，主线不变”。
+5. 与论文1 CML 表述的对照：写出“两条混沌轨道 (x_n, x_{N−n}) 落入双存活柱集”在共轭下等价于 n∈G_k^N。
+每条标“已证/部分/猜想”。
+
+【补充要求】
+- 记号沿用 G1：Zhat、U_k、G_k^N、Haar、R_k(N)、Sing、里程计 T(x)=x+1。明确区分：图(graph) of +N 是 Polignac 侧 {(x,x+N)}；Δ_N 是图 of 反射 ρ_N。
+- 论文1 全文此前未能取得（G1 已注明），内容按本任务与 G1 转述写，并标“待与论文1全文核对”；不要编造论文1 中未给出的定理。u_*≈1.4855245 可作背景参数提及，标明来源为任务转述。
+- 证明要严格：尤其是第 3 点的集合恒等式与测度；引用 G1 已证结果时用 \cite{G1} 并给 label。
+- 明确区分“已证”“部分”“猜想”。
+- 最后用中文输出：文件路径、命题清单及各自状态、Δ_N∩(U×U)↔G_k^N 的一句话结论、与论文1对照的不确定之处。

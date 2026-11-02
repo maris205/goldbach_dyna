@@ -1,0 +1,611 @@
+{
+  "rows": [
+    {
+      "N": 2,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.035494228218988,
+      "upper_bound": 1.2,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 4,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.035494228218988,
+      "upper_bound": 1.2,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 6,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 3,
+      "applicable": true,
+      "R_over_S": 1.035494228218988,
+      "upper_bound": 1.2,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.035494228218988,
+      "upper_bound": 1.2,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 210,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 7,
+      "applicable": true,
+      "R_over_S": 1.035494228218988,
+      "upper_bound": 1.2,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2310,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 11,
+      "applicable": false,
+      "R_over_S": 0.9319448053970892,
+      "upper_bound": 1.2,
+      "passed_if_applicable": null
+    },
+    {
+      "N": 30030,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 13,
+      "applicable": false,
+      "R_over_S": 0.8542827382806651,
+      "upper_bound": 1.2,
+      "passed_if_applicable": null
+    },
+    {
+      "N": 10000,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.035494228218988,
+      "upper_bound": 1.2,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 9998,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 4999,
+      "applicable": false,
+      "R_over_S": 1.035287046500657,
+      "upper_bound": 1.2,
+      "passed_if_applicable": null
+    },
+    {
+      "N": 510510,
+      "cutoff": 10,
+      "p_k": 7,
+      "max_odd_prime_factor": 17,
+      "applicable": false,
+      "R_over_S": 0.8008900671381236,
+      "upper_bound": 1.2,
+      "passed_if_applicable": null
+    },
+    {
+      "N": 2,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0018408648775852,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 4,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0018408648775852,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 6,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 3,
+      "applicable": true,
+      "R_over_S": 1.0018408648775852,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0018408648775852,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 210,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 7,
+      "applicable": true,
+      "R_over_S": 1.0018408648775852,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2310,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 11,
+      "applicable": true,
+      "R_over_S": 1.001840864877585,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30030,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 13,
+      "applicable": true,
+      "R_over_S": 1.001840864877585,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 10000,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0018408648775852,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 9998,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 4999,
+      "applicable": false,
+      "R_over_S": 1.0016404165252686,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": null
+    },
+    {
+      "N": 510510,
+      "cutoff": 100,
+      "p_k": 97,
+      "max_odd_prime_factor": 17,
+      "applicable": true,
+      "R_over_S": 1.001840864877585,
+      "upper_bound": 1.0105263157894737,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0001271326543222,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 4,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0001271326543222,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 6,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 3,
+      "applicable": true,
+      "R_over_S": 1.0001271326543222,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0001271326543222,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 210,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 7,
+      "applicable": true,
+      "R_over_S": 1.0001271326543222,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2310,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 11,
+      "applicable": true,
+      "R_over_S": 1.000127132654322,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30030,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 13,
+      "applicable": true,
+      "R_over_S": 1.0001271326543222,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 10000,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0001271326543222,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 9998,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 4999,
+      "applicable": false,
+      "R_over_S": 0.9999270271856038,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": null
+    },
+    {
+      "N": 510510,
+      "cutoff": 1000,
+      "p_k": 997,
+      "max_odd_prime_factor": 17,
+      "applicable": true,
+      "R_over_S": 1.0001271326543222,
+      "upper_bound": 1.0010050251256282,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0000098167729163,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 4,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0000098167729163,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 6,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 3,
+      "applicable": true,
+      "R_over_S": 1.0000098167729163,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0000098167729163,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 210,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 7,
+      "applicable": true,
+      "R_over_S": 1.0000098167729163,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2310,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 11,
+      "applicable": true,
+      "R_over_S": 1.0000098167729161,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30030,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 13,
+      "applicable": true,
+      "R_over_S": 1.0000098167729161,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 10000,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0000098167729163,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 9998,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 4999,
+      "applicable": true,
+      "R_over_S": 1.0000098167729161,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 510510,
+      "cutoff": 10000,
+      "p_k": 9973,
+      "max_odd_prime_factor": 17,
+      "applicable": true,
+      "R_over_S": 1.0000098167729163,
+      "upper_bound": 1.000100290843446,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 4,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 6,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 3,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 210,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 7,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2310,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 11,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30030,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 13,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 10000,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 9998,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 4999,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 510510,
+      "cutoff": 100000,
+      "p_k": 99991,
+      "max_odd_prime_factor": 17,
+      "applicable": true,
+      "R_over_S": 1.0000008022576403,
+      "upper_bound": 1.000010001100121,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0000000677757597,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 4,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 1,
+      "applicable": true,
+      "R_over_S": 1.0000000677757597,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 6,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 3,
+      "applicable": true,
+      "R_over_S": 1.0000000677757597,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0000000677757597,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 210,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 7,
+      "applicable": true,
+      "R_over_S": 1.0000000677757594,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 2310,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 11,
+      "applicable": true,
+      "R_over_S": 1.0000000677757594,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 30030,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 13,
+      "applicable": true,
+      "R_over_S": 1.0000000677757597,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 10000,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 5,
+      "applicable": true,
+      "R_over_S": 1.0000000677757597,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 9998,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 4999,
+      "applicable": true,
+      "R_over_S": 1.0000000677757597,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    },
+    {
+      "N": 510510,
+      "cutoff": 1000000,
+      "p_k": 999983,
+      "max_odd_prime_factor": 17,
+      "applicable": true,
+      "R_over_S": 1.0000000677757597,
+      "upper_bound": 1.0000010000190003,
+      "passed_if_applicable": true
+    }
+  ],
+  "failures": [],
+  "float_tolerance": 1e-12,
+  "status": "通过",
+  "elapsed_seconds": 0.009303082999998935,
+  "criteria_sha256": "5e7bc000392ebf24f0d1abefa71d0e6ea6e08536d63b3343aba9c3603b471626",
+  "range": "10 cutoff/sample-N combinations at cutoffs 10^1..10^6",
+  "method": "有限素数乘积与先去除2的奇异级数因数分解结果比较，检查适用条件及容差界"
+}

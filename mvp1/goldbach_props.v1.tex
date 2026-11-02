@@ -1,0 +1,444 @@
+% goldbach_props.tex  ---  G1: 哥德巴赫筛 / Polignac 筛 / 奇异级数 的字典
+% 编译：pdflatex goldbach_props.tex  （需要 CJKutf8 与 gbsn 字体；本机无 pdflatex，未编译）
+\documentclass[11pt,a4paper]{article}
+\usepackage{CJKutf8}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage[margin=2.5cm]{geometry}
+
+\newcommand{\Zhat}{\widehat{\mathbb Z}}
+\newcommand{\Haar}{\mu}
+\newcommand{\Sing}{\mathfrak S}
+\newcommand{\Lsym}{\ensuremath{\mathsf{L}}}
+\newcommand{\Rsym}{\ensuremath{\mathsf{R}}}
+\newcommand{\status}[1]{\par\noindent\fbox{\textbf{状态：#1}}\par\smallskip}
+
+\theoremstyle{plain}
+\newtheorem{prop}{命题}[section]
+\newtheorem{lem}[prop]{引理}
+\newtheorem{cor}[prop]{推论}
+\theoremstyle{definition}
+\newtheorem{defn}[prop]{定义}
+\newtheorem{rem}[prop]{注}
+\renewcommand{\proofname}{证明}
+
+\begin{document}
+\begin{CJK}{UTF8}{gbsn}
+
+\title{G1：哥德巴赫筛 $=$ 有限窗口的 Polignac 筛\\[2pt]
+\large ——{}字典、奇异级数与平均}
+\author{（G1 工作稿）}
+\date{2026-11-02}
+\maketitle
+
+\begin{abstract}
+在 $\Zhat$ 上把埃拉托色尼筛的第 $k$ 层写成 clopen 集 $U_k$，
+把“$n$ 与 $N-n$ 同时过筛”（哥德巴赫）和“$m$ 与 $m+N$ 同时过筛”（间隔 $N$ 的 Polignac）
+写成 $U_k$ 的两个平移交集。我们证明二者在每一有限层上相差一个平移（或一个反射），
+在以 $N/2$ 为中心的坐标下\emph{完全相同}；其 Haar 测度相对于独立模型的比值恰为截断的
+Hardy--Littlewood 奇异级数，并在 $k\to\infty$ 时收敛到 $\Sing(N)$；
+该比值在 $\Zhat$ 上的 Haar 平均为 $1$（偶数上为 $2$），按自然密度对偶数 $N\le X$
+取平均也趋于 $2$，误差对固定 $k$ 与对 $\Sing(N)$ 本身分别给出。
+
+\textbf{定位声明。} G1 在数论上\emph{只是}对已知奇异级数（Hardy--Littlewood \cite{HL23}）
+及其平均（Gallagher \cite{Gal76}，Friedlander--Goldston \cite{FG95}）的重述，
+\emph{不}对哥德巴赫猜想或 Polignac 猜想给出任何新的证据。
+新意仅在于：(i) 把“哥德巴赫 $=$ Polignac$(N)$ 的有限窗口版本”写成精确的集合恒等式
+并核正方向约定；(ii) 给出它在 $\Zhat$ 上的里程计（odometer）与 $\{\Lsym,\Rsym\}$ 符号序列
+中的动力学实现，以便与论文1 \cite{Wang26} 的揉序框架对接。
+\end{abstract}
+
+\section*{状态总表}
+\begin{center}
+\begin{tabular}{p{2.6cm}p{7.2cm}p{4.6cm}}
+\hline
+条目 & 内容 & 状态\\
+\hline
+命题 \ref{prop:dict} & $U_k\cap(N-U_k)=U_k\cap(U_k+N)$ 及符号序列字典 & 已证（原表述方向需修正，见注 \ref{rem:direction}）\\
+命题 \ref{prop:window} & 哥德巴赫计数 $=$ 有限窗口内的筛计数 $+$ 边界项 & 已证\\
+命题 \ref{prop:odometer} & 里程计实现 & 已证\\
+命题 \ref{prop:ratio} & 柱集比 $=$ 截断奇异级数，$\to\Sing(N)$ & 已证\\
+命题 \ref{prop:haaravg} & Haar 平均 $=1$（偶数上 $=2$） & 已证\\
+命题 \ref{prop:martingale} & $\Sing$ 在 $\Zhat$ 上的 a.e.\ 延拓，$\int\Sing=1$ & 已证\\
+命题 \ref{prop:density} & 自然密度平均 $\to 2$，含误差项 & 已证\\
+注 \ref{rem:FG} & 误差 $O(\log X)$ 的最优性（次项 $-\tfrac12\log X$） & 部分（引用 \cite{FG95}，数值待核）\\
+\S\ref{sec:open} & 与 logistic 揉序 / CML 同步流形的对应 & 未决\\
+\hline
+\end{tabular}
+\end{center}
+
+%=====================================================================
+\section{记号与约定}\label{sec:notation}
+
+\begin{itemize}[leftmargin=*]
+\item $p_1=2<p_2=3<\dots$ 为全体素数，$P_k=\prod_{i\le k}p_i$（素数阶乘）。
+\item $\Zhat=\varprojlim \mathbb Z/m\mathbb Z\cong\prod_p\mathbb Z_p$，$\Haar$ 为其归一化 Haar 测度。
+$\mathbb Z\hookrightarrow\Zhat$ 对角嵌入且稠密。对 $x\in\Zhat$ 记 $x_p:=x\bmod p\in\mathbb Z/p\mathbb Z$。
+由中国剩余定理，在 $\Haar$ 下 $(x_p)_p$ 为相互独立、各自均匀分布的随机变量。
+本稿所有有限层命题只用到 $x\bmod P_k$，因此在 $\Zhat$ 与 $\prod_p\mathbb Z/p\mathbb Z$ 上
+写法等价（前者的优点是 $\mathbb Z$ 稠密嵌入且有平移 $x\mapsto x+1$）。
+\item $U_k:=\{x\in\Zhat:\ x_p\neq0,\ \forall p\le p_k\}$。它是 clopen 集，
+$\Haar(U_k)=\prod_{p\le p_k}(1-1/p)$，且 $U_k\cap\mathbb Z$ 恰为与 $P_k$ 互素的整数。
+\item 对 $A\subset\Zhat$，$A+N:=\{a+N\}$，$N-A:=\{N-a\}$，$-A:=\{-a\}$。
+于是 $x\in A+N\iff x-N\in A$，$x\in N-A\iff N-x\in A$。
+\end{itemize}
+
+\paragraph{符号序列约定。}
+我们使用\emph{双边}序列 $w=(w_n)_{n\in\mathbb Z}\in\{\Lsym,\Rsym\}^{\mathbb Z}$，
+左移 $(\sigma w)_n:=w_{n+1}$（符号动力学的标准约定），故 $(\sigma^N w)_n=w_{n+N}$。
+\begin{itemize}[leftmargin=*]
+\item $S_p$ 为以 $p$ 为周期、\emph{从下标 $n=0$ 起读}为 $\Rsym\Lsym^{p-1}$ 的序列，即
+$(S_p)_n=\Rsym\iff p\mid n$。（$\Rsym$ 表示“被 $p$ 筛去”，$\Lsym$ 表示“过筛”。）
+\item $\wedge$ 定义为逐位运算：$\Lsym\wedge\Lsym=\Lsym$，其余为 $\Rsym$
+（即把 $\Lsym$ 视为“真”的逻辑与）。
+\item $Q_k:=S_{p_1}\wedge\dots\wedge S_{p_k}$，周期 $P_k$，且
+$(Q_k)_n=\Lsym\iff \gcd(n,P_k)=1\iff n\in U_k$。
+\end{itemize}
+序列 $w$ 与集合 $\{n\in\mathbb Z: w_n=\Lsym\}$ 一一对应；周期为 $P_k$ 的序列与
+$\mathbb Z/P_k$ 的子集、亦即只依赖 $x\bmod P_k$ 的 clopen 子集 $A\subset\Zhat$ 一一对应。
+在此对应下 $\wedge$ 对应交集，并且
+\begin{equation}\label{eq:shiftset}
+\sigma^{N}w \ \longleftrightarrow\ A-N,\qquad \sigma^{-N}w\ \longleftrightarrow\ A+N .
+\end{equation}
+
+\begin{rem}[索引约定的一个陷阱]\label{rem:index}
+若把 $S_p=\Rsym\Lsym^{p-1}$ 理解为从 $n=1$ 起读的单边序列，则第 $1$ 位为 $\Rsym$，
+意味着“$p\mid 1$”，是错误的。正确的写法是：从 $n=0$ 起读 $\Rsym\Lsym^{p-1}$，
+或等价地从 $n=1$ 起读 $\Lsym^{p-1}\Rsym$。另外，$Q_k$ 把 $p\le p_k$ 本身也标为 $\Rsym$
+（$p$ 是自身的倍数），这与埃拉托色尼筛“保留 $p$ 本身”不同；这一差异只影响长度
+$\le p_k$ 的边界段，在命题 \ref{prop:window} 中作为边界项处理。
+论文1 \cite{Wang26} 的全文本稿未能取得（出版社页面拒绝访问），
+上述 $S_p,Q_k$ 记号按任务说明转述，与论文1 的逐字约定\textbf{待核对}。
+\end{rem}
+
+%=====================================================================
+\section{G1.1：字典}\label{sec:dict}
+
+\begin{prop}[哥德巴赫集 $=$ 平移的 Polignac 集]\label{prop:dict}
+对任意 $N\in\Zhat$（特别是 $N\in\mathbb Z$）及 $k\ge1$，令
+$G_k^N:=U_k\cap(N-U_k)$。则
+\begin{enumerate}[label=(\alph*)]
+\item $G_k^N=U_k\cap(U_k+N)$；
+\item 记 Polignac 集 $\Pi_k^N:=U_k\cap(U_k-N)=\{x: x\in U_k,\ x+N\in U_k\}$，则
+$\Pi_k^N=G_k^N-N=-G_k^N$；
+\item 若 $N=2M$ 为偶数，则 $G_k^N-M=\Pi_k^N+M=(U_k+M)\cap(U_k-M)$，且此集关于 $x\mapsto-x$ 对称；
+\item 符号序列形式：
+\[
+G_k^N\longleftrightarrow Q_k\wedge\sigma^{-N}Q_k,\qquad
+\Pi_k^N\longleftrightarrow Q_k\wedge\sigma^{N}Q_k,
+\]
+\[
+Q_k\wedge\sigma^{N}Q_k=\sigma^{N}\bigl(Q_k\wedge\sigma^{-N}Q_k\bigr),\qquad
+\sigma^{M}\bigl(Q_k\wedge\sigma^{-N}Q_k\bigr)=\sigma^{-M}\bigl(Q_k\wedge\sigma^{N}Q_k\bigr)=\sigma^{M}Q_k\wedge\sigma^{-M}Q_k\ (N=2M).
+\]
+\end{enumerate}
+\end{prop}
+\status{已证}
+\begin{proof}
+关键事实：$U_k=-U_k$，因为 $x_p\neq0\iff(-x)_p=-x_p\neq0$。
+(a) $N-U_k=N+(-U_k)=N+U_k$。
+(b) $x\in\Pi_k^N\iff x,\,x+N\in U_k\iff x+N\in U_k\cap(U_k+N)=G_k^N$，故 $\Pi_k^N=G_k^N-N$。
+又 $x\in -G_k^N\iff -x,\,-x-N\in U_k\iff x,\,x+N\in U_k$（用 $U_k=-U_k$），故 $\Pi_k^N=-G_k^N$。
+(c) $G_k^N-M=(U_k-M)\cap(U_k+N-M)=(U_k-M)\cap(U_k+M)$，同理 $\Pi_k^N+M$ 也等于此集；
+其关于取负对称由 $-(U_k\pm M)=U_k\mp M$ 得出。
+(d) 由 \eqref{eq:shiftset}：$\sigma^{-N}Q_k\leftrightarrow U_k+N$，$\sigma^{N}Q_k\leftrightarrow U_k-N$，
+$\wedge\leftrightarrow\cap$；其余等式是 (b)(c) 的翻译。
+\end{proof}
+
+\begin{rem}[对原表述的修正]\label{rem:direction}
+任务中的表述“$G_k^N=Q_k\wedge\sigma^NQ_k$”在左移约定 $(\sigma w)_n=w_{n+1}$ 下\textbf{字面上不成立}：
+$Q_k\wedge\sigma^NQ_k$ 对应的是 Polignac 集 $\Pi_k^N=-G_k^N=G_k^N-N$，一般不等于 $G_k^N$。
+反例：$k=2$，$P_2=6$，$U_2\bmod 6=\{1,5\}$，$N=2$：$G_2^2\bmod6=\{1\}$
+（$1$ 与 $2-1=1$ 都与 $6$ 互素），而 $\Pi_2^2\bmod 6=\{5\}$（$5$ 与 $7$）。
+正确的表述有三种等价方式：
+(i) 用右移，或写 $G_k^N=Q_k\wedge\sigma^{-N}Q_k$；
+(ii) “相差平移 $\sigma^N$（或反射 $x\mapsto -x$）后相等”；
+(iii) 在以 $N/2$ 为中心的坐标下\emph{严格相等}（命题 \ref{prop:dict}(c)）。
+所有平移不变量（Haar 测度、密度、周期内计数）对两者相同，故 G1.2、G1.3 不受影响。
+“同一个 clopen 集”这一说法应理解为 (iii)。
+\end{rem}
+
+\begin{prop}[有限窗口]\label{prop:window}
+设 $N\ge4$，$k=\pi(\sqrt N)$（即 $p_k\le\sqrt N<p_{k+1}$），
+$r(N):=\#\{(p,q)\ \text{素数}: p+q=N\}$（有序计数）。则
+\[
+\#\{n\in\mathbb Z:\ \sqrt N<n<N-\sqrt N,\ n\in G_k^N\}
+=\#\{(p,q):p+q=N,\ p,q>\sqrt N\},
+\]
+从而 $0\le r(N)-\#\{\sqrt N<n<N-\sqrt N:\ n\in G_k^N\}\le 2\pi(\sqrt N)$。
+相应地，间隔 $N$ 的 Polignac 计数
+$\pi_N(X):=\#\{m\le X: m,\,m+N\ \text{均为素数}\}$ 是在\emph{随 $X$ 增长的}窗口与层数上计数
+$\Pi_{k(X)}^N$（$p_{k(X)}\le\sqrt{X+N}$）。
+\end{prop}
+\status{已证}
+\begin{proof}
+若 $\sqrt N<n<N-\sqrt N$ 且 $n\in G_k^N$，则 $n$ 与 $N-n$ 均 $<N$、均 $>\sqrt N\ge p_k$、
+且都没有 $\le\sqrt N$ 的素因子；合数 $m<N$ 必有 $\le\sqrt m<\sqrt N$ 的素因子，故二者均为素数。
+反之，若 $p,q>\sqrt N$ 为素数且 $p+q=N$，则 $p,q$ 都不被任何 $\le p_k$ 的素数整除，
+即 $p\in G_k^N$，且 $\sqrt N<p<N-\sqrt N$。剩余的表示满足 $p\le\sqrt N$ 或 $q\le\sqrt N$，至多 $2\pi(\sqrt N)$ 个。
+\end{proof}
+
+\begin{rem}[“有限窗口”的确切含义]
+由命题 \ref{prop:dict}--\ref{prop:window}：在第 $k$ 层，
+哥德巴赫$(N)$ 与 Polignac$(N)$ 读的是同一个周期序列
+$\sigma^{N/2}Q_k\wedge\sigma^{-N/2}Q_k$（中心化坐标），
+区别仅在于：哥德巴赫只读\emph{一个长度为 $N$ 的窗口}（层数 $k=\pi(\sqrt N)$ 被 $N$ 锁定），
+Polignac 读长度 $X\to\infty$ 的窗口。注意周期 $P_k=e^{(1+o(1))\sqrt N}$ 远大于窗口长度 $N$，
+因此窗口只覆盖周期的极小一部分，Haar 测度（周期平均）\emph{不能}直接推出窗口计数；
+哥德巴赫问题的全部困难都留在这一步，本稿不触及。
+\end{rem}
+
+\begin{prop}[里程计实现]\label{prop:odometer}
+令 $T:\Zhat\to\Zhat$，$T(x)=x+1$（里程计）。$T$ 是极小且唯一遍历的（唯一不变概率测度为 $\Haar$）。
+对 clopen 集 $A$，定义编码 $c_A(x):=(\mathbf 1_A(T^nx))_{n\in\mathbb Z}$（$1\mapsto\Lsym$，$0\mapsto\Rsym$）。则
+$c_A\circ T=\sigma\circ c_A$，$c_{U_k}(0)=Q_k$，$c_{G_k^N}(0)=Q_k\wedge\sigma^{-N}Q_k$，
+$c_{\Pi_k^N}(0)=Q_k\wedge\sigma^{N}Q_k$，且对任意 $x$，
+\[
+\lim_{L\to\infty}\frac1L\#\{0\le n<L:\ T^nx\in G_k^N\}=\Haar(G_k^N).
+\]
+\end{prop}
+\status{已证}
+\begin{proof}
+$T^n(0)=n$，故 $c_{U_k}(0)_n=\mathbf 1_{U_k}(n)$，即 $Q_k$；$c_A(Tx)_n=\mathbf 1_A(T^{n+1}x)=(\sigma c_A(x))_n$。
+其余编码由命题 \ref{prop:dict}(d) 得出。由于 $G_k^N$ 只依赖 $x\bmod P_k$，
+轨道频率等于 $\mathbb Z/P_k$ 上一个周期的平均，即 $\Haar(G_k^N)$。
+（里程计的极小性与唯一遍历性是标准事实：$\mathbb Z$ 在 $\Zhat$ 中稠密，且 $\Zhat$ 的特征 $x\mapsto e^{2\pi i a x/m}$
+在 $T$ 下的特征值 $e^{2\pi i a/m}$ 当特征非平凡时 $\ne1$。）
+\end{proof}
+
+%=====================================================================
+\section{G1.2：奇异级数 $=$ 柱集比}\label{sec:ratio}
+
+对素数 $p$ 与 $N\in\Zhat$，令
+\[
+c_p(N):=\frac{\#\{a\in\mathbb Z/p:\ a\ne0,\ a\ne N_p\}/p}{\bigl((p-1)/p\bigr)^2}
+=\begin{cases}
+\dfrac{p}{p-1}, & p\mid N\ (\text{只删去一个剩余类}),\\[8pt]
+\dfrac{p(p-2)}{(p-1)^2}=\dfrac{1-2/p}{(1-1/p)^2}, & p\nmid N .
+\end{cases}
+\]
+特别地 $c_2(N)=2$（$N$ 偶）或 $0$（$N$ 奇）。令 $R_k(N):=\prod_{p\le p_k}c_p(N)$，
+$C_2:=\prod_{p\ge3}\bigl(1-\frac1{(p-1)^2}\bigr)=0.6601618158\ldots$（孪生素数常数），
+$C_2(k):=\prod_{3\le p\le p_k}\bigl(1-\frac1{(p-1)^2}\bigr)$。
+
+\begin{prop}\label{prop:ratio}
+(a) 对所有 $N\in\Zhat$，$k\ge1$：$\dfrac{\Haar(G_k^N)}{\Haar(U_k)^2}=R_k(N)$。
+
+(b) $N$ 为偶数时
+\[
+R_k(N)=2\prod_{3\le p\le p_k}\frac{1-2/p}{(1-1/p)^2}\prod_{\substack{3\le p\le p_k\\ p\mid N}}\frac{p-1}{p-2}
+=2C_2(k)\prod_{\substack{3\le p\le p_k\\ p\mid N}}\frac{p-1}{p-2}.
+\]
+
+(c) $N$ 为奇数时 $G_k^N=\varnothing$，$R_k(N)=0$（$k\ge1$）。
+
+(d) 对偶数 $N\ne0$，$\lim_{k\to\infty}R_k(N)=\Sing(N):=2C_2\prod_{p\mid N,\,p\ge3}\frac{p-1}{p-2}$；
+更精确地，当 $p_k$ 不小于 $N$ 的最大素因子时
+\[
+1\le\frac{R_k(N)}{\Sing(N)}=\prod_{p>p_k}\Bigl(1-\frac1{(p-1)^2}\Bigr)^{-1}
+\le\Bigl(1-\frac1{p_k-1}\Bigr)^{-1}=1+O\!\left(\frac1{p_k}\right).
+\]
+$N=0$ 时 $G_k^0=U_k$，$R_k(0)=1/\Haar(U_k)\to\infty$（退化情形）。
+\end{prop}
+\status{已证}
+\begin{proof}
+(a) $G_k^N=\{x: x_p\notin\{0,N_p\},\ p\le p_k\}$。由 CRT 下坐标独立均匀，
+$\Haar(G_k^N)=\prod_{p\le p_k}\#\{a\ne0,N_p\}/p$，其中该计数为 $p-1$（$N_p=0$）或 $p-2$（$N_p\ne0$）。
+除以 $\Haar(U_k)^2=\prod((p-1)/p)^2$ 即得。
+(b) $p\mid N$ 时 $\frac{p}{p-1}=\frac{p(p-2)}{(p-1)^2}\cdot\frac{p-1}{p-2}$（$p\ge3$），$c_2=2$。
+(c) $N$ 奇时 $\{a\in\mathbb Z/2: a\ne0,a\ne1\}=\varnothing$。
+(d) $1-c_p=\frac1{(p-1)^2}$ 可和，故 $\prod_{p\ge3}$ 绝对收敛于 $C_2>0$；
+第二个乘积对固定 $N$ 是有限积，一旦 $p_k\ge$ 最大素因子即稳定。
+尾部：$1-\prod_{p>p_k}(1-a_p)\le\sum_{p>p_k}a_p$，而
+$\sum_{p>p_k}\frac1{(p-1)^2}\le\sum_{m\ge p_k}\frac1{m^2}\le\frac1{p_k-1}$。
+\end{proof}
+
+\begin{rem}[与 Hardy--Littlewood 归一化的对应]\label{rem:HL}
+Hardy--Littlewood \cite{HL23} 的猜想为：对偶数 $N\to\infty$，
+$r(N)\sim\Sing(N)\,\dfrac{N}{(\log N)^2}$（有序表示），
+其中 $\Sing(N)=2C_2\prod_{p\mid N,p>2}\frac{p-1}{p-2}$；同一篇文章中对间隔 $N$ 的素数对给出
+$\pi_N(X)\sim\Sing(N)\,X/(\log X)^2$，$N=2$ 即 $\pi_2(X)\sim 2C_2X/(\log X)^2$。
+对应关系：
+\begin{itemize}[leftmargin=*]
+\item 分母 $\Haar(U_k)^2$ 是“$n$ 与 $N-n$ 独立过筛”的模型；比值 $R_k(N)$ 恰是各局部因子 $c_p(N)$ 之积。
+\item 常数 $2C_2$ 中的 $2$ 就是 $p=2$ 的局部因子 $c_2=2$：偶数 $N$ 时 $n$ 奇 $\Rightarrow N-n$ 自动为奇，
+相关性使概率加倍；$C_2$ 是全体奇素数在 $p\nmid N$ 时的因子之积；$\frac{p-1}{p-2}$ 是 $p\mid N$ 时“只删一个类”带来的修正。
+\item 因此“柱集比 $=$ 奇异级数”在数论上就是 Hardy--Littlewood 局部密度的定义本身，不含新的数论内容。
+\end{itemize}
+\end{rem}
+
+\begin{rem}[只能取比值：Mertens 因子]\label{rem:mertens}
+不能把 $N\cdot\Haar(G_k^N)$（$k=\pi(\sqrt N)$）当作 $r(N)$ 的预测：由 Mertens 第三定理
+$\Haar(U_k)=\prod_{p\le\sqrt N}(1-1/p)\sim 2e^{-\gamma}/\log N$，于是
+$N\Haar(G_k^N)\sim 4e^{-2\gamma}\cdot\Sing(N)N/(\log N)^2$，比 Hardy--Littlewood 预测多出因子
+$4e^{-2\gamma}\approx1.2609$。这是筛法中众所周知的“独立性启发失效”现象：
+有限层的柱集只正确地给出\emph{局部相关因子} $R_k(N)$，而全局密度 $1/(\log N)^2$ 不能从有限层读出。
+（该渐近是直接计算，状态：已证；作为预测的偏差需数值展示，见 \S\ref{sec:numerics} V9。）
+\end{rem}
+
+%=====================================================================
+\section{G1.3：平均}\label{sec:avg}
+
+\begin{prop}[Haar 平均]\label{prop:haaravg}
+对每个 $k\ge1$：
+\[
+\int_{\Zhat}\frac{\Haar(U_k\cap(N-U_k))}{\Haar(U_k)^2}\,d\Haar(N)=1,\qquad
+\frac1{\Haar(2\Zhat)}\int_{2\Zhat}R_k(N)\,d\Haar(N)=2 .
+\]
+等价地：$\frac1{P_k}\sum_{N\bmod P_k}R_k(N)=1$，$\frac{2}{P_k}\sum_{N\bmod P_k,\,2\mid N}R_k(N)=2$。
+\end{prop}
+\status{已证}
+\begin{proof}
+由 Fubini 及 Haar 测度在 $x\mapsto N-x$ 下不变：
+$\int\Haar(U\cap(N-U))\,dN=\iint\mathbf 1_U(x)\mathbf 1_U(N-x)\,dx\,dN=\int\mathbf 1_U(x)\Bigl(\int\mathbf 1_U(N-x)\,dN\Bigr)dx=\Haar(U)^2$。
+$N$ 奇时 $R_k(N)=0$（命题 \ref{prop:ratio}(c)），而 $\Haar(2\Zhat)=1/2$，故偶数上的条件平均为 $2$。
+\end{proof}
+
+\begin{prop}[$\Sing$ 在 $\Zhat$ 上的延拓]\label{prop:martingale}
+在概率空间 $(\Zhat,\Haar)$ 上，$c_p(N)$ 相互独立，$\mathbb E\,c_p=1$，
+$\mathbb E\,c_p^2=1+\frac1{(p-1)^3}$（$p\ge3$），$\mathbb E\,c_2^2=2$。因此 $R_k$ 是 $L^2$ 有界的非负鞅，
+几乎处处且在 $L^2$ 中收敛到 $R_\infty$，并有
+\[
+\int_{\Zhat}R_\infty\,d\Haar=1,\qquad \int_{\Zhat}R_\infty^2\,d\Haar=2\prod_{p\ge3}\Bigl(1+\frac1{(p-1)^3}\Bigr).
+\]
+对偶整数 $N\ne0$，$R_\infty(N)=\Sing(N)$。
+\end{prop}
+\status{已证}
+\begin{proof}
+独立性来自 CRT。$p\ge3$：$\mathbb E c_p=\frac1p\cdot\frac p{p-1}+\frac{p-1}p\cdot\frac{p(p-2)}{(p-1)^2}=\frac{1+(p-2)}{p-1}=1$；
+$\mathbb E c_p^2=\frac{p}{(p-1)^2}+\frac{p(p-2)^2}{(p-1)^3}=\frac{p(p^2-3p+3)}{(p-1)^3}=1+\frac1{(p-1)^3}$。
+$p=2$：$\mathbb E c_2=\frac12\cdot2=1$，$\mathbb E c_2^2=2$。独立均值 $1$ 因子的部分积是鞅，
+$\sup_k\mathbb E R_k^2=2\prod_{p\ge3}(1+(p-1)^{-3})<\infty$，由 $L^2$ 鞅收敛定理得结论。
+整数 $N$ 处的值由命题 \ref{prop:ratio}(d)。
+\end{proof}
+
+\begin{rem}
+$\mathbb Z$ 在 $\Zhat$ 中是 Haar 零测集，所以命题 \ref{prop:martingale} \emph{不}蕴含整数上的密度平均；
+后者需要下面的直接论证。另外，由第二 Borel--Cantelli 引理，Haar-a.e.\ 的 $N\in\Zhat$ 有无穷多个 $p$ 使 $N_p=0$
+（因 $\sum1/p=\infty$），但 $\sum_p\log c_p(N)$ 仍 a.s.\ 收敛——这与整数 $N$ 只有有限个素因子的情形不同。
+\end{rem}
+
+\begin{prop}[自然密度平均]\label{prop:density}
+令 $h(d):=\prod_{p\mid d}\frac1{p-2}$（$d$ 为奇的无平方因子数），$X\ge2$。
+\begin{enumerate}[label=(\alph*)]
+\item（固定 $k$，且对 $k$ 一致）
+\[
+\sum_{\substack{N\le X\\ 2\mid N}}R_k(N)=X-\theta_k(X),\qquad
+0\le\theta_k(X)<2\prod_{3\le p\le p_k}\frac{p}{p-1}=\prod_{p\le p_k}\frac p{p-1}\sim e^{\gamma}\log p_k .
+\]
+因此
+\[
+\Bigl|\frac1{\lfloor X/2\rfloor}\sum_{\substack{N\le X\\2\mid N}}R_k(N)-2\Bigr|
+\le\frac{2+\prod_{p\le p_k}\frac p{p-1}}{\lfloor X/2\rfloor}=O\!\Bigl(\frac{\log p_k}{X}\Bigr),
+\]
+对固定 $k$ 即 $O_k(1/X)$。
+\item（$k\to\infty$，即 $\Sing(N)$ 本身）
+\[
+\sum_{\substack{N\le X\\2\mid N}}\Sing(N)=X+O(\log X),\qquad
+\frac1{\lfloor X/2\rfloor}\sum_{\substack{N\le X\\2\mid N}}\Sing(N)=2+O\!\Bigl(\frac{\log X}{X}\Bigr).
+\]
+\end{enumerate}
+\end{prop}
+\status{已证}
+\begin{proof}
+(a) 记 $P_k'=P_k/2$。对偶数 $N$，
+$\prod_{3\le p\le p_k,\,p\mid N}\bigl(1+\frac1{p-2}\bigr)=\sum_{d\mid\gcd(N,P_k')}h(d)$，故
+$R_k(N)=2C_2(k)\sum_{d\mid\gcd(N,P_k')}h(d)$。交换求和（$d$ 为奇数，故 $2\mid N,\ d\mid N\iff 2d\mid N$）：
+\[
+\sum_{\substack{N\le X\\2\mid N}}R_k(N)=2C_2(k)\sum_{d\mid P_k'}h(d)\Bigl\lfloor\frac X{2d}\Bigr\rfloor
+=XC_2(k)\sum_{d\mid P_k'}\frac{h(d)}d-2C_2(k)\sum_{d\mid P_k'}h(d)\Bigl\{\frac X{2d}\Bigr\}.
+\]
+而 $\sum_{d\mid P_k'}\frac{h(d)}d=\prod_{3\le p\le p_k}\bigl(1+\frac1{p(p-2)}\bigr)=\prod\frac{(p-1)^2}{p(p-2)}=C_2(k)^{-1}$，
+故主项恰为 $X$。误差
+$\theta_k(X)=2C_2(k)\sum_{d\mid P_k'}h(d)\{X/2d\}\in\bigl[0,\,2C_2(k)\prod_{3\le p\le p_k}\frac{p-1}{p-2}\bigr)$，
+且 $C_2(k)\cdot\frac{p-1}{p-2}$ 的逐因子乘积为 $\prod\frac{p(p-2)}{(p-1)^2}\cdot\frac{p-1}{p-2}=\prod\frac p{p-1}$。
+（上界严格是因为 $d=1$ 时 $\{X/2\}<1$。）Mertens 第三定理给出 $\prod_{p\le y}\frac p{p-1}\sim e^\gamma\log y$。
+平均值：偶数 $N\le X$ 的个数为 $\lfloor X/2\rfloor=X/2-\{X/2\}$，
+故平均 $=2+\frac{2\{X/2\}-\theta_k(X)}{\lfloor X/2\rfloor}$。
+
+(b) 取 $k$ 使 $p_k$ 为 $\ge X$ 的最小素数（$p_k\le2X$，Bertrand）。则每个偶数 $N\le X$ 的素因子都 $\le p_k$，
+由命题 \ref{prop:ratio}(d)，$\Sing(N)=\tau_k R_k(N)$，其中 $\tau_k:=\prod_{p>p_k}(1-\frac1{(p-1)^2})\in[1-\frac1{p_k-1},1]$
+与 $N$ 无关。由 (a)，
+$\sum_{2\mid N\le X}\Sing(N)=\tau_k(X-\theta_k(X))=X+O(X/p_k)+O(\log p_k)=X+O(\log X)$。
+除以 $\lfloor X/2\rfloor$ 即得平均。
+\end{proof}
+
+\begin{rem}[误差项的阶]\label{rem:FG}
+(b) 中的 $O(\log X)$ 应不能改进为 $o(\log X)$：据 Friedlander--Goldston \cite{FG95}，有
+$\sum_{h\le H}\Sing(h)=H-\tfrac12\log H+O\bigl((\log H)^{2/3}\bigr)$
+（其中奇数 $h$ 处 $\Sing(h)=0$，故左边即对偶数 $h\le H$ 求和）。
+此陈述按我们对该文的理解转述，状态：\textbf{部分}（结论的主项 $H$ 与我们的 (b) 一致，可追溯到 Gallagher \cite{Gal76}；
+次项 $-\frac12\log H$ 的精确形式请以原文为准，并见 \S\ref{sec:numerics} V6 的数值核对）。
+我们的初步数值（$X=10^3,\dots,10^6$）给出 $(\sum_{N\le X}\Sing(N)-X)/\log X\approx-0.57,-0.53,-0.54,-0.51$，与 $-\frac12$ 相容。
+另外，(a) 中固定 $k$ 时的误差 $\theta_k(X)$ 有界但一般不趋于 $0$（它在 $[0,\prod_{p\le p_k}\frac p{p-1})$ 内振荡），
+所以“固定 $k$”与“$k\to\infty$”两种情形的误差结构确实不同：前者 $O_k(1)$ 的绝对误差，后者是增长的 $\asymp\log X$ 偏差。
+\end{rem}
+
+%=====================================================================
+\section{未决与范围外}\label{sec:open}
+
+\begin{enumerate}[leftmargin=*]
+\item \textbf{与 logistic 揉序的对应（未决）。} 论文1 \cite{Wang26} 在揉序理论（参见 \cite{MSS73}）框架下声称 $Q_\infty$ 与 logistic 映射
+$x\mapsto1-ux^2$ 在某参数 $u_c$ 处的揉序列相对应。本稿未能取得论文1 全文，未核对该陈述；
+命题 \ref{prop:dict}--\ref{prop:density} 均\emph{不}依赖它。
+若该对应成立，命题 \ref{prop:dict}(d) 把哥德巴赫$(N)$ 翻译为两条（相差移位 $N$ 的）揉序编码的逐位 $\wedge$。
+\item \textbf{CML 同步流形模型（未决）。} 论文1 \S6.3 所提“两条混沌轨道之和与整数格相交”的 CML 建模（参见 Kaneko \cite{Kan84} 的耦合 logistic 格点）
+在本稿中没有被形式化；尤其“和”在符号层面对应的是 $N-x$（反射加平移）而不是逐点相加，
+如何在 CML 的同步/反同步流形上实现 $x\mapsto N-x$ 是开放的建模问题。
+\item \textbf{哥德巴赫与 Polignac 本身（未决）。} 命题 \ref{prop:window} 之后的注已说明：
+从 Haar 测度过渡到长度 $N\ll P_k$ 的单一窗口是问题的全部难点，G1 不提供任何这方面的进展。
+\end{enumerate}
+
+%=====================================================================
+\section{交给 Codex 的数值验证清单}\label{sec:numerics}
+
+以下各条请独立实现、用精确有理数（或足够精度的浮点）核对；“预期”一栏为本稿推导的结论。
+\begin{enumerate}[label=\textbf{V\arabic*.},leftmargin=*]
+\item \textbf{集合恒等式}（命题 \ref{prop:dict}）。对 $k\le6$（$P_6=30030$）及所有 $N\bmod P_k$：
+核对 $U_k\cap(N-U_k)=U_k\cap(U_k+N)$；$\Pi_k^N=G_k^N-N=-G_k^N$；$N$ 偶时 $G_k^N-N/2$ 关于取负对称；
+并复现反例 $k=2,N=2$：$G=\{1\},\ \Pi=\{5\}\pmod 6$。
+\item \textbf{柱集比公式}（命题 \ref{prop:ratio}(a)--(c)）。对 $k\le6$、全部 $N\bmod P_k$，
+用精确有理数核对 $P_k\#G_k^N/\#U_k^2=R_k(N)$，包括 $N$ 奇（$=0$）、$N\equiv0$（$=\prod_{p\le p_k}\frac p{p-1}$）。
+\item \textbf{Haar 平均}（命题 \ref{prop:haaravg}）。$k\le6$：$\frac1{P_k}\sum_{N\bmod P_k}R_k(N)=1$ 精确成立；偶剩余类上平均 $=2$。
+\item \textbf{二阶矩}（命题 \ref{prop:martingale}）。$k\le6$：$\frac1{P_k}\sum_{N\bmod P_k}R_k(N)^2=2\prod_{3\le p\le p_k}(1+(p-1)^{-3})$ 精确成立；
+并（\emph{预期但本稿未证}）对偶数 $N\le X$，$\frac1{\lfloor X/2\rfloor}\sum\Sing(N)^2\to 4\prod_{p\ge3}(1+(p-1)^{-3})$。
+\item \textbf{有限窗口}（命题 \ref{prop:window}）。对偶数 $4\le N\le10^6$：
+核对中段计数恒等式，以及 $0\le r(N)-\#\{\sqrt N<n<N-\sqrt N: n\in G_{\pi(\sqrt N)}^N\}\le2\pi(\sqrt N)$。
+\item \textbf{$\Sing$ 的平均与次项}（命题 \ref{prop:density}(b)、注 \ref{rem:FG}）。对 $X=10^k$，$k=3,\dots,8$：
+计算 $E(X)=\sum_{N\le X}\Sing(N)-X$，核对 $|E(X)|=O(\log X)$ 以及 $E(X)/\log X\to-\tfrac12$；$C_2$ 用至少 10 位精度
+（$C_2=0.6601618158\ldots$）。
+\item \textbf{固定 $k$ 的误差}（命题 \ref{prop:density}(a)）。对 $k\le12$、$X\le10^6$（可抽样）：
+核对 $0\le\theta_k(X)<\prod_{p\le p_k}\frac p{p-1}$，并记录 $\max_X\theta_k(X)$ 与该上界之比。
+\item \textbf{收敛速度}（命题 \ref{prop:ratio}(d)）。对若干偶数 $N$ 与 $p_k$ 从 $10$ 到 $10^6$：核对
+$1\le R_k(N)/\Sing(N)\le(1-\frac1{p_k-1})^{-1}$（$p_k\ge N$ 的最大素因子时）。
+\item \textbf{Mertens 因子}（注 \ref{rem:mertens}）。对偶数 $N\in[10^4,10^8]$（抽样），$k=\pi(\sqrt N)$：
+计算 $\Haar(U_k)^2(\log N)^2\to4e^{-2\gamma}\approx1.2609$；比较 $r(N)$ 与 $\Sing(N)N/(\log N)^2$、
+$\Sing(N)\int_2^N\frac{dt}{\log t\,\log(N-t)}$ 以及 $N\Haar(G_k^N)$，展示后者系统性偏高约 $26\%$。
+\end{enumerate}
+
+%=====================================================================
+\section*{文献说明}
+每条文献的元数据均已通过 Crossref API 或出版商/arXiv 页面于 2026-11-02 核对；
+\cite{Wang26} 仅核对了元数据（标题、作者、卷期、文章号），全文未能访问，其内容（$S_p,Q_k$ 记号、\S6.3）按任务说明转述，待核。
+
+\begin{thebibliography}{99}
+\bibitem{Wang26} Liang Wang, \emph{The emergence of prime distribution from low-dimensional deterministic chaos},
+Research in Mathematics \textbf{13}(1) (2026), Article 2684334. DOI: \url{10.1080/27684830.2026.2684334}.
+（早期预印本：Wang Liang, \emph{Describe Prime number gaps pattern by Logistic mapping}, arXiv:\url{1306.3626}；
+Wang Liang, Huang Yan, \emph{A kind of dynamic model of prime numbers}, arXiv:\url{math/0601517}。）
+\bibitem{HL23} G. H. Hardy, J. E. Littlewood, \emph{Some problems of `Partitio numerorum'; III: On the expression of a number as a sum of primes},
+Acta Math. \textbf{44} (1923), 1--70. DOI: \url{10.1007/BF02403921}.
+\bibitem{Gal76} P. X. Gallagher, \emph{On the distribution of primes in short intervals}, Mathematika \textbf{23} (1976), 4--9.
+DOI: \url{10.1112/S0025579300016442}.
+\bibitem{FG95} J. B. Friedlander, D. A. Goldston, \emph{Some singular series averages and the distribution of Goldbach numbers in short intervals},
+Illinois J. Math. \textbf{39}(1) (1995), 158--180. DOI: \url{10.1215/ijm/1255986635}.
+\bibitem{MSS73} N. Metropolis, M. L. Stein, P. R. Stein, \emph{On finite limit sets for transformations on the unit interval},
+J. Combin. Theory Ser. A \textbf{15} (1973), 25--44. DOI: \url{10.1016/0097-3165(73)90033-2}.
+（揉序/MSS 序列的经典来源，供与论文1 对接时参考。）
+\bibitem{Kan84} K. Kaneko, \emph{Period-doubling of kink-antikink patterns, quasiperiodicity in antiferro-like structures and spatial intermittency in coupled logistic lattice},
+Prog. Theor. Phys. \textbf{72}(3) (1984), 480--486. DOI: \url{10.1143/PTP.72.480}.
+\end{thebibliography}
+
+\end{CJK}
+\end{document}

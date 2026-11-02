@@ -1,0 +1,88 @@
+{
+  "rows": [
+    {
+      "k": 1,
+      "full_average": {
+        "numerator": 1,
+        "denominator": 1,
+        "float": 1.0
+      },
+      "even_average": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      }
+    },
+    {
+      "k": 2,
+      "full_average": {
+        "numerator": 1,
+        "denominator": 1,
+        "float": 1.0
+      },
+      "even_average": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      }
+    },
+    {
+      "k": 3,
+      "full_average": {
+        "numerator": 1,
+        "denominator": 1,
+        "float": 1.0
+      },
+      "even_average": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      }
+    },
+    {
+      "k": 4,
+      "full_average": {
+        "numerator": 1,
+        "denominator": 1,
+        "float": 1.0
+      },
+      "even_average": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      }
+    },
+    {
+      "k": 5,
+      "full_average": {
+        "numerator": 1,
+        "denominator": 1,
+        "float": 1.0
+      },
+      "even_average": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      }
+    },
+    {
+      "k": 6,
+      "full_average": {
+        "numerator": 1,
+        "denominator": 1,
+        "float": 1.0
+      },
+      "even_average": {
+        "numerator": 2,
+        "denominator": 1,
+        "float": 2.0
+      }
+    }
+  ],
+  "failures": [],
+  "status": "通过",
+  "elapsed_seconds": 0.001011749999999978,
+  "criteria_sha256": "5e7bc000392ebf24f0d1abefa71d0e6ea6e08536d63b3343aba9c3603b471626",
+  "range": "k=1..6; complete periods",
+  "method": "以 V1 的直接集合基数作全周期整数求和，再用 Fraction 精确计算均值"
+}
